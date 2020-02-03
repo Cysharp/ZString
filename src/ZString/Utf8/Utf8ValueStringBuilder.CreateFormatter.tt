@@ -1,0 +1,48 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    var spanFormattables = new Type[]
+    {
+        typeof(Byte),
+        typeof(DateTime),
+        typeof(DateTimeOffset),
+        typeof(Decimal),
+        typeof(Double),
+        typeof(Guid),
+        typeof(Int16),
+        typeof(Int32),
+        typeof(Int64),
+        typeof(SByte),
+        typeof(Single),
+        typeof(TimeSpan),
+        typeof(UInt16),
+        typeof(UInt32),
+        typeof(UInt64),
+        // typeof(Version),
+    };
+#>
+using System;
+using System.Buffers;
+using System.Buffers.Text;
+
+namespace Cysharp.Text
+{
+    public ref partial struct Utf8ValueStringBuilder
+    {
+        static object CreateFormatter(Type type)
+        {
+<# foreach(var t in spanFormattables) { #>
+            if (type == typeof(<#= t.Name #>))
+            {
+                return new TryFormat<<#= t.Name #>>((<#= t.Name #> x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+            }
+<# } #>
+
+            return null;
+        }
+    }
+}

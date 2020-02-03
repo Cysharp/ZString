@@ -1,0 +1,115 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    static string CreateTypeArgument(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x));
+    }
+
+    static string CreateParameters(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
+    }
+
+
+    static string CreateParameterNames(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
+    }
+#>
+using System;
+
+namespace Cysharp.Text
+{
+    public ref partial struct Utf16ValueStringBuilder
+    {
+<# for(var i = 1; i <= 16; i++) { #>
+        public void AppendFormat<<#= CreateTypeArgument(i) #>>(ReadOnlySpan<char> format, <#= CreateParameters(i) #>)
+        {
+            var copyFrom = 0;
+            for (int i = 0; i < format.Length; i++)
+            {
+                if (format[i] == '{')
+                {
+                    // escape.
+                    if (i == format.Length - 1)
+                    {
+                        throw new FormatException("invalid format");
+                    }
+
+                    if (i != format.Length && format[i + 1] == '{')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.Slice(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '{'
+                        copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.Slice(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                    }
+
+                    // try to find range
+                    var indexParse = FormatParser.Parse(format.Slice(i));
+                    copyFrom = indexParse.LastIndex + 1;
+                    i = indexParse.LastIndex;
+                    switch (indexParse.Index)
+                    {
+<# for(var j = 0; j < i; j++) { #>
+                        case <#= j #>:
+                            {
+                                if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out var written, indexParse.FormatString))
+                                {
+                                    Grow();
+                                    if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out written, indexParse.FormatString))
+                                    {
+                                        ThrowArgumentException(nameof(arg<#= j #>));
+                                    }
+                                }
+                                index += written;
+                                goto NEXT_LOOP;
+                            }
+<# } #>
+                        default:
+                            ThrowFormatException();
+                            break;
+                    }
+
+                    ThrowFormatException();
+                }
+
+                NEXT_LOOP:
+                continue;
+            }
+
+            {
+                // copy final string
+                var copyLength = format.Length - copyFrom;
+                if (copyLength > 0)
+                {
+                    TryGrow(copyLength);
+                    format.Slice(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
+                    index += copyLength;
+                }
+            }
+        }
+
+        public void AppendFormatLine<<#= CreateTypeArgument(i) #>>(ReadOnlySpan<char> format, <#= CreateParameters(i) #>)
+        {
+            AppendFormat(format, <#= CreateParameterNames(i) #>);
+            AppendNewLine();
+        }
+
+<# } #>
+    }
+}

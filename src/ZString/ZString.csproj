@@ -1,0 +1,115 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <!-- TODO:netstandard2.0 -->
+        <TargetFramework>netstandard2.1</TargetFramework>
+        <RootNamespace>Cysharp.Text</RootNamespace>
+
+        <!-- NuGet Packaging -->
+        <PackageVersion>$(Version)</PackageVersion>
+        <Company>Cysharp</Company>
+        <Authors>Cysharp</Authors>
+        <Copyright>© Cysharp, Inc.</Copyright>
+        <PackageTags>string;</PackageTags>
+        <Description>Zero alloction StringBuilder for .NET Core and Unity.</Description>
+        <PackageProjectUrl>https://github.com/Cysharp/ZString</PackageProjectUrl>
+        <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="System.Memory" Version="4.5.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="Utf16\Utf16ValueStringBuilder.AppendMany.tt">
+            <LastGenOutput>Utf16ValueStringBuilder.AppendMany.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.tt">
+            <LastGenOutput>Utf16ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Utf16\Utf16ValueStringBuilder.SpanFormattableAppend.tt">
+            <LastGenOutput>Utf16ValueStringBuilder.SpanFormattableAppend.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Utf8\Utf8ValueStringBuilder.AppendFormat.tt">
+            <LastGenOutput>Utf8ValueStringBuilder.AppendFormat.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Utf8\Utf8ValueStringBuilder.AppendMany.tt">
+            <LastGenOutput>Utf8ValueStringBuilder.AppendMany.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.tt">
+            <LastGenOutput>Utf8ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Utf8\Utf8ValueStringBuilder.SpanFormattableAppend.tt">
+            <LastGenOutput>Utf8ValueStringBuilder.SpanFormattableAppend.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <None Update="Utf16\Utf16ValueStringBuilder.AppendFormat.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>Utf16ValueStringBuilder.AppendFormat.cs</LastGenOutput>
+        </None>
+        <None Update="ZString.Format.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ZString.Format.cs</LastGenOutput>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Utf16\Utf16ValueStringBuilder.AppendFormat.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf16ValueStringBuilder.AppendFormat.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Utf16\Utf16ValueStringBuilder.AppendMany.cs">
+            <DependentUpon>Utf16ValueStringBuilder.AppendMany.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+        <Compile Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.cs">
+            <DependentUpon>Utf16ValueStringBuilder.CreateFormatter.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+        </Compile>
+        <Compile Update="Utf16\Utf16ValueStringBuilder.SpanFormattableAppend.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf16ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Utf8\Utf8ValueStringBuilder.AppendFormat.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf8ValueStringBuilder.AppendFormat.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Utf8\Utf8ValueStringBuilder.AppendMany.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf8ValueStringBuilder.AppendMany.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf8ValueStringBuilder.CreateFormatter.tt</DependentUpon>
+        </Compile>
+        <Compile Update="Utf8\Utf8ValueStringBuilder.SpanFormattableAppend.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf8ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
+        </Compile>
+        <Compile Update="ZString.Format.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ZString.Format.tt</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+</Project>

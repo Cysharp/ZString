@@ -1,0 +1,40 @@
+version: 2.1
+executors:
+  dotnet:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:3.1
+    environment:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      NUGET_XMLDOC_MODE: skip
+jobs:
+  build-test:
+    executor: dotnet
+    steps:
+      - checkout
+      - run: dotnet build -c Debug
+      - run: dotnet test -c Debug --no-build < /dev/null
+  build-push:
+    executor: dotnet
+    steps:
+      - checkout
+      - run: dotnet build -c Release -p:Version=${CIRCLE_TAG}
+      - run: dotnet test -c Release --no-build < /dev/null
+      - run: dotnet pack ./src/ZString/ZString.csproj -c Release --no-build -p:Version=${CIRCLE_TAG}
+      - store_artifacts:
+          path: src/ZString/bin/Release/
+          destination: /ZString/
+      - run: dotnet nuget push ./src/ZString/bin/Release/ZString.${CIRCLE_TAG}.nupkg -s https://www.nuget.org/api/v2/package -k ${NUGET_KEY}
+workflows:
+  version: 2
+  build-and-push:
+    jobs:
+      - build-test:
+          filters:
+            tags:
+              only: /.*/
+      - build-push:
+          filters:
+            tags:
+              only: /^\d\.\d\.\d.*/
+            branches:
+              ignore: /.*/

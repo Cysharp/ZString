@@ -1,0 +1,49 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    static string CreateTypeArgument(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x));
+    }
+
+    static string CreateParameters(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
+    }
+
+
+    static string CreateParameterNames(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
+    }
+#>
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace Cysharp.Text
+{
+    public static partial class ZString
+    {
+<# for(var i = 1; i <= 16; i++) { #>
+        public static string Format<<#= CreateTypeArgument(i) #>>(ReadOnlySpan<char> format, <#= CreateParameters(i) #>)
+        {
+            var sb = CreateStringBuilder();
+            try
+            {
+                sb.AppendFormat(format, <#= CreateParameterNames(i) #>);
+                return sb.ToString();
+            }
+            finally
+            {
+                sb.Dispose();
+            }
+        }
+
+<# } #>
+    }
+}
