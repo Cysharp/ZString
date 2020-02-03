@@ -4,7 +4,7 @@ ZString
 
 WIP
 
-**Z**ero alloction **String**Builder for .NET Core and Unity.
+**Z**ero Alloction **String**Builder for .NET Core and Unity.
 
 ```csharp
 using var sb = ZString.CreateStringBuilder();
