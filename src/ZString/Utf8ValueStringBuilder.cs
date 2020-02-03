@@ -210,7 +210,14 @@ namespace Cysharp.Text
                 var formatter = (TryFormat<T>)CreateFormatter(typeof(T));
                 if (formatter == null)
                 {
-                    formatter = new TryFormat<T>(TryFormatDefault);
+                    if (typeof(T).IsEnum)
+                    {
+                        formatter = new TryFormat<T>(EnumUtil<T>.TryFormatUtf8);
+                    }
+                    else
+                    {
+                        formatter = new TryFormat<T>(TryFormatDefault);
+                    }
                 }
 
                 TryFormatDelegate = formatter;
