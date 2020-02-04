@@ -45,6 +45,7 @@ namespace Cysharp.Text
     {
         public static unsafe int GetBytes(this Encoding encoding, ReadOnlySpan<char> span, Span<byte> bytes)
         {
+            if (span.Length == 0) return 0;
             fixed (char* src = span)
             fixed (byte* dest = bytes)
             {

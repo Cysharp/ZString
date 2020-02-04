@@ -2,7 +2,7 @@
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf16ValueStringBuilder
+    public partial struct Utf16ValueStringBuilder
     {
         public void AppendFormat<T0>(string format, T0 arg0)
         {
@@ -60,6 +60,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -153,6 +166,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -259,6 +285,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -378,6 +417,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -510,6 +562,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -655,6 +720,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -813,6 +891,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -984,6 +1075,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1168,6 +1272,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1365,6 +1482,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1575,6 +1705,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1798,6 +1941,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -2034,6 +2190,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -2283,6 +2452,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -2545,6 +2727,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -2820,6 +3015,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:

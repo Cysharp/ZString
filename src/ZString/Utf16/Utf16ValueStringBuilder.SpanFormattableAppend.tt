@@ -30,7 +30,7 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf16ValueStringBuilder
+    public partial struct Utf16ValueStringBuilder
     {        
 <# foreach(var t in spanFormattables) { #>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

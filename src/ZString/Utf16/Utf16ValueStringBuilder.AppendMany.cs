@@ -2,7 +2,7 @@
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf16ValueStringBuilder
+    public partial struct Utf16ValueStringBuilder
     {
         public void AppendMany<T0, T1>(T0 arg0, T1 arg1)
         {

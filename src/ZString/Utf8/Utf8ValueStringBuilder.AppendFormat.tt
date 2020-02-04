@@ -22,10 +22,11 @@
     }
 #>
 using System;
+using System.Buffers;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf8ValueStringBuilder
+    public partial struct Utf8ValueStringBuilder
     {
 <# for(var i = 1; i <= 16; i++) { #>
         public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
@@ -61,15 +62,16 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
 <# for(var j = 0; j < i; j++) { #>
                         case <#= j #>:
                             {
-                                if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg<#= j #>));
                                     }
@@ -84,6 +86,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:

@@ -4,10 +4,11 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf16ValueStringBuilder
+    public partial struct Utf16ValueStringBuilder : IDisposable
     {
         public delegate bool TryFormat<T>(T value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
 
+        const int ThreadStaticBufferSize = 31111;
         const int DefaultBufferSize = 32768; // use 32K default buffer.
 
         static char newLine1;
@@ -43,13 +44,20 @@ namespace Cysharp.Text
         public ReadOnlyMemory<char> AsMemory() => buffer.AsMemory(0, index);
         public ArraySegment<char> AsArraySegment() => new ArraySegment<char>(buffer, 0, index);
 
-
-        internal void Init()
+        internal void Init(bool disposeImmediately)
         {
-            var buf = scratchBuffer;
-            if (buf == null)
+            char[] buf;
+            if (disposeImmediately)
             {
-                buf = scratchBuffer = new char[DefaultBufferSize];
+                buf = scratchBuffer;
+                if (buf == null)
+                {
+                    buf = scratchBuffer = new char[ThreadStaticBufferSize];
+                }
+            }
+            else
+            {
+                buf = ArrayPool<char>.Shared.Rent(DefaultBufferSize);
             }
 
             buffer = buf;
@@ -58,7 +66,7 @@ namespace Cysharp.Text
 
         public void Dispose()
         {
-            if (buffer.Length != DefaultBufferSize)
+            if (buffer.Length != ThreadStaticBufferSize)
             {
                 ArrayPool<char>.Shared.Return(buffer);
             }
@@ -85,7 +93,7 @@ namespace Cysharp.Text
             var newBuffer = ArrayPool<char>.Shared.Rent(nextSize);
 
             buffer.CopyTo(newBuffer, 0);
-            if (buffer.Length != DefaultBufferSize)
+            if (buffer.Length != ThreadStaticBufferSize)
             {
                 ArrayPool<char>.Shared.Return(buffer);
             }

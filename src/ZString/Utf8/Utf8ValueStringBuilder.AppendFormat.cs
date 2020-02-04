@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Buffers;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf8ValueStringBuilder
+    public partial struct Utf8ValueStringBuilder
     {
         public void AppendFormat<T0>(string format, T0 arg0)
         {
@@ -37,14 +38,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -58,6 +60,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -114,14 +127,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -131,10 +145,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -148,6 +162,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -204,14 +229,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -221,10 +247,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -234,10 +260,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -251,6 +277,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -307,14 +344,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -324,10 +362,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -337,10 +375,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -350,10 +388,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -367,6 +405,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -423,14 +472,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -440,10 +490,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -453,10 +503,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -466,10 +516,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -479,10 +529,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -496,6 +546,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -552,14 +613,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -569,10 +631,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -582,10 +644,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -595,10 +657,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -608,10 +670,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -621,10 +683,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -638,6 +700,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -694,14 +767,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -711,10 +785,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -724,10 +798,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -737,10 +811,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -750,10 +824,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -763,10 +837,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -776,10 +850,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -793,6 +867,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -849,14 +934,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -866,10 +952,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -879,10 +965,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -892,10 +978,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -905,10 +991,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -918,10 +1004,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -931,10 +1017,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -944,10 +1030,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -961,6 +1047,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1017,14 +1114,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -1034,10 +1132,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -1047,10 +1145,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -1060,10 +1158,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -1073,10 +1171,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -1086,10 +1184,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -1099,10 +1197,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -1112,10 +1210,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -1125,10 +1223,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -1142,6 +1240,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1198,14 +1307,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -1215,10 +1325,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -1228,10 +1338,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -1241,10 +1351,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -1254,10 +1364,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -1267,10 +1377,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -1280,10 +1390,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -1293,10 +1403,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -1306,10 +1416,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -1319,10 +1429,10 @@ namespace Cysharp.Text
                             }
                         case 9:
                             {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg9));
                                     }
@@ -1336,6 +1446,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1392,14 +1513,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -1409,10 +1531,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -1422,10 +1544,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -1435,10 +1557,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -1448,10 +1570,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -1461,10 +1583,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -1474,10 +1596,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -1487,10 +1609,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -1500,10 +1622,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -1513,10 +1635,10 @@ namespace Cysharp.Text
                             }
                         case 9:
                             {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg9));
                                     }
@@ -1526,10 +1648,10 @@ namespace Cysharp.Text
                             }
                         case 10:
                             {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg10));
                                     }
@@ -1543,6 +1665,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1599,14 +1732,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -1616,10 +1750,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -1629,10 +1763,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -1642,10 +1776,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -1655,10 +1789,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -1668,10 +1802,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -1681,10 +1815,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -1694,10 +1828,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -1707,10 +1841,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -1720,10 +1854,10 @@ namespace Cysharp.Text
                             }
                         case 9:
                             {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg9));
                                     }
@@ -1733,10 +1867,10 @@ namespace Cysharp.Text
                             }
                         case 10:
                             {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg10));
                                     }
@@ -1746,10 +1880,10 @@ namespace Cysharp.Text
                             }
                         case 11:
                             {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg11));
                                     }
@@ -1763,6 +1897,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -1819,14 +1964,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -1836,10 +1982,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -1849,10 +1995,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -1862,10 +2008,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -1875,10 +2021,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -1888,10 +2034,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -1901,10 +2047,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -1914,10 +2060,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -1927,10 +2073,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -1940,10 +2086,10 @@ namespace Cysharp.Text
                             }
                         case 9:
                             {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg9));
                                     }
@@ -1953,10 +2099,10 @@ namespace Cysharp.Text
                             }
                         case 10:
                             {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg10));
                                     }
@@ -1966,10 +2112,10 @@ namespace Cysharp.Text
                             }
                         case 11:
                             {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg11));
                                     }
@@ -1979,10 +2125,10 @@ namespace Cysharp.Text
                             }
                         case 12:
                             {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg12));
                                     }
@@ -1996,6 +2142,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -2052,14 +2209,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -2069,10 +2227,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -2082,10 +2240,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -2095,10 +2253,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -2108,10 +2266,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -2121,10 +2279,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -2134,10 +2292,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -2147,10 +2305,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -2160,10 +2318,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -2173,10 +2331,10 @@ namespace Cysharp.Text
                             }
                         case 9:
                             {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg9));
                                     }
@@ -2186,10 +2344,10 @@ namespace Cysharp.Text
                             }
                         case 10:
                             {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg10));
                                     }
@@ -2199,10 +2357,10 @@ namespace Cysharp.Text
                             }
                         case 11:
                             {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg11));
                                     }
@@ -2212,10 +2370,10 @@ namespace Cysharp.Text
                             }
                         case 12:
                             {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg12));
                                     }
@@ -2225,10 +2383,10 @@ namespace Cysharp.Text
                             }
                         case 13:
                             {
-                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg13));
                                     }
@@ -2242,6 +2400,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -2298,14 +2467,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -2315,10 +2485,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -2328,10 +2498,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -2341,10 +2511,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -2354,10 +2524,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -2367,10 +2537,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -2380,10 +2550,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -2393,10 +2563,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -2406,10 +2576,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -2419,10 +2589,10 @@ namespace Cysharp.Text
                             }
                         case 9:
                             {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg9));
                                     }
@@ -2432,10 +2602,10 @@ namespace Cysharp.Text
                             }
                         case 10:
                             {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg10));
                                     }
@@ -2445,10 +2615,10 @@ namespace Cysharp.Text
                             }
                         case 11:
                             {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg11));
                                     }
@@ -2458,10 +2628,10 @@ namespace Cysharp.Text
                             }
                         case 12:
                             {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg12));
                                     }
@@ -2471,10 +2641,10 @@ namespace Cysharp.Text
                             }
                         case 13:
                             {
-                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg13));
                                     }
@@ -2484,10 +2654,10 @@ namespace Cysharp.Text
                             }
                         case 14:
                             {
-                                if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg14));
                                     }
@@ -2501,6 +2671,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:
@@ -2557,14 +2738,15 @@ namespace Cysharp.Text
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
                             {
-                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T0>.TryFormatDelegate(arg0, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg0));
                                     }
@@ -2574,10 +2756,10 @@ namespace Cysharp.Text
                             }
                         case 1:
                             {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg1));
                                     }
@@ -2587,10 +2769,10 @@ namespace Cysharp.Text
                             }
                         case 2:
                             {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg2));
                                     }
@@ -2600,10 +2782,10 @@ namespace Cysharp.Text
                             }
                         case 3:
                             {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg3));
                                     }
@@ -2613,10 +2795,10 @@ namespace Cysharp.Text
                             }
                         case 4:
                             {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg4));
                                     }
@@ -2626,10 +2808,10 @@ namespace Cysharp.Text
                             }
                         case 5:
                             {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg5));
                                     }
@@ -2639,10 +2821,10 @@ namespace Cysharp.Text
                             }
                         case 6:
                             {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg6));
                                     }
@@ -2652,10 +2834,10 @@ namespace Cysharp.Text
                             }
                         case 7:
                             {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg7));
                                     }
@@ -2665,10 +2847,10 @@ namespace Cysharp.Text
                             }
                         case 8:
                             {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg8));
                                     }
@@ -2678,10 +2860,10 @@ namespace Cysharp.Text
                             }
                         case 9:
                             {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg9));
                                     }
@@ -2691,10 +2873,10 @@ namespace Cysharp.Text
                             }
                         case 10:
                             {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg10));
                                     }
@@ -2704,10 +2886,10 @@ namespace Cysharp.Text
                             }
                         case 11:
                             {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg11));
                                     }
@@ -2717,10 +2899,10 @@ namespace Cysharp.Text
                             }
                         case 12:
                             {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg12));
                                     }
@@ -2730,10 +2912,10 @@ namespace Cysharp.Text
                             }
                         case 13:
                             {
-                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg13));
                                     }
@@ -2743,10 +2925,10 @@ namespace Cysharp.Text
                             }
                         case 14:
                             {
-                                if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg14));
                                     }
@@ -2756,10 +2938,10 @@ namespace Cysharp.Text
                             }
                         case 15:
                             {
-                                if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out var written, default))
+                                if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow();
-                                    if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out written, default))
+                                    if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg15));
                                     }
@@ -2773,6 +2955,17 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
+                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                    }
                 }
 
                 NEXT_LOOP:

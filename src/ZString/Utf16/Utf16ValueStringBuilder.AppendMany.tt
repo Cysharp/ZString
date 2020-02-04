@@ -25,7 +25,7 @@ using System;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf16ValueStringBuilder
+    public partial struct Utf16ValueStringBuilder
     {
 <# for(var i = 2; i <= 16; i++) { #>
         public void AppendMany<<#= CreateTypeArgument(i) #>>(<#= CreateParameters(i) #>)

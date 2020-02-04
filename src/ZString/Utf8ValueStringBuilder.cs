@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf8ValueStringBuilder
+    public partial struct Utf8ValueStringBuilder : IDisposable
     {
         public delegate bool TryFormat<T>(T value, Span<byte> destination, out int written, StandardFormat format);
 
+        const int ThreadStaticBufferSize = 64444;
         const int DefaultBufferSize = 65536; // use 64K default buffer.
         static Encoding UTF8NoBom = new UTF8Encoding(false);
 
@@ -45,12 +46,20 @@ namespace Cysharp.Text
         public int Length => index;
         public ReadOnlySpan<byte> AsSpan() => buffer.AsSpan(0, index);
 
-        internal void Init()
+        internal void Init(bool disposeImmediately)
         {
-            var buf = scratchBuffer;
-            if (buf == null)
+            byte[] buf;
+            if (disposeImmediately)
             {
-                buf = scratchBuffer = new byte[DefaultBufferSize];
+                buf = scratchBuffer;
+                if (buf == null)
+                {
+                    buf = scratchBuffer = new byte[ThreadStaticBufferSize];
+                }
+            }
+            else
+            {
+                buf = ArrayPool<byte>.Shared.Rent(DefaultBufferSize);
             }
 
             buffer = buf;
@@ -59,7 +68,7 @@ namespace Cysharp.Text
 
         public void Dispose()
         {
-            if (buffer.Length != DefaultBufferSize)
+            if (buffer.Length != ThreadStaticBufferSize)
             {
                 ArrayPool<byte>.Shared.Return(buffer);
             }
@@ -86,7 +95,7 @@ namespace Cysharp.Text
             var newBuffer = ArrayPool<byte>.Shared.Rent(nextSize);
 
             buffer.CopyTo(newBuffer, 0);
-            if (buffer.Length != DefaultBufferSize)
+            if (buffer.Length != ThreadStaticBufferSize)
             {
                 ArrayPool<byte>.Shared.Return(buffer);
             }

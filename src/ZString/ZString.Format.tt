@@ -32,7 +32,8 @@ namespace Cysharp.Text
 <# for(var i = 1; i <= 16; i++) { #>
         public static string Format<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
         {
-            var sb = CreateStringBuilder();
+            var sb = new Utf16ValueStringBuilder();
+            sb.Init(true);
             try
             {
                 sb.AppendFormat(format, <#= CreateParameterNames(i) #>);

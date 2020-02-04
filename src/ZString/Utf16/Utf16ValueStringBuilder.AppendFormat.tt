@@ -25,7 +25,7 @@ using System;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf16ValueStringBuilder
+    public partial struct Utf16ValueStringBuilder
     {
 <# for(var i = 1; i <= 16; i++) { #>
         public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
@@ -86,6 +86,19 @@ namespace Cysharp.Text
                     }
 
                     ThrowFormatException();
+                }
+                else if (format[i] == '}')
+                {
+                    if (i != format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        TryGrow(size);
+                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
+                        index += size;
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
                 }
 
                 NEXT_LOOP:

@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
-    public ref partial struct Utf8ValueStringBuilder
+    public partial struct Utf8ValueStringBuilder
     {        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(System.Byte value)
