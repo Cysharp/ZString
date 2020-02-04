@@ -18,12 +18,12 @@ jobs:
     steps:
       - checkout
       - run: dotnet build src/ZString -c Debug
-      - run: dotnet dotnet test tests/ZString.Tests -c Debug < /dev/null
+      - run: dotnet test tests/ZString.Tests -c Debug < /dev/null
   test-netcore2:
     executor: dotnet2
     steps:
       - checkout
-      - run: dotnet dotnet test tests/ZString.NetCore2Tests -c Debug < /dev/null
+      - run: dotnet test tests/ZString.NetCore2Tests -c Debug < /dev/null
   build-push:
     executor: dotnet
     steps:
