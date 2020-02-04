@@ -11,6 +11,8 @@ Getting Started(Unity, with TextMeshPro)
 Check the [releases](https://github.com/Cysharp/ZString/releases) page, download `ZString.Unity.unitypackage`.
 
 ```csharp
+using Cysharp.Text; // namespace
+
 TextMeshProUGUI text; // TMP_Text
 int count = 0;
 
