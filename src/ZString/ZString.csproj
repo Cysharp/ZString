@@ -23,9 +23,15 @@
 
     <ItemGroup>
         <Compile Remove="Shims\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
+        <Compile Remove="Unity\**\**" />
+        <None Remove="Unity\**\**" />
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="Unity\TextMeshProExtensions.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>TextMeshProExtensions.cs</LastGenOutput>
+        </None>
         <None Update="Utf16\Utf16ValueStringBuilder.AppendMany.tt">
             <LastGenOutput>Utf16ValueStringBuilder.AppendMany.cs</LastGenOutput>
             <Generator>TextTemplatingFileGenerator</Generator>
@@ -115,4 +121,15 @@
     <ItemGroup>
         <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
     </ItemGroup>
+
+    <!-- Copy files for Unity -->
+    <PropertyGroup>
+        <DestinationRoot>$(ProjectDir)..\ZString.Unity\Assets\Scripts\ZString\</DestinationRoot>
+    </PropertyGroup>
+    <ItemGroup>
+        <TargetFiles1 Include="$(ProjectDir)\**\*.cs" Exclude="**\bin\**\*.*;**\obj\**\*.*;_InternalVisibleTo.cs" />
+    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Copy SourceFiles="@(TargetFiles1)" DestinationFiles="$(DestinationRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
+    </Target>
 </Project>
