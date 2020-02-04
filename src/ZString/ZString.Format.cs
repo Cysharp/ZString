@@ -6,7 +6,7 @@ namespace Cysharp.Text
 {
     public static partial class ZString
     {
-        public static string Format<T0>(ReadOnlySpan<char> format, T0 arg0)
+        public static string Format<T0>(string format, T0 arg0)
         {
             var sb = CreateStringBuilder();
             try
@@ -20,7 +20,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1>(ReadOnlySpan<char> format, T0 arg0, T1 arg1)
+        public static string Format<T0, T1>(string format, T0 arg0, T1 arg1)
         {
             var sb = CreateStringBuilder();
             try
@@ -34,7 +34,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2)
+        public static string Format<T0, T1, T2>(string format, T0 arg0, T1 arg1, T2 arg2)
         {
             var sb = CreateStringBuilder();
             try
@@ -48,7 +48,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
+        public static string Format<T0, T1, T2, T3>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
         {
             var sb = CreateStringBuilder();
             try
@@ -62,7 +62,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        public static string Format<T0, T1, T2, T3, T4>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             var sb = CreateStringBuilder();
             try
@@ -76,7 +76,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+        public static string Format<T0, T1, T2, T3, T4, T5>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         {
             var sb = CreateStringBuilder();
             try
@@ -90,7 +90,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
         {
             var sb = CreateStringBuilder();
             try
@@ -104,7 +104,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
         {
             var sb = CreateStringBuilder();
             try
@@ -118,7 +118,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
         {
             var sb = CreateStringBuilder();
             try
@@ -132,7 +132,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
         {
             var sb = CreateStringBuilder();
             try
@@ -146,7 +146,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
         {
             var sb = CreateStringBuilder();
             try
@@ -160,7 +160,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
         {
             var sb = CreateStringBuilder();
             try
@@ -174,7 +174,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
         {
             var sb = CreateStringBuilder();
             try
@@ -188,7 +188,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
         {
             var sb = CreateStringBuilder();
             try
@@ -202,7 +202,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
         {
             var sb = CreateStringBuilder();
             try
@@ -216,7 +216,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(ReadOnlySpan<char> format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
+        public static string Format<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
         {
             var sb = CreateStringBuilder();
             try

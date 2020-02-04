@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
         <RootNamespace>Cysharp.Text</RootNamespace>
-
+        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
         <!-- NuGet Packaging -->
         <PackageVersion>$(Version)</PackageVersion>
         <Company>Cysharp</Company>
@@ -19,6 +19,10 @@
 
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.3" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="Shims\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
     </ItemGroup>
 
     <ItemGroup>

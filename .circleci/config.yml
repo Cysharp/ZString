@@ -6,19 +6,31 @@ executors:
     environment:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
       NUGET_XMLDOC_MODE: skip
+  dotnet2:
+    docker:
+      - image: mcr.microsoft.com/dotnet/core/sdk:2.1
+    environment:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      NUGET_XMLDOC_MODE: skip
 jobs:
   build-test:
     executor: dotnet
     steps:
       - checkout
-      - run: dotnet build -c Debug
-      - run: dotnet test -c Debug --no-build < /dev/null
+      - run: dotnet build src/ZString -c Debug
+      - run: dotnet dotnet test tests/ZString.Tests -c Debug < /dev/null
+  test-netcore2:
+    executor: dotnet2
+    steps:
+      - checkout
+      - run: dotnet dotnet test tests/ZString.NetCore2Tests -c Debug < /dev/null
   build-push:
     executor: dotnet
     steps:
       - checkout
-      - run: dotnet build -c Release -p:Version=${CIRCLE_TAG}
-      - run: dotnet test -c Release --no-build < /dev/null
+      - run: dotnet build src/ZString -c Release -p:Version=${CIRCLE_TAG}
+      - run: dotnet build tests/ZString.Tests -c Release -p:Version=${CIRCLE_TAG}
+      - run: dotnet test tests/ZString.Tests -c Release --no-build < /dev/null
       - run: dotnet pack ./src/ZString/ZString.csproj -c Release --no-build -p:Version=${CIRCLE_TAG}
       - store_artifacts:
           path: src/ZString/bin/Release/
@@ -26,9 +38,13 @@ jobs:
       - run: dotnet nuget push ./src/ZString/bin/Release/ZString.${CIRCLE_TAG}.nupkg -s https://www.nuget.org/api/v2/package -k ${NUGET_KEY}
 workflows:
   version: 2
-  build-and-push:
+  default-pipeline:
     jobs:
       - build-test:
+          filters:
+            tags:
+              only: /.*/
+      - test-netcore2:
           filters:
             tags:
               only: /.*/
