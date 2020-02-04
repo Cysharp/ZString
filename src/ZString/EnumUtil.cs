@@ -12,13 +12,14 @@ namespace Cysharp.Text
 
         static EnumUtil()
         {
-            var names = Enum.GetNames(typeof(T));
+            var enumNames = Enum.GetNames(typeof(T));
             var values = Enum.GetValues(typeof(T));
-            var dict = new Dictionary<T, string>(names.Length);
-            for (int i = 0; i < names.Length; i++)
+            names = new Dictionary<T, string>(enumNames.Length);
+            utf8names = new Dictionary<T, byte[]>(enumNames.Length);
+            for (int i = 0; i < enumNames.Length; i++)
             {
-                dict.Add((T)values.GetValue(i), names[i]);
-                utf8names.Add((T)values.GetValue(i), Encoding.UTF8.GetBytes(names[i]));
+                names.Add((T)values.GetValue(i), enumNames[i]);
+                utf8names.Add((T)values.GetValue(i), Encoding.UTF8.GetBytes(enumNames[i]));
             }
         }
 

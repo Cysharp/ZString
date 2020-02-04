@@ -8,7 +8,7 @@ namespace Cysharp.Text
     public ref partial struct Utf8ValueStringBuilder
     {        
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Byte value)
+        public void Append(System.Byte value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -22,7 +22,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Byte value, StandardFormat format)
+        public void Append(System.Byte value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -36,7 +36,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(DateTime value)
+        public void Append(System.DateTime value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -50,7 +50,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(DateTime value, StandardFormat format)
+        public void Append(System.DateTime value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -64,7 +64,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(DateTimeOffset value)
+        public void Append(System.DateTimeOffset value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -78,7 +78,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(DateTimeOffset value, StandardFormat format)
+        public void Append(System.DateTimeOffset value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -92,7 +92,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Decimal value)
+        public void Append(System.Decimal value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -106,7 +106,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Decimal value, StandardFormat format)
+        public void Append(System.Decimal value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -120,7 +120,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Double value)
+        public void Append(System.Double value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -134,7 +134,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Double value, StandardFormat format)
+        public void Append(System.Double value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -148,7 +148,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Int16 value)
+        public void Append(System.Int16 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -162,7 +162,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Int16 value, StandardFormat format)
+        public void Append(System.Int16 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -176,7 +176,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Int32 value)
+        public void Append(System.Int32 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -190,7 +190,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Int32 value, StandardFormat format)
+        public void Append(System.Int32 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -204,7 +204,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Int64 value)
+        public void Append(System.Int64 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -218,7 +218,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Int64 value, StandardFormat format)
+        public void Append(System.Int64 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -232,7 +232,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(SByte value)
+        public void Append(System.SByte value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -246,7 +246,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(SByte value, StandardFormat format)
+        public void Append(System.SByte value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -260,7 +260,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Single value)
+        public void Append(System.Single value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -274,7 +274,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Single value, StandardFormat format)
+        public void Append(System.Single value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -288,7 +288,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(TimeSpan value)
+        public void Append(System.TimeSpan value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -302,7 +302,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(TimeSpan value, StandardFormat format)
+        public void Append(System.TimeSpan value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -316,7 +316,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(UInt16 value)
+        public void Append(System.UInt16 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -330,7 +330,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(UInt16 value, StandardFormat format)
+        public void Append(System.UInt16 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -344,7 +344,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(UInt32 value)
+        public void Append(System.UInt32 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -358,7 +358,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(UInt32 value, StandardFormat format)
+        public void Append(System.UInt32 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -372,7 +372,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(UInt64 value)
+        public void Append(System.UInt64 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -386,7 +386,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(UInt64 value, StandardFormat format)
+        public void Append(System.UInt64 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -400,7 +400,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Guid value)
+        public void Append(System.Guid value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -414,7 +414,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(Guid value, StandardFormat format)
+        public void Append(System.Guid value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {

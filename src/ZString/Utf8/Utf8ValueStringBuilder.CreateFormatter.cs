@@ -8,65 +8,65 @@ namespace Cysharp.Text
     {
         static object CreateFormatter(Type type)
         {
-            if (type == typeof(Byte))
+            if (type == typeof(System.Byte))
             {
-                return new TryFormat<Byte>((Byte x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Byte>((System.Byte x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(DateTime))
+            if (type == typeof(System.DateTime))
             {
-                return new TryFormat<DateTime>((DateTime x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.DateTime>((System.DateTime x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(DateTimeOffset))
+            if (type == typeof(System.DateTimeOffset))
             {
-                return new TryFormat<DateTimeOffset>((DateTimeOffset x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.DateTimeOffset>((System.DateTimeOffset x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(Decimal))
+            if (type == typeof(System.Decimal))
             {
-                return new TryFormat<Decimal>((Decimal x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Decimal>((System.Decimal x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(Double))
+            if (type == typeof(System.Double))
             {
-                return new TryFormat<Double>((Double x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Double>((System.Double x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(Guid))
+            if (type == typeof(System.Guid))
             {
-                return new TryFormat<Guid>((Guid x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Guid>((System.Guid x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(Int16))
+            if (type == typeof(System.Int16))
             {
-                return new TryFormat<Int16>((Int16 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Int16>((System.Int16 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(Int32))
+            if (type == typeof(System.Int32))
             {
-                return new TryFormat<Int32>((Int32 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Int32>((System.Int32 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(Int64))
+            if (type == typeof(System.Int64))
             {
-                return new TryFormat<Int64>((Int64 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Int64>((System.Int64 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(SByte))
+            if (type == typeof(System.SByte))
             {
-                return new TryFormat<SByte>((SByte x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.SByte>((System.SByte x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(Single))
+            if (type == typeof(System.Single))
             {
-                return new TryFormat<Single>((Single x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.Single>((System.Single x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(TimeSpan))
+            if (type == typeof(System.TimeSpan))
             {
-                return new TryFormat<TimeSpan>((TimeSpan x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.TimeSpan>((System.TimeSpan x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(UInt16))
+            if (type == typeof(System.UInt16))
             {
-                return new TryFormat<UInt16>((UInt16 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.UInt16>((System.UInt16 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(UInt32))
+            if (type == typeof(System.UInt32))
             {
-                return new TryFormat<UInt32>((UInt32 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.UInt32>((System.UInt32 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(UInt64))
+            if (type == typeof(System.UInt64))
             {
-                return new TryFormat<UInt64>((UInt64 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+                return new TryFormat<System.UInt64>((System.UInt64 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
 
             return null;

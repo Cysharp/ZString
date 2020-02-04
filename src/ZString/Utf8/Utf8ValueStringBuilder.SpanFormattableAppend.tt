@@ -36,7 +36,7 @@ namespace Cysharp.Text
     {        
 <# foreach(var t in spanFormattables) { #>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(<#= t.Name #> value)
+        public void Append(<#= t.FullName #> value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -50,7 +50,7 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(<#= t.Name #> value, StandardFormat format)
+        public void Append(<#= t.FullName #> value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {

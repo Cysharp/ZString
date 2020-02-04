@@ -34,9 +34,9 @@ namespace Cysharp.Text
         static object CreateFormatter(Type type)
         {
 <# foreach(var t in spanFormattables) { #>
-            if (type == typeof(<#= t.Name #>))
+            if (type == typeof(<#= t.FullName #>))
             {
-                return new TryFormat<<#= t.Name #>>((<#= t.Name #> x, Span<char> dest, out int written, ReadOnlySpan<char> format) => x.TryFormat(dest, out written, format));
+                return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<char> dest, out int written, ReadOnlySpan<char> format) => x.TryFormat(dest, out written, format));
             }
 <# } #>
 

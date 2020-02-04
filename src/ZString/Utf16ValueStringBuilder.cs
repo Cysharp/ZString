@@ -6,7 +6,7 @@ namespace Cysharp.Text
 {
     public ref partial struct Utf16ValueStringBuilder
     {
-        delegate bool TryFormat<T>(T value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
+        public delegate bool TryFormat<T>(T value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
 
         const int DefaultBufferSize = 32768; // use 32K default buffer.
 
@@ -40,6 +40,9 @@ namespace Cysharp.Text
 
         public int Length => index;
         public ReadOnlySpan<char> AsSpan() => buffer.AsSpan(0, index);
+        public ReadOnlyMemory<char> AsMemory() => buffer.AsMemory(0, index);
+        public ArraySegment<char> AsArraySegment() => new ArraySegment<char>(buffer, 0, index);
+
 
         internal void Init()
         {
@@ -191,6 +194,11 @@ namespace Cysharp.Text
         void ThrowFormatException()
         {
             throw new FormatException("Index (zero based) must be greater than or equal to zero and less than the size of the argument list.");
+        }
+
+        public static void RegisterTryFormat<T>(TryFormat<T> formatMethod)
+        {
+            FormatterCache<T>.TryFormatDelegate = formatMethod;
         }
 
         static class FormatterCache<T>

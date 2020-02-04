@@ -32,7 +32,7 @@ namespace Cysharp.Text
                 {
                     if (index == -1)
                     {
-                        index = int.Parse(format.Slice(1, i - 1));
+                        index = Int32.Parse(format.Slice(1, i - 1));
                         return new ParseResult(index, default, i);
                     }
                     else
@@ -44,7 +44,7 @@ namespace Cysharp.Text
 
                 if (index == -1 && format[i] == ',' || format[i] == ':')
                 {
-                    index = int.Parse(format.Slice(1, i - 1));
+                    index = Int32.Parse(format.Slice(1, i - 1));
                     formatStart = i + 1;
                 }
             }

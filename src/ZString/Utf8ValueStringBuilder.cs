@@ -9,7 +9,7 @@ namespace Cysharp.Text
 {
     public ref partial struct Utf8ValueStringBuilder
     {
-        delegate bool TryFormat<T>(T value, Span<byte> destination, out int written, StandardFormat format);
+        public delegate bool TryFormat<T>(T value, Span<byte> destination, out int written, StandardFormat format);
 
         const int DefaultBufferSize = 65536; // use 64K default buffer.
         static Encoding UTF8NoBom = new UTF8Encoding(false);
@@ -202,6 +202,11 @@ namespace Cysharp.Text
             throw new FormatException("Index (zero based) must be greater than or equal to zero and less than the size of the argument list.");
         }
 
+        public static void RegisterTryFormat<T>(TryFormat<T> formatMethod)
+        {
+            FormatterCache<T>.TryFormatDelegate = formatMethod;
+        }
+
         static class FormatterCache<T>
         {
             public static TryFormat<T> TryFormatDelegate;
@@ -240,7 +245,7 @@ namespace Cysharp.Text
                     return false;
                 }
 
-                written = UTF8NoBom.GetBytes(s, dest);
+                written = UTF8NoBom.GetBytes(s.AsSpan(), dest);
                 return true;
 
             }
