@@ -22,7 +22,7 @@ void Update()
 
 SetTextFormat is extension method of `TMP_Text`, there parameter is generics so can avoid boxing, and ZString writes to buffer directly without any ToString allocation. Finally inner buffer copy to `TextMeshPro` buffer so avoid all string allocations.
 
-```
+```csharp
 public static void SetTextFormat<T0>(this TMP_Text text, string format, T0 arg0)
 public static void SetTextFormat<T0, T1>(this TMP_Text text, string format, T0 arg0, T1 arg1)
 // ...
