@@ -106,10 +106,10 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - test-netcore2:
-          filters:
-            tags:
-              only: /.*/
+#      - test-netcore2:
+#          filters:
+#            tags:
+#              only: /.*/
       - build-push:
           filters:
             tags:
