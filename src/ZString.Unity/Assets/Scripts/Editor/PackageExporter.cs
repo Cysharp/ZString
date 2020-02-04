@@ -14,7 +14,7 @@ public static class PackageExporter
         // configure
         var root = "Scripts/ZString";
         var fileName = string.IsNullOrEmpty(version) ? "ZString.Unity.unitypackage" : $"ZString.Unity.{version}.unitypackage";
-        var exportPath = "../../bin/" + fileName;
+        var exportPath = "./" + fileName;
 
         var path = Path.Combine(Application.dataPath, root);
         var assets = Directory.EnumerateFiles(path, "*", SearchOption.AllDirectories)
