@@ -16,7 +16,7 @@ int count = 0;
 
 void Update()
 {
-    label.SetTextFormat("Damage: {0}", count++);
+    text.SetTextFormat("Damage: {0}", count++);
 }
 ```
 
