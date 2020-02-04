@@ -37,8 +37,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -117,8 +117,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -210,8 +210,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -316,8 +316,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -435,8 +435,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -567,8 +567,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -712,8 +712,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -870,8 +870,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -1041,8 +1041,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -1225,8 +1225,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -1422,8 +1422,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -1632,8 +1632,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -1855,8 +1855,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -2091,8 +2091,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -2340,8 +2340,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
@@ -2602,8 +2602,8 @@ namespace Cysharp.Text
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.Slice(i));
-                    copyFrom = indexParse.LastIndex + 1;
-                    i = indexParse.LastIndex;
+                    copyFrom = i + indexParse.LastIndex + 1;
+                    i = i + indexParse.LastIndex;
                     switch (indexParse.Index)
                     {
                         case 0:
