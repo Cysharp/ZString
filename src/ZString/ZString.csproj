@@ -124,7 +124,7 @@
 
     <!-- Copy files for Unity -->
     <PropertyGroup>
-        <DestinationRoot>$(MSBuildProjectDirectory)..\ZString.Unity\Assets\Scripts\ZString\</DestinationRoot>
+        <DestinationRoot>$(MSBuildProjectDirectory)\..\ZString.Unity\Assets\Scripts\ZString\</DestinationRoot>
     </PropertyGroup>
     <ItemGroup>
         <TargetFiles1 Include="$(MSBuildProjectDirectory)\**\*.cs" Exclude="**\bin\**\*.*;**\obj\**\*.*;_InternalVisibleTo.cs" />
