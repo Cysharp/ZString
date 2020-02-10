@@ -17,15 +17,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sandbox", "sandbox", "{A7D7
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0803618F-C4E8-4D37-831E-5D26C5574F49}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZString", "src\ZString\ZString.csproj", "{7B09D422-D19A-457E-ADA0-4CDC2DC581BB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZString", "src\ZString\ZString.csproj", "{7B09D422-D19A-457E-ADA0-4CDC2DC581BB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp", "sandbox\ConsoleApp\ConsoleApp.csproj", "{9ADF67E1-1872-43D3-882E-607071726FE7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "sandbox\ConsoleApp\ConsoleApp.csproj", "{9ADF67E1-1872-43D3-882E-607071726FE7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZString.Tests", "tests\ZString.Tests\ZString.Tests.csproj", "{62090C00-9727-4375-BE40-ABE2F4D41571}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZString.Tests", "tests\ZString.Tests\ZString.Tests.csproj", "{62090C00-9727-4375-BE40-ABE2F4D41571}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppNet472", "sandbox\ConsoleAppNet472\ConsoleAppNet472.csproj", "{BE8A17AA-504A-410D-B86D-92431B0F5594}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZString.NetCore2Tests", "tests\ZString.NetCore2Tests\ZString.NetCore2Tests.csproj", "{62C44156-F55C-4006-B9A2-108DAB340FAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerfBenchmark", "sandbox\PerfBenchmark\PerfBenchmark.csproj", "{D766AEB3-3609-4F1D-8D81-5549F748F372}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,6 +55,10 @@ Global
 		{62C44156-F55C-4006-B9A2-108DAB340FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62C44156-F55C-4006-B9A2-108DAB340FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62C44156-F55C-4006-B9A2-108DAB340FAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -63,6 +69,7 @@ Global
 		{62090C00-9727-4375-BE40-ABE2F4D41571} = {0803618F-C4E8-4D37-831E-5D26C5574F49}
 		{BE8A17AA-504A-410D-B86D-92431B0F5594} = {A7D7AA7D-9A79-48A8-978D-0C98EBD81ED0}
 		{62C44156-F55C-4006-B9A2-108DAB340FAC} = {0803618F-C4E8-4D37-831E-5D26C5574F49}
+		{D766AEB3-3609-4F1D-8D81-5549F748F372} = {A7D7AA7D-9A79-48A8-978D-0C98EBD81ED0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF39BF43-3E0E-4F7D-9943-7E50D301234D}

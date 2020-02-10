@@ -46,7 +46,8 @@ namespace Cysharp.Text
         public int Length => index;
         public ReadOnlySpan<byte> AsSpan() => buffer.AsSpan(0, index);
 
-        internal void Init(bool disposeImmediately)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Utf8ValueStringBuilder(bool disposeImmediately)
         {
             byte[] buf;
             if (disposeImmediately)
@@ -66,6 +67,7 @@ namespace Cysharp.Text
             index = 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             if (buffer.Length != ThreadStaticBufferSize)
@@ -120,6 +122,29 @@ namespace Cysharp.Text
                 index += 1;
             }
         }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void Append(char value)
+        {
+            var maxLen = UTF8NoBom.GetMaxByteCount(1);
+            if (buffer.Length - index < maxLen)
+            {
+                Grow(maxLen);
+            }
+
+            fixed (byte* bp = &buffer[index])
+            {
+                index += UTF8NoBom.GetBytes(&value, 1, bp, maxLen);
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendLine(char value)
+        {
+            Append(value);
+            AppendNewLine();
+        }
+
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)

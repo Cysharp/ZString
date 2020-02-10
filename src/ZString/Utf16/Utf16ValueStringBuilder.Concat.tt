@@ -1,0 +1,86 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#
+    static string CreateTypeArgument(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x));
+    }
+
+    static string CreateParameters(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
+    }
+
+
+    static string CreateParameterNames(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
+    }
+#>
+using System;
+using System.Runtime.CompilerServices;
+
+namespace Cysharp.Text
+{
+    public partial struct Utf16ValueStringBuilder
+    {
+<# for(var i = 1; i <= 16; i++) { #>
+        public void Concat<<#= CreateTypeArgument(i) #>>(<#= CreateParameters(i) #>)
+        {
+<# for(var j = 0; j < i; j++) { #>
+            if (typeof(T<#= j #>) == typeof(string))
+            {
+                var s<#= j #> = Unsafe.As<T<#= j #>, string>(ref arg<#= j #>);
+                if (s<#= j #> != null)
+                {
+                    TryGrow(s<#= j #>.Length);
+                    s<#= j #>.AsSpan().TryCopyTo(buffer.AsSpan(index));
+                    index += s<#= j#>.Length;
+                }
+            }
+            else if (typeof(T<#= j #>) == typeof(int))
+            {
+                int written = 0;
+
+                var i<#= j #> = Unsafe.As<T<#= j #>, int>(ref arg<#= j #>);
+                if (!FastNumberWriter.TryWriteInt64(buffer.AsSpan(index), out written, (long)i<#= j #>))
+                {
+                    Grow();
+                    if (!FastNumberWriter.TryWriteInt64(buffer.AsSpan(index), out written, (long)i<#= j #>))
+                    {
+                        ThrowArgumentException(nameof(arg<#= j #>));
+                    }
+                }
+                index += written;
+            }
+            else
+            {
+                int written = 0;
+
+                if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out written, default))
+                {
+                    Grow(written);
+                    if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out written, default))
+                    {
+                        ThrowArgumentException(nameof(arg<#= j #>));
+                    }
+                }
+                index += written;
+            }
+
+<# } #>
+        }
+
+        public void ConcatLine<<#= CreateTypeArgument(i) #>>(<#= CreateParameters(i) #>)
+        {
+            Concat(<#= CreateParameterNames(i) #>);
+            AppendNewLine();
+        }
+
+<# } #>
+    }
+}

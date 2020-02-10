@@ -44,7 +44,8 @@ namespace Cysharp.Text
         public ReadOnlyMemory<char> AsMemory() => buffer.AsMemory(0, index);
         public ArraySegment<char> AsArraySegment() => new ArraySegment<char>(buffer, 0, index);
 
-        internal void Init(bool disposeImmediately)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public Utf16ValueStringBuilder(bool disposeImmediately)
         {
             char[] buf;
             if (disposeImmediately)
@@ -64,6 +65,7 @@ namespace Cysharp.Text
             index = 0;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             if (buffer.Length != ThreadStaticBufferSize)
@@ -71,6 +73,11 @@ namespace Cysharp.Text
                 ArrayPool<char>.Shared.Return(buffer);
             }
             buffer = null;
+            index = 0;
+        }
+
+        public void Clear()
+        {
             index = 0;
         }
 
@@ -117,6 +124,24 @@ namespace Cysharp.Text
                 buffer[index] = newLine1;
                 index += 1;
             }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(char value)
+        {
+            if (buffer.Length - index < 1)
+            {
+                Grow(1);
+            }
+
+            buffer[index++] = value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendLine(char value)
+        {
+            Append(value);
+            AppendNewLine();
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -209,7 +234,7 @@ namespace Cysharp.Text
             FormatterCache<T>.TryFormatDelegate = formatMethod;
         }
 
-        static class FormatterCache<T>
+        public static class FormatterCache<T>
         {
             public static TryFormat<T> TryFormatDelegate;
             static FormatterCache()
@@ -221,6 +246,10 @@ namespace Cysharp.Text
                     {
                         formatter = new TryFormat<T>(EnumUtil<T>.TryFormatUtf16);
                     }
+                    else if (typeof(T) == typeof(string))
+                    {
+                        formatter = new TryFormat<T>(TryFormatString);
+                    }
                     else
                     {
                         formatter = new TryFormat<T>(TryFormatDefault);
@@ -228,6 +257,21 @@ namespace Cysharp.Text
                 }
 
                 TryFormatDelegate = formatter;
+            }
+
+            static bool TryFormatString(T value, Span<char> dest, out int written, ReadOnlySpan<char> format)
+            {
+                var s = value as string;
+
+                if (s == null)
+                {
+                    written = 0;
+                    return true;
+                }
+
+                // also use this length when result is false.
+                written = s.Length;
+                return s.AsSpan().TryCopyTo(dest);
             }
 
             static bool TryFormatDefault(T value, Span<char> dest, out int written, ReadOnlySpan<char> format)

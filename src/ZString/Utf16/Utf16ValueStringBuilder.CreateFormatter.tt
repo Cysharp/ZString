@@ -5,24 +5,29 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
 <#
-    var spanFormattables = new Type[]
+    var spanFormattablesA = new Type[]
     {
-        typeof(Byte),
-        typeof(DateTime),
-        typeof(DateTimeOffset),
-        typeof(Decimal),
-        typeof(Double),
-        typeof(Guid),
+        typeof(SByte),
         typeof(Int16),
         typeof(Int32),
         typeof(Int64),
-        typeof(SByte),
-        typeof(Single),
-        typeof(TimeSpan),
+    };
+    var spanFormattablesB = new Type[]
+    {
+        typeof(Byte),
         typeof(UInt16),
         typeof(UInt32),
         typeof(UInt64),
-        // typeof(Version),
+    };
+    var spanFormattablesC = new Type[]
+    {
+        typeof(Single),
+        typeof(Double),
+        typeof(TimeSpan),
+        typeof(DateTime),
+        typeof(DateTimeOffset),
+        typeof(Decimal),
+        typeof(Guid),
     };
 #>
 using System;
@@ -33,7 +38,19 @@ namespace Cysharp.Text
     {
         static object CreateFormatter(Type type)
         {
-<# foreach(var t in spanFormattables) { #>
+<# foreach(var t in spanFormattablesA) { #>
+            if (type == typeof(<#= t.FullName #>))
+            {
+                return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<char> dest, out int written, ReadOnlySpan<char> format) => format.Length == 0 ? FastNumberWriter.TryWriteInt64(dest, out written, x) : x.TryFormat(dest, out written, format));
+            }
+<# } #>
+<# foreach(var t in spanFormattablesB) { #>
+            if (type == typeof(<#= t.FullName #>))
+            {
+                return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<char> dest, out int written, ReadOnlySpan<char> format) => format.Length == 0 ? FastNumberWriter.TryWriteUInt64(dest, out written, x) : x.TryFormat(dest, out written, format));
+            }
+<# } #>
+<# foreach(var t in spanFormattablesC) { #>
             if (type == typeof(<#= t.FullName #>))
             {
                 return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<char> dest, out int written, ReadOnlySpan<char> format) => x.TryFormat(dest, out written, format));

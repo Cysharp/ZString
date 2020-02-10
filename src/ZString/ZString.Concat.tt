@@ -29,12 +29,12 @@ namespace Cysharp.Text
     {
 <# for(var i = 1; i <= 16; i++) { #>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string Format<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
+        public static string Concat<<#= CreateTypeArgument(i) #>>(<#= CreateParameters(i) #>)
         {
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                sb.AppendFormat(format, <#= CreateParameterNames(i) #>);
+                sb.Concat(<#= CreateParameterNames(i) #>);
                 return sb.ToString();
             }
             finally
