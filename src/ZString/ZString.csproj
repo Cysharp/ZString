@@ -158,6 +158,7 @@
     </ItemGroup>
     <ItemGroup>
       <TargetFiles1 Remove="Number\FormattingHelpers.cs" />
+      <TargetFiles1 Remove="Shims.cs" />
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy SourceFiles="@(TargetFiles1)" DestinationFiles="$(DestinationRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
