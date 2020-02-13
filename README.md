@@ -7,7 +7,7 @@ ZString
 * Struct StringBuilder to avoid allocation of builder itself
 * Rent write buffer from `ThreadStatic` or `ArrayPool`
 * All append methods are generics(`Append<T>(T value)`) and write to buffer directly instead of concatenate `value.ToString`
-* `T0`~`T15` AppendFormat(`AppendFormat<T0,...,T15>(string format, T0 arg0, ..., T15 arg15)` avoids boxing of stuct argument
+* `T0`~`T15` AppendFormat(`AppendFormat<T0,...,T15>(string format, T0 arg0, ..., T15 arg15)` avoids boxing of struct argument
 * Also `T0`~`T15` Concat(`Concat<T0,...,T15>(T0 arg0, ..., T15 arg15)`) avoid boxing and `value.ToString` allocation
 * Convinient `ZString.Format/Concat/Join` methods can replace instead of `String.Format/Concat/Join`
 * Can use inner buffer to avoid allocate final string
