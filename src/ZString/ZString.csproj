@@ -4,6 +4,9 @@
         <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
         <RootNamespace>Cysharp.Text</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>1701;1702;1591</NoWarn>
+
         <!-- NuGet Packaging -->
         <PackageVersion>$(Version)</PackageVersion>
         <Company>Cysharp</Company>
@@ -22,15 +25,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Shims\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
+        <Compile Remove="Number\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
         <Compile Remove="Unity\**\**" />
         <None Remove="Unity\**\**" />
     </ItemGroup>
 
     <ItemGroup>
         <None Update="Unity\TextMeshProExtensions.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>TextMeshProExtensions.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>TextMeshProExtensions.cs</LastGenOutput>
         </None>
         <None Update="Utf16\Utf16ValueStringBuilder.AppendMany.tt">
             <LastGenOutput>Utf16ValueStringBuilder.AppendMany.cs</LastGenOutput>
@@ -63,6 +66,10 @@
         <None Update="Utf16\Utf16ValueStringBuilder.AppendFormat.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>Utf16ValueStringBuilder.AppendFormat.cs</LastGenOutput>
+        </None>
+        <None Update="ZString.Concat.tt">
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ZString.Concat.cs</LastGenOutput>
         </None>
         <None Update="ZString.Format.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
@@ -110,6 +117,11 @@
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>Utf8ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
+        </Compile>
+        <Compile Update="ZString.Concat.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ZString.Concat.tt</DependentUpon>
         </Compile>
         <Compile Update="ZString.Format.cs">
             <DesignTime>True</DesignTime>

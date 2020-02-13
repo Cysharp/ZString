@@ -21,19 +21,18 @@
         return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
     }
 #>
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
     public static partial class ZString
     {
 <# for(var i = 1; i <= 16; i++) { #>
+        /// <summary>Replaces one or more format items in a string with the string representation of some specified objects.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string Format<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
         {
-            var sb = new Utf16ValueStringBuilder();
-            sb.Init(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 sb.AppendFormat(format, <#= CreateParameterNames(i) #>);

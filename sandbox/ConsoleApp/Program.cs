@@ -1,8 +1,18 @@
 ﻿using Cysharp.Text;
 using System;
+using System.Buffers;
+using System.Linq;
+using System.Text;
+using System.Text.Formatting;
+using System.Text.Json;
 
 namespace ConsoleApp
 {
+    public struct MyStruct
+    {
+
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -12,16 +22,46 @@ namespace ConsoleApp
 
         static void Run()
         {
-            //var f = ZString.Format("abcdef: {0}", "abc");
-            //Console.WriteLine(f);
+            using var sb = ZString.CreateUtf8StringBuilder();
+            IBufferWriter<byte> boxed = sb;
+            var writer = new Utf8JsonWriter(boxed);
+            JsonSerializer.Serialize(writer, new { foo = 999 });
 
+            using var unboxed = (Utf8ValueStringBuilder)boxed;
 
-            //Span<char> buffer = stackalloc char[30];
+            Console.WriteLine(sb.ToString());
+            Console.WriteLine(unboxed.ToString());
+        }
+    }
 
-            //var ok = ShimsExtensions.TryWriteUInt64(buffer, out var written, 98321412421UL);
-            //Console.WriteLine(ok);
-            //Console.WriteLine(written);
+    public class FormatBenchmark
+    {
+        int x;
+        int y;
+        string format;
+        StringBuilder stringBuilder;
 
+        public FormatBenchmark()
+        {
+            x = int.Parse("100");
+            y = int.Parse("200");
+            format = "x:{0}, y:{1}";
+            stringBuilder = new StringBuilder();
+        }
+
+        public string StringFormat()
+        {
+            return string.Format(format, x, y);
+        }
+
+        public string ZStringFormat()
+        {
+            return ZString.Format(format, x, y);
+        }
+
+        public string StringFormatterFormat()
+        {
+            return StringBuffer.Format(format, x, y);
         }
     }
 }
