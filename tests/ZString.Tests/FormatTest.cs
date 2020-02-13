@@ -68,11 +68,7 @@ namespace ZStringTests
         [Fact]
         public void FormatArgs()
         {
-#if NETCOREAPP3_1
             ZString.Format("{0:00000000}-{1:00000000}", 100, 200).Should().Be("00000100-00000200");
-#else
-            ZString.Format("{0:00000000}-{1:00000000}", 100, 200).Should().Be("100-200");
-#endif
         }
     }
 }

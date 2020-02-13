@@ -48,12 +48,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(<#= t.FullName #> value, ReadOnlySpan<char> format)
+        public void Append(<#= t.FullName #> value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
@@ -52,7 +53,7 @@ namespace Cysharp.Text
             var sb = new Utf8ValueStringBuilder(true);
             try
             {
-                var isFirst = false;
+                var isFirst = true;
                 foreach (var item in values)
                 {
                     if (!isFirst)
@@ -61,7 +62,7 @@ namespace Cysharp.Text
                     }
                     else
                     {
-                        isFirst = true;
+                        isFirst = false;
                     }
                     sb.Append(item);
                 }
@@ -100,7 +101,7 @@ namespace Cysharp.Text
             var sb = new Utf8ValueStringBuilder(true);
             try
             {
-                var isFirst = false;
+                var isFirst = true;
                 foreach (var item in values)
                 {
                     if (!isFirst)
@@ -109,7 +110,7 @@ namespace Cysharp.Text
                     }
                     else
                     {
-                        isFirst = true;
+                        isFirst = false;
                     }
                     sb.Append(item);
                 }

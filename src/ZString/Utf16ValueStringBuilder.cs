@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
-    public partial struct Utf16ValueStringBuilder : IDisposable
+    public partial struct Utf16ValueStringBuilder : IDisposable, IBufferWriter<char>
     {
         public delegate bool TryFormat<T>(T value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
 
@@ -73,11 +73,6 @@ namespace Cysharp.Text
                 ArrayPool<char>.Shared.Return(buffer);
             }
             buffer = null;
-            index = 0;
-        }
-
-        public void Clear()
-        {
             index = 0;
         }
 
@@ -202,9 +197,19 @@ namespace Cysharp.Text
             return new string(buffer, 0, index);
         }
 
-        // IBufferWriter like interface.
+        // IBufferWriter
 
-        public Span<char> GetWritableBuffer(int sizeHint = 0)
+        public Memory<char> GetMemory(int sizeHint)
+        {
+            if ((buffer.Length - index) < sizeHint)
+            {
+                Grow(sizeHint);
+            }
+
+            return buffer.AsMemory(index);
+        }
+
+        public Span<char> GetSpan(int sizeHint)
         {
             if ((buffer.Length - index) < sizeHint)
             {

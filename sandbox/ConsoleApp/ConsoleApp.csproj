@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\ZString\ZString.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="StringFormatter" Version="1.0.0.13" />
+        <ProjectReference Include="..\..\src\ZString\ZString.csproj" />
+    </ItemGroup>
 
 </Project>

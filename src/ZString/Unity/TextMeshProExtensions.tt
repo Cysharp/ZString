@@ -31,9 +31,8 @@ namespace Cysharp.Text
 <# for(var i = 1; i <= 16; i++) { #>
         public static void SetTextFormat<<#= CreateTypeArgument(i) #>>(this TMP_Text text, string format, <#= CreateParameters(i) #>)
         {
-            using (var sb = new Cysharp.Text.Utf16ValueStringBuilder())
+            using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
-                sb.Init(true);
                 sb.AppendFormat(format, <#= CreateParameterNames(i) #>);
                 var array = sb.AsArraySegment();
                 text.SetCharArray(array.Array, array.Offset, array.Count);

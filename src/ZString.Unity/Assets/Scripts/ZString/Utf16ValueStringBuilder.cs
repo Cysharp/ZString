@@ -76,11 +76,6 @@ namespace Cysharp.Text
             index = 0;
         }
 
-        public void Clear()
-        {
-            index = 0;
-        }
-
         void TryGrow(int sizeHint)
         {
             if (buffer.Length < index + sizeHint)

@@ -22,23 +22,23 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="Shims\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
+        <Compile Remove="Number\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
         <Compile Remove="Unity\**\**" />
         <None Remove="Unity\**\**" />
     </ItemGroup>
 
     <ItemGroup>
         <None Update="Unity\TextMeshProExtensions.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>TextMeshProExtensions.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>TextMeshProExtensions.cs</LastGenOutput>
         </None>
         <None Update="Utf16\Utf16ValueStringBuilder.AppendMany.tt">
             <LastGenOutput>Utf16ValueStringBuilder.AppendMany.cs</LastGenOutput>
             <Generator>TextTemplatingFileGenerator</Generator>
         </None>
         <None Update="Utf16\Utf16ValueStringBuilder.Concat.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>Utf16ValueStringBuilder.Concat.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>Utf16ValueStringBuilder.Concat.cs</LastGenOutput>
         </None>
         <None Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.tt">
             <LastGenOutput>Utf16ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
@@ -57,8 +57,8 @@
             <Generator>TextTemplatingFileGenerator</Generator>
         </None>
         <None Update="Utf8\Utf8ValueStringBuilder.Concat.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>Utf8ValueStringBuilder.Concat.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>Utf8ValueStringBuilder.Concat.cs</LastGenOutput>
         </None>
         <None Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.tt">
             <LastGenOutput>Utf8ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
@@ -73,8 +73,8 @@
             <LastGenOutput>Utf16ValueStringBuilder.AppendFormat.cs</LastGenOutput>
         </None>
         <None Update="ZString.Concat.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>ZString.Concat.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ZString.Concat.cs</LastGenOutput>
         </None>
         <None Update="ZString.Format.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
@@ -94,9 +94,9 @@
             <AutoGen>True</AutoGen>
         </Compile>
         <Compile Update="Utf16\Utf16ValueStringBuilder.Concat.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>Utf16ValueStringBuilder.Concat.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf16ValueStringBuilder.Concat.tt</DependentUpon>
         </Compile>
         <Compile Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.cs">
             <DependentUpon>Utf16ValueStringBuilder.CreateFormatter.tt</DependentUpon>
@@ -119,9 +119,9 @@
             <DependentUpon>Utf8ValueStringBuilder.AppendMany.tt</DependentUpon>
         </Compile>
         <Compile Update="Utf8\Utf8ValueStringBuilder.Concat.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>Utf8ValueStringBuilder.Concat.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Utf8ValueStringBuilder.Concat.tt</DependentUpon>
         </Compile>
         <Compile Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.cs">
             <DesignTime>True</DesignTime>
@@ -134,9 +134,9 @@
             <DependentUpon>Utf8ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
         </Compile>
         <Compile Update="ZString.Concat.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>ZString.Concat.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ZString.Concat.tt</DependentUpon>
         </Compile>
         <Compile Update="ZString.Format.cs">
             <DesignTime>True</DesignTime>
@@ -155,10 +155,6 @@
     </PropertyGroup>
     <ItemGroup>
         <TargetFiles1 Include="$(MSBuildProjectDirectory)\**\*.cs" Exclude="**\bin\**\*.*;**\obj\**\*.*;_InternalVisibleTo.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <TargetFiles1 Remove="Number\FormattingHelpers.cs" />
-      <TargetFiles1 Remove="Shims.cs" />
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy SourceFiles="@(TargetFiles1)" DestinationFiles="$(DestinationRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />

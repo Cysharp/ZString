@@ -20,12 +20,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Byte value, ReadOnlySpan<char> format)
+        public void Append(System.Byte value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -48,12 +48,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.DateTime value, ReadOnlySpan<char> format)
+        public void Append(System.DateTime value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -76,12 +76,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.DateTimeOffset value, ReadOnlySpan<char> format)
+        public void Append(System.DateTimeOffset value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -104,12 +104,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Decimal value, ReadOnlySpan<char> format)
+        public void Append(System.Decimal value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -132,12 +132,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Double value, ReadOnlySpan<char> format)
+        public void Append(System.Double value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -160,12 +160,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int16 value, ReadOnlySpan<char> format)
+        public void Append(System.Int16 value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -188,12 +188,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int32 value, ReadOnlySpan<char> format)
+        public void Append(System.Int32 value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -216,12 +216,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int64 value, ReadOnlySpan<char> format)
+        public void Append(System.Int64 value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -244,12 +244,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.SByte value, ReadOnlySpan<char> format)
+        public void Append(System.SByte value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -272,12 +272,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Single value, ReadOnlySpan<char> format)
+        public void Append(System.Single value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -300,12 +300,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.TimeSpan value, ReadOnlySpan<char> format)
+        public void Append(System.TimeSpan value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -328,12 +328,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt16 value, ReadOnlySpan<char> format)
+        public void Append(System.UInt16 value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -356,12 +356,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt32 value, ReadOnlySpan<char> format)
+        public void Append(System.UInt32 value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -384,12 +384,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt64 value, ReadOnlySpan<char> format)
+        public void Append(System.UInt64 value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }
@@ -412,12 +412,12 @@ namespace Cysharp.Text
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Guid value, ReadOnlySpan<char> format)
+        public void Append(System.Guid value, string format)
         {
-            if(!value.TryFormat(buffer.AsSpan(index), out var written, format))
+            if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
                 Grow();
-                if(!value.TryFormat(buffer.AsSpan(index), out written, format))
+                if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
                 }

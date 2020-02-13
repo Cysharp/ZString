@@ -70,7 +70,7 @@ namespace Cysharp.Text
                             {
                                 if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out var written, writeFormat))
                                 {
-                                    Grow();
+                                    Grow(written);
                                     if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out written, writeFormat))
                                     {
                                         ThrowArgumentException(nameof(arg<#= j #>));

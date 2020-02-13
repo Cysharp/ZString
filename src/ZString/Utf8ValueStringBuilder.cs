@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Cysharp.Text
 {
-    public partial struct Utf8ValueStringBuilder : IDisposable
+    public partial struct Utf8ValueStringBuilder : IDisposable, IBufferWriter<byte>
     {
         public delegate bool TryFormat<T>(T value, Span<byte> destination, out int written, StandardFormat format);
 
@@ -45,6 +45,8 @@ namespace Cysharp.Text
 
         public int Length => index;
         public ReadOnlySpan<byte> AsSpan() => buffer.AsSpan(0, index);
+        public ReadOnlyMemory<byte> AsMemory() => buffer.AsMemory(0, index);
+        public ArraySegment<byte> AsArraySegment() => new ArraySegment<byte>(buffer, 0, index);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Utf8ValueStringBuilder(bool disposeImmediately)
@@ -209,9 +211,19 @@ namespace Cysharp.Text
             return UTF8NoBom.GetString(buffer, 0, index);
         }
 
-        // IBufferWriter like interface.
+        // IBufferWriter
 
-        public Span<byte> GetWritableBuffer(int sizeHint = 0)
+        public Memory<byte> GetMemory(int sizeHint)
+        {
+            if ((buffer.Length - index) < sizeHint)
+            {
+                Grow(sizeHint);
+            }
+
+            return buffer.AsMemory(index);
+        }
+
+        public Span<byte> GetSpan(int sizeHint)
         {
             if ((buffer.Length - index) < sizeHint)
             {

@@ -46,6 +46,7 @@ jobs:
       name: unity
       version: << parameters.unity_version >>
     steps:
+      - run: apt update && apt install git -y
       - checkout
       - unity_activate:
           unity_version: << parameters.unity_version >>
@@ -96,12 +97,6 @@ workflows:
   version: 2
   default-pipeline:
     jobs:
-      - build-unity:
-          unity_version: 2019.1.2f1
-          unity_license: ${UNITY_LICENSE_2019_1}
-          filters:
-            tags:
-              only: /.*/
       - build-test:
           filters:
             tags:
@@ -110,6 +105,14 @@ workflows:
 #          filters:
 #            tags:
 #              only: /.*/
+      - build-unity:
+          unity_version: 2019.1.2f1
+          unity_license: ${UNITY_LICENSE_2019_1}
+          filters:
+            tags:
+              only: /^\d\.\d\.\d.*/
+            branches:
+              ignore: /.*/
       - build-push:
           filters:
             tags:
@@ -119,6 +122,7 @@ workflows:
       - upload-github:
           requires:
             - build-unity
+            - build-push
           filters:
             tags:
               only: /^\d\.\d\.\d.*/
