@@ -38,8 +38,8 @@ namespace ZStringTests
                 var sb5 = new StringBuilder();
                 sb1.Append(x); sb1.Append(y);
                 sb2.Append(x); sb2.Append(y);
-                sb3.Concat(x, y);
-                sb4.Concat(x, y);
+                sb3.Append(x); sb3.Append(y);
+                sb4.Append(x); sb4.Append(y);
                 sb5.Append(x); sb5.Append(y);
 
                 sb1.ToString().Should().Be(sb2.ToString());
@@ -74,8 +74,8 @@ namespace ZStringTests
                 var sb5 = new StringBuilder();
                 sb1.Append(x); sb1.Append(y);
                 sb2.Append(x); sb2.Append(y);
-                sb3.Concat(x, y);
-                sb4.Concat(x, y);
+                sb3.Append(x); sb3.Append(y);
+                sb4.Append(x); sb4.Append(y);
                 sb5.Append(x); sb5.Append(y);
 
                 sb1.ToString().Should().Be(sb2.ToString());
@@ -110,8 +110,8 @@ namespace ZStringTests
                 var sb5 = new StringBuilder();
                 sb1.Append(x); sb1.Append(y);
                 sb2.Append(x); sb2.Append(y);
-                sb3.Concat(x, y);
-                sb4.Concat(x, y);
+                sb3.Append(x); sb3.Append(y);
+                sb4.Append(x); sb4.Append(y);
                 sb5.Append(x); sb5.Append(y);
 
                 sb1.ToString().Should().Be(sb2.ToString());
@@ -143,8 +143,8 @@ namespace ZStringTests
                 var sb5 = new StringBuilder();
                 sb1.Append(x); sb1.Append(y);
                 sb2.Append(x); sb2.Append(y);
-                sb3.Concat(x, y);
-                sb4.Concat(x, y);
+                sb3.Append(x); sb3.Append(y);
+                sb4.Append(x); sb4.Append(y);
                 sb5.Append(x); sb5.Append(y);
 
                 sb1.ToString().Should().Be(sb2.ToString());
@@ -170,7 +170,7 @@ namespace ZStringTests
                 var sb5 = new StringBuilder();
                 sb1.Append(x); sb1.Append(y); sb1.Append(z); sb1.Append(g);
                 //sb2.Append(x, StandardFormat.Parse("O")); sb2.Append(y, StandardFormat.Parse("O")); sb2.Append(z); sb2.Append(g);
-                sb3.Concat(x, y, z, g);
+                sb3.Append(x); sb3.Append(y); sb3.Append(z); sb3.Append(g);
                 //sb4.Concat(x, y, z, g);
                 sb5.Append(x); sb5.Append(y); sb5.Append(z); sb5.Append(g);
 
@@ -195,8 +195,8 @@ namespace ZStringTests
                 var sb5 = new StringBuilder();
                 sb1.Append(x); sb1.Append(y);
                 sb2.Append(x); sb2.Append(y);
-                sb3.Concat(x, y);
-                sb4.Concat(x, y);
+                sb3.Append(x); sb3.Append(y);
+                sb4.Append(x); sb4.Append(y);
                 sb5.Append(x); sb5.Append(y);
 
                 sb1.ToString().Should().Be(sb2.ToString());

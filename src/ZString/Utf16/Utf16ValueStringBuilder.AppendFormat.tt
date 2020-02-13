@@ -15,11 +15,6 @@
         return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
     }
 
-
-    static string CreateParameterNames(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
-    }
 #>
 using System;
 
@@ -28,6 +23,7 @@ namespace Cysharp.Text
     public partial struct Utf16ValueStringBuilder
     {
 <# for(var i = 1; i <= 16; i++) { #>
+        /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
         public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
         {
             var copyFrom = 0;
@@ -115,12 +111,6 @@ namespace Cysharp.Text
                     index += copyLength;
                 }
             }
-        }
-
-        public void AppendFormatLine<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
-        {
-            AppendFormat(format, <#= CreateParameterNames(i) #>);
-            AppendNewLine();
         }
 
 <# } #>

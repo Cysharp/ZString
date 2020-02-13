@@ -4,6 +4,9 @@
         <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
         <RootNamespace>Cysharp.Text</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <NoWarn>1701;1702;1591</NoWarn>
+
         <!-- NuGet Packaging -->
         <PackageVersion>$(Version)</PackageVersion>
         <Company>Cysharp</Company>
@@ -36,10 +39,6 @@
             <LastGenOutput>Utf16ValueStringBuilder.AppendMany.cs</LastGenOutput>
             <Generator>TextTemplatingFileGenerator</Generator>
         </None>
-        <None Update="Utf16\Utf16ValueStringBuilder.Concat.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Utf16ValueStringBuilder.Concat.cs</LastGenOutput>
-        </None>
         <None Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.tt">
             <LastGenOutput>Utf16ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
             <Generator>TextTemplatingFileGenerator</Generator>
@@ -55,10 +54,6 @@
         <None Update="Utf8\Utf8ValueStringBuilder.AppendMany.tt">
             <LastGenOutput>Utf8ValueStringBuilder.AppendMany.cs</LastGenOutput>
             <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf8\Utf8ValueStringBuilder.Concat.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Utf8ValueStringBuilder.Concat.cs</LastGenOutput>
         </None>
         <None Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.tt">
             <LastGenOutput>Utf8ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
@@ -93,11 +88,6 @@
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
         </Compile>
-        <Compile Update="Utf16\Utf16ValueStringBuilder.Concat.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf16ValueStringBuilder.Concat.tt</DependentUpon>
-        </Compile>
         <Compile Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.cs">
             <DependentUpon>Utf16ValueStringBuilder.CreateFormatter.tt</DependentUpon>
             <DesignTime>True</DesignTime>
@@ -117,11 +107,6 @@
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>
             <DependentUpon>Utf8ValueStringBuilder.AppendMany.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Utf8\Utf8ValueStringBuilder.Concat.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf8ValueStringBuilder.Concat.tt</DependentUpon>
         </Compile>
         <Compile Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.cs">
             <DesignTime>True</DesignTime>

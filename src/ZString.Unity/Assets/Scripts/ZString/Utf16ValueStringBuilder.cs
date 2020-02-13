@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
-    public partial struct Utf16ValueStringBuilder : IDisposable
+    public partial struct Utf16ValueStringBuilder : IDisposable, IBufferWriter<char>
     {
         public delegate bool TryFormat<T>(T value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
 
@@ -39,9 +39,13 @@ namespace Cysharp.Text
         char[] buffer;
         int index;
 
+        /// <summary>Length of written buffer.</summary>
         public int Length => index;
+        /// <summary>Get the written buffer data.</summary>
         public ReadOnlySpan<char> AsSpan() => buffer.AsSpan(0, index);
+        /// <summary>Get the written buffer data.</summary>
         public ReadOnlyMemory<char> AsMemory() => buffer.AsMemory(0, index);
+        /// <summary>Get the written buffer data.</summary>
         public ArraySegment<char> AsArraySegment() => new ArraySegment<char>(buffer, 0, index);
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -65,12 +69,18 @@ namespace Cysharp.Text
             index = 0;
         }
 
+        /// <summary>
+        /// Return the inner buffer to pool.
+        /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
             if (buffer.Length != ThreadStaticBufferSize)
             {
-                ArrayPool<char>.Shared.Return(buffer);
+                if (buffer != null)
+                {
+                    ArrayPool<char>.Shared.Return(buffer);
+                }
             }
             buffer = null;
             index = 0;
@@ -103,8 +113,9 @@ namespace Cysharp.Text
             buffer = newBuffer;
         }
 
+        /// <summary>Appends the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendNewLine()
+        public void AppendLine()
         {
             if (crlf)
             {
@@ -121,6 +132,7 @@ namespace Cysharp.Text
             }
         }
 
+        /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(char value)
         {
@@ -132,13 +144,15 @@ namespace Cysharp.Text
             buffer[index++] = value;
         }
 
+        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendLine(char value)
         {
             Append(value);
-            AppendNewLine();
+            AppendLine();
         }
 
+        /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
@@ -151,13 +165,15 @@ namespace Cysharp.Text
             index += value.Length;
         }
 
+        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendLine(string value)
         {
             Append(value);
-            AppendNewLine();
+            AppendLine();
         }
 
+        /// <summary>Appends the string representation of a specified value to this instance.</summary>
         public void Append<T>(T value)
         {
             if (!FormatterCache<T>.TryFormatDelegate(value, buffer.AsSpan(index), out var written, default))
@@ -171,14 +187,16 @@ namespace Cysharp.Text
             index += written;
         }
 
+        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         public void AppendLine<T>(T value)
         {
             Append(value);
-            AppendNewLine();
+            AppendLine();
         }
 
         // Output
 
+        /// <summary>Copy inner buffer to the destination span.</summary>
         public bool TryCopyTo(Span<char> destination, out int charsWritten)
         {
             if (destination.Length < index)
@@ -192,14 +210,27 @@ namespace Cysharp.Text
             return true;
         }
 
+        /// <summary>Converts the value of this instance to a System.String.</summary>
         public override string ToString()
         {
             return new string(buffer, 0, index);
         }
 
-        // IBufferWriter like interface.
+        // IBufferWriter
 
-        public Span<char> GetWritableBuffer(int sizeHint = 0)
+        /// <summary>IBufferWriter.GetMemory.</summary>
+        public Memory<char> GetMemory(int sizeHint)
+        {
+            if ((buffer.Length - index) < sizeHint)
+            {
+                Grow(sizeHint);
+            }
+
+            return buffer.AsMemory(index);
+        }
+
+        /// <summary>IBufferWriter.GetSpan.</summary>
+        public Span<char> GetSpan(int sizeHint)
         {
             if ((buffer.Length - index) < sizeHint)
             {
@@ -209,6 +240,7 @@ namespace Cysharp.Text
             return buffer.AsSpan(index);
         }
 
+        /// <summary>IBufferWriter.Advance.</summary>
         public void Advance(int count)
         {
             index += count;
@@ -224,6 +256,9 @@ namespace Cysharp.Text
             throw new FormatException("Index (zero based) must be greater than or equal to zero and less than the size of the argument list.");
         }
 
+        /// <summary>
+        /// Register custom formatter
+        /// </summary>
         public static void RegisterTryFormat<T>(TryFormat<T> formatMethod)
         {
             FormatterCache<T>.TryFormatDelegate = formatMethod;

@@ -15,11 +15,6 @@
         return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
     }
 
-
-    static string CreateParameterNames(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
-    }
 #>
 using System.Runtime.CompilerServices;
 
@@ -28,13 +23,27 @@ namespace Cysharp.Text
     public static partial class ZString
     {
 <# for(var i = 1; i <= 16; i++) { #>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
         public static string Concat<<#= CreateTypeArgument(i) #>>(<#= CreateParameters(i) #>)
         {
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                sb.Concat(<#= CreateParameterNames(i) #>);
+<# for(var j = 0; j < i; j++) { #>
+                if (typeof(T<#= j #>) == typeof(string))
+                {
+                    sb.Append(Unsafe.As<T<#= j #>, string>(ref arg<#= j #>));
+                }
+                else if (typeof(T<#= j #>) == typeof(int))
+                {
+                    sb.Append(Unsafe.As<T<#= j #>, int>(ref arg<#= j #>));
+                }
+                else
+                {
+                    sb.Append(arg<#= j #>);
+                }
+
+<# } #>
                 return sb.ToString();
             }
             finally

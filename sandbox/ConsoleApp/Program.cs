@@ -1,11 +1,18 @@
 ﻿using Cysharp.Text;
 using System;
+using System.Buffers;
 using System.Linq;
 using System.Text;
 using System.Text.Formatting;
+using System.Text.Json;
 
 namespace ConsoleApp
 {
+    public struct MyStruct
+    {
+
+    }
+
     class Program
     {
         static void Main(string[] args)
@@ -15,15 +22,15 @@ namespace ConsoleApp
 
         static void Run()
         {
-            using (var sb = ZString.CreateStringBuilder())
-            {
-                sb.Append("foo");
-                sb.AppendLine(42);
-                sb.AppendFormat("{0} {1:.###}", "bar", 123.456789);
-                sb.Concat(1, "foo", 100, "bar");
+            using var sb = ZString.CreateUtf8StringBuilder();
+            IBufferWriter<byte> boxed = sb;
+            var writer = new Utf8JsonWriter(boxed);
+            JsonSerializer.Serialize(writer, new { foo = 999 });
 
-                Console.WriteLine(sb.ToString());
-            }
+            using var unboxed = (Utf8ValueStringBuilder)boxed;
+
+            Console.WriteLine(sb.ToString());
+            Console.WriteLine(unboxed.ToString());
         }
     }
 

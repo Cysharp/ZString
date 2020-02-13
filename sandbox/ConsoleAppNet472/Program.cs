@@ -13,6 +13,11 @@ namespace ConsoleAppNet472
         {
             var x = ZString.CreateStringBuilder();
 
+            var sb = new StringBuilder();
+
+
+            
+
             x.AppendFormat("hoge{0:.##}, tako{1:000}", 123.456, 9);
             Console.WriteLine(x.ToString());
 

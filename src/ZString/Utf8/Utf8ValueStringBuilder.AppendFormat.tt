@@ -29,6 +29,7 @@ namespace Cysharp.Text
     public partial struct Utf8ValueStringBuilder
     {
 <# for(var i = 1; i <= 16; i++) { #>
+        /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
         public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
         {
             var copyFrom = 0;
@@ -112,12 +113,6 @@ namespace Cysharp.Text
                     index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, copyLength), buffer.AsSpan(index));
                 }
             }
-        }
-
-        public void AppendFormatLine<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
-        {
-            AppendFormat(format, <#= CreateParameterNames(i) #>);
-            AppendNewLine();
         }
 
 <# } #>
