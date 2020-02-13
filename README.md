@@ -10,8 +10,9 @@ ZString
 * `T0`~`T15` AppendFormat(`AppendFormat<T0,...,T15>(string format, T0 arg0, ..., T15 arg15)` avoids boxing of struct argument
 * Also `T0`~`T15` Concat(`Concat<T0,...,T15>(T0 arg0, ..., T15 arg15)`) avoid boxing and `value.ToString` allocation
 * Convinient `ZString.Format/Concat/Join` methods can replace instead of `String.Format/Concat/Join`
-* Can use inner buffer to avoid allocate final string
 * Can build both Utf16(`Span<char>`) and Utf8(`Span<byte>`) directly
+* Can use inner buffer to avoid allocate final string
+* Integrated with Unity TextMeshPro to avoid string allocation
 
 ![image](https://user-images.githubusercontent.com/46207/74473217-9061e200-4ee6-11ea-9a77-14d740886faa.png)
 
@@ -26,7 +27,7 @@ This graph compares following codes.
 
 `"x:" + x + " y:" + y + " z:" + z` is converted to `String.Concat(new []{ "x:", x.ToString(), " y:", y.ToString(), " z:", z.ToString() })` by C# compiler. It has each `.ToString` allocation and params array allocation. `string.Format` calls `String.Format(string, object, object, object)` so each arguments causes int -> object boxing.
 
-All `ZString` methods only allocate final string. Also, `ZString` has enabled to access inner buffer so if output target has stringless api, you can achieve completely zero allocation.
+All `ZString` methods only allocate final string. Also, `ZString` has enabled to access inner buffer so if output target has stringless api(like Unity TextMeshPro's `SetCharArray`), you can achieve completely zero allocation.
 
 Getting Started
 ---
