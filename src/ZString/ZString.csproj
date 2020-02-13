@@ -13,7 +13,7 @@
         <Authors>Cysharp</Authors>
         <Copyright>© Cysharp, Inc.</Copyright>
         <PackageTags>string;</PackageTags>
-        <Description>Zero alloction StringBuilder for .NET Core and Unity.</Description>
+        <Description>Zero allocation StringBuilder for .NET Core and Unity.</Description>
         <PackageProjectUrl>https://github.com/Cysharp/ZString</PackageProjectUrl>
         <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
