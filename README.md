@@ -90,7 +90,7 @@ Reference
 | CreateStringBuilder(bool notNested) | Utf16ValueStringBuilder | Create the Utf16 string StringBuilder, when true uses thread-static buffer that is faster but must return immediately. |
 | CreateUtf8StringBuilder() | Utf8ValueStringBuilder | Create the Utf8(`Span<byte>`) StringBuilder. |
 | CreateUtf8StringBuilder(bool notNested) | Utf8ValueStringBuilder | Create the Utf8(`Span<byte>`) StringBuilder, when true uses thread-static buffer that is faster but must return immediately. |
-| `Join(char|string, T[]/IE<T>)` | string | Concatenates the elements of an array, using the specified seperator between each element. |
+| `Join(char/string, T[]/IE<T>)` | string | Concatenates the elements of an array, using the specified seperator between each element. |
 | `Concat<T0,..,T15>(T0,..,T15)` | string | Concatenates the string representation of some specified values. |
 | `Format<T0,..,T15>(string, T0,..,T15)` | string | Replaces one or more format items in a string with the string representation of some specified values. |
 
