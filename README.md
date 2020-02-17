@@ -38,6 +38,8 @@ For .NET Core, use NuGet.
 For Unity, check the [releases](https://github.com/Cysharp/ZString/releases) page, download `ZString.Unity.unitypackage`.
 
 ```csharp
+using Cysharp.Text; // namespace
+
 async void Example(int x, int y, int z)
 {
     // same as x + y + z
