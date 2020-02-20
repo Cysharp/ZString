@@ -148,6 +148,18 @@ Reference
 | SetText(Utf16ValueStringBuilder) | void | Set inner buffer to text mesh pro directly to avoid string allocation. |
 | `SetTextFormat<T0,..,T15>(string, T0,..,T15)` | void | Set formatted string without string allocation. |
 
+Unity
+---
+In Unity, if you encount the following error 
+
+```
+The type 'Unsafe' exists in both 'System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' and 'System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'
+```
+
+This is caused from dll conflict, for example `Unity Collections` package includes `System.Runtime.CompilerServices.Unsafe.dll` but ZString provides `System.Runtime.CompilerServices.Unsafe.dll` to `Plugins`.
+
+To resolve this issue, please remove `Plugins/System.Runtime.CompilerServices.Unsafe.dll` that included in ZString.
+
 Advanced Tips
 ---
 `ZString.CreateStringBuilder(notNested:true)` is a special optimized parameter that uses `ThreadStatic` buffer instead of rent from `ArrayPool`. It is slightly faster but can not use in nested.
