@@ -158,7 +158,7 @@ The type 'Unsafe' exists in both 'System.Runtime.CompilerServices.Unsafe, Versio
 
 This is caused from dll conflict, for example `Unity Collections` package includes `System.Runtime.CompilerServices.Unsafe.dll` but ZString provides `System.Runtime.CompilerServices.Unsafe.dll` to `Plugins`.
 
-To resolve this issue, please remove `Plugins/System.Runtime.CompilerServices.Unsafe.dll` that included in ZString.
+To resolve this issue, please remove `System.Runtime.CompilerServices.Unsafe.dll` in `Unity Collections` that exists at `\Library\PackageCache\`.
 
 Advanced Tips
 ---
