@@ -29,6 +29,8 @@ This graph compares following codes.
 
 All `ZString` methods only allocate final string. Also, `ZString` has enabled to access inner buffer so if output target has stringless api(like Unity TextMeshPro's `SetCharArray`), you can achieve completely zero allocation.
 
+The blog post of detailed explanation by author: [medium@neuecc/ZString](https://medium.com/@neuecc/zstring-zero-allocation-stringbuilder-for-net-core-and-unity-f3163c88c887)
+
 Getting Started
 ---
 For .NET Core, use NuGet.
