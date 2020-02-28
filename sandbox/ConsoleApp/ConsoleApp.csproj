@@ -7,7 +7,7 @@
 
     <ItemGroup>
         <PackageReference Include="StringFormatter" Version="1.0.0.13" />
-        <PackageReference Include="System.Text.Json" Version="4.7.0" />
+        <PackageReference Include="System.Text.Json" Version="4.7.1" />
         <ProjectReference Include="..\..\src\ZString\ZString.csproj" />
     </ItemGroup>
 
