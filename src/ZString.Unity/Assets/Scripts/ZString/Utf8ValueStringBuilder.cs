@@ -207,6 +207,14 @@ namespace Cysharp.Text
 
         // Output
 
+        /// <summary>Copy inner buffer to the bufferWriter.</summary>
+        public void CopyTo(IBufferWriter<byte> bufferWriter)
+        {
+            var destination = bufferWriter.GetSpan(index);
+            TryCopyTo(destination, out var written);
+            bufferWriter.Advance(written);
+        }
+
         /// <summary>Copy inner buffer to the destination span.</summary>
         public bool TryCopyTo(Span<byte> destination, out int bytesWritten)
         {
