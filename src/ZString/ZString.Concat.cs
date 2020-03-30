@@ -12,7 +12,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -39,7 +42,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -52,7 +58,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -79,7 +88,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -92,7 +104,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -105,7 +120,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -132,7 +150,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -145,7 +166,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -158,7 +182,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -171,7 +198,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -198,7 +228,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -211,7 +244,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -224,7 +260,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -237,7 +276,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -250,7 +292,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -277,7 +322,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -290,7 +338,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -303,7 +354,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -316,7 +370,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -329,7 +386,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -342,7 +402,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -369,7 +432,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -382,7 +448,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -395,7 +464,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -408,7 +480,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -421,7 +496,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -434,7 +512,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -447,7 +528,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -474,7 +558,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -487,7 +574,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -500,7 +590,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -513,7 +606,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -526,7 +622,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -539,7 +638,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -552,7 +654,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -565,7 +670,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -592,7 +700,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -605,7 +716,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -618,7 +732,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -631,7 +748,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -644,7 +764,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -657,7 +780,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -670,7 +796,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -683,7 +812,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -696,7 +828,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -723,7 +858,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -736,7 +874,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -749,7 +890,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -762,7 +906,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -775,7 +922,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -788,7 +938,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -801,7 +954,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -814,7 +970,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -827,7 +986,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -840,7 +1002,10 @@ namespace Cysharp.Text
 
                 if (typeof(T10) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    if(arg10 != null)
+                    {
+                        sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    }
                 }
                 else if (typeof(T10) == typeof(int))
                 {
@@ -867,7 +1032,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -880,7 +1048,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -893,7 +1064,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -906,7 +1080,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -919,7 +1096,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -932,7 +1112,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -945,7 +1128,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -958,7 +1144,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -971,7 +1160,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -984,7 +1176,10 @@ namespace Cysharp.Text
 
                 if (typeof(T10) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    if(arg10 != null)
+                    {
+                        sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    }
                 }
                 else if (typeof(T10) == typeof(int))
                 {
@@ -997,7 +1192,10 @@ namespace Cysharp.Text
 
                 if (typeof(T11) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    if(arg11 != null)
+                    {
+                        sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    }
                 }
                 else if (typeof(T11) == typeof(int))
                 {
@@ -1024,7 +1222,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -1037,7 +1238,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -1050,7 +1254,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -1063,7 +1270,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -1076,7 +1286,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -1089,7 +1302,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -1102,7 +1318,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -1115,7 +1334,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -1128,7 +1350,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -1141,7 +1366,10 @@ namespace Cysharp.Text
 
                 if (typeof(T10) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    if(arg10 != null)
+                    {
+                        sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    }
                 }
                 else if (typeof(T10) == typeof(int))
                 {
@@ -1154,7 +1382,10 @@ namespace Cysharp.Text
 
                 if (typeof(T11) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    if(arg11 != null)
+                    {
+                        sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    }
                 }
                 else if (typeof(T11) == typeof(int))
                 {
@@ -1167,7 +1398,10 @@ namespace Cysharp.Text
 
                 if (typeof(T12) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    if(arg12 != null)
+                    {
+                        sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    }
                 }
                 else if (typeof(T12) == typeof(int))
                 {
@@ -1194,7 +1428,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -1207,7 +1444,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -1220,7 +1460,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -1233,7 +1476,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -1246,7 +1492,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -1259,7 +1508,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -1272,7 +1524,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -1285,7 +1540,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -1298,7 +1556,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -1311,7 +1572,10 @@ namespace Cysharp.Text
 
                 if (typeof(T10) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    if(arg10 != null)
+                    {
+                        sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    }
                 }
                 else if (typeof(T10) == typeof(int))
                 {
@@ -1324,7 +1588,10 @@ namespace Cysharp.Text
 
                 if (typeof(T11) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    if(arg11 != null)
+                    {
+                        sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    }
                 }
                 else if (typeof(T11) == typeof(int))
                 {
@@ -1337,7 +1604,10 @@ namespace Cysharp.Text
 
                 if (typeof(T12) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    if(arg12 != null)
+                    {
+                        sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    }
                 }
                 else if (typeof(T12) == typeof(int))
                 {
@@ -1350,7 +1620,10 @@ namespace Cysharp.Text
 
                 if (typeof(T13) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    if(arg13 != null)
+                    {
+                        sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    }
                 }
                 else if (typeof(T13) == typeof(int))
                 {
@@ -1377,7 +1650,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -1390,7 +1666,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -1403,7 +1682,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -1416,7 +1698,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -1429,7 +1714,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -1442,7 +1730,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -1455,7 +1746,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -1468,7 +1762,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -1481,7 +1778,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -1494,7 +1794,10 @@ namespace Cysharp.Text
 
                 if (typeof(T10) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    if(arg10 != null)
+                    {
+                        sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    }
                 }
                 else if (typeof(T10) == typeof(int))
                 {
@@ -1507,7 +1810,10 @@ namespace Cysharp.Text
 
                 if (typeof(T11) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    if(arg11 != null)
+                    {
+                        sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    }
                 }
                 else if (typeof(T11) == typeof(int))
                 {
@@ -1520,7 +1826,10 @@ namespace Cysharp.Text
 
                 if (typeof(T12) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    if(arg12 != null)
+                    {
+                        sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    }
                 }
                 else if (typeof(T12) == typeof(int))
                 {
@@ -1533,7 +1842,10 @@ namespace Cysharp.Text
 
                 if (typeof(T13) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    if(arg13 != null)
+                    {
+                        sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    }
                 }
                 else if (typeof(T13) == typeof(int))
                 {
@@ -1546,7 +1858,10 @@ namespace Cysharp.Text
 
                 if (typeof(T14) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T14, string>(ref arg14));
+                    if(arg14 != null)
+                    {
+                        sb.Append(Unsafe.As<T14, string>(ref arg14));
+                    }
                 }
                 else if (typeof(T14) == typeof(int))
                 {
@@ -1573,7 +1888,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -1586,7 +1904,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -1599,7 +1920,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -1612,7 +1936,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -1625,7 +1952,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -1638,7 +1968,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -1651,7 +1984,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -1664,7 +2000,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -1677,7 +2016,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -1690,7 +2032,10 @@ namespace Cysharp.Text
 
                 if (typeof(T10) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    if(arg10 != null)
+                    {
+                        sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    }
                 }
                 else if (typeof(T10) == typeof(int))
                 {
@@ -1703,7 +2048,10 @@ namespace Cysharp.Text
 
                 if (typeof(T11) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    if(arg11 != null)
+                    {
+                        sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    }
                 }
                 else if (typeof(T11) == typeof(int))
                 {
@@ -1716,7 +2064,10 @@ namespace Cysharp.Text
 
                 if (typeof(T12) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    if(arg12 != null)
+                    {
+                        sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    }
                 }
                 else if (typeof(T12) == typeof(int))
                 {
@@ -1729,7 +2080,10 @@ namespace Cysharp.Text
 
                 if (typeof(T13) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    if(arg13 != null)
+                    {
+                        sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    }
                 }
                 else if (typeof(T13) == typeof(int))
                 {
@@ -1742,7 +2096,10 @@ namespace Cysharp.Text
 
                 if (typeof(T14) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T14, string>(ref arg14));
+                    if(arg14 != null)
+                    {
+                        sb.Append(Unsafe.As<T14, string>(ref arg14));
+                    }
                 }
                 else if (typeof(T14) == typeof(int))
                 {
@@ -1755,7 +2112,10 @@ namespace Cysharp.Text
 
                 if (typeof(T15) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T15, string>(ref arg15));
+                    if(arg15 != null)
+                    {
+                        sb.Append(Unsafe.As<T15, string>(ref arg15));
+                    }
                 }
                 else if (typeof(T15) == typeof(int))
                 {
@@ -1782,7 +2142,10 @@ namespace Cysharp.Text
             {
                 if (typeof(T1) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    if(arg1 != null)
+                    {
+                        sb.Append(Unsafe.As<T1, string>(ref arg1));
+                    }
                 }
                 else if (typeof(T1) == typeof(int))
                 {
@@ -1795,7 +2158,10 @@ namespace Cysharp.Text
 
                 if (typeof(T2) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    if(arg2 != null)
+                    {
+                        sb.Append(Unsafe.As<T2, string>(ref arg2));
+                    }
                 }
                 else if (typeof(T2) == typeof(int))
                 {
@@ -1808,7 +2174,10 @@ namespace Cysharp.Text
 
                 if (typeof(T3) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    if(arg3 != null)
+                    {
+                        sb.Append(Unsafe.As<T3, string>(ref arg3));
+                    }
                 }
                 else if (typeof(T3) == typeof(int))
                 {
@@ -1821,7 +2190,10 @@ namespace Cysharp.Text
 
                 if (typeof(T4) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    if(arg4 != null)
+                    {
+                        sb.Append(Unsafe.As<T4, string>(ref arg4));
+                    }
                 }
                 else if (typeof(T4) == typeof(int))
                 {
@@ -1834,7 +2206,10 @@ namespace Cysharp.Text
 
                 if (typeof(T5) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    if(arg5 != null)
+                    {
+                        sb.Append(Unsafe.As<T5, string>(ref arg5));
+                    }
                 }
                 else if (typeof(T5) == typeof(int))
                 {
@@ -1847,7 +2222,10 @@ namespace Cysharp.Text
 
                 if (typeof(T6) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    if(arg6 != null)
+                    {
+                        sb.Append(Unsafe.As<T6, string>(ref arg6));
+                    }
                 }
                 else if (typeof(T6) == typeof(int))
                 {
@@ -1860,7 +2238,10 @@ namespace Cysharp.Text
 
                 if (typeof(T7) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    if(arg7 != null)
+                    {
+                        sb.Append(Unsafe.As<T7, string>(ref arg7));
+                    }
                 }
                 else if (typeof(T7) == typeof(int))
                 {
@@ -1873,7 +2254,10 @@ namespace Cysharp.Text
 
                 if (typeof(T8) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    if(arg8 != null)
+                    {
+                        sb.Append(Unsafe.As<T8, string>(ref arg8));
+                    }
                 }
                 else if (typeof(T8) == typeof(int))
                 {
@@ -1886,7 +2270,10 @@ namespace Cysharp.Text
 
                 if (typeof(T9) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    if(arg9 != null)
+                    {
+                        sb.Append(Unsafe.As<T9, string>(ref arg9));
+                    }
                 }
                 else if (typeof(T9) == typeof(int))
                 {
@@ -1899,7 +2286,10 @@ namespace Cysharp.Text
 
                 if (typeof(T10) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    if(arg10 != null)
+                    {
+                        sb.Append(Unsafe.As<T10, string>(ref arg10));
+                    }
                 }
                 else if (typeof(T10) == typeof(int))
                 {
@@ -1912,7 +2302,10 @@ namespace Cysharp.Text
 
                 if (typeof(T11) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    if(arg11 != null)
+                    {
+                        sb.Append(Unsafe.As<T11, string>(ref arg11));
+                    }
                 }
                 else if (typeof(T11) == typeof(int))
                 {
@@ -1925,7 +2318,10 @@ namespace Cysharp.Text
 
                 if (typeof(T12) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    if(arg12 != null)
+                    {
+                        sb.Append(Unsafe.As<T12, string>(ref arg12));
+                    }
                 }
                 else if (typeof(T12) == typeof(int))
                 {
@@ -1938,7 +2334,10 @@ namespace Cysharp.Text
 
                 if (typeof(T13) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    if(arg13 != null)
+                    {
+                        sb.Append(Unsafe.As<T13, string>(ref arg13));
+                    }
                 }
                 else if (typeof(T13) == typeof(int))
                 {
@@ -1951,7 +2350,10 @@ namespace Cysharp.Text
 
                 if (typeof(T14) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T14, string>(ref arg14));
+                    if(arg14 != null)
+                    {
+                        sb.Append(Unsafe.As<T14, string>(ref arg14));
+                    }
                 }
                 else if (typeof(T14) == typeof(int))
                 {
@@ -1964,7 +2366,10 @@ namespace Cysharp.Text
 
                 if (typeof(T15) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T15, string>(ref arg15));
+                    if(arg15 != null)
+                    {
+                        sb.Append(Unsafe.As<T15, string>(ref arg15));
+                    }
                 }
                 else if (typeof(T15) == typeof(int))
                 {
@@ -1977,7 +2382,10 @@ namespace Cysharp.Text
 
                 if (typeof(T16) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T16, string>(ref arg16));
+                    if(arg16 != null)
+                    {
+                        sb.Append(Unsafe.As<T16, string>(ref arg16));
+                    }
                 }
                 else if (typeof(T16) == typeof(int))
                 {

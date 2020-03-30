@@ -32,7 +32,10 @@ namespace Cysharp.Text
 <# for(var j = 0; j < i; j++) { #>
                 if (typeof(T<#= j + 1 #>) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T<#= j + 1 #>, string>(ref arg<#= j + 1 #>));
+                    if(arg<#= j + 1 #> != null)
+                    {
+                        sb.Append(Unsafe.As<T<#= j + 1 #>, string>(ref arg<#= j + 1 #>));
+                    }
                 }
                 else if (typeof(T<#= j + 1 #>) == typeof(int))
                 {

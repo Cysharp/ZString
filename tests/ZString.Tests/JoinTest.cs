@@ -62,5 +62,12 @@ namespace ZStringTests
             ZString.Join("_,_", (IReadOnlyCollection<int>)new[] { 1, 2 }).Should().Be(string.Join("_,_", new[] { 1, 2 }));
             ZString.Join("_,_", (IReadOnlyCollection<int>)new[] { 1, 2, 3 }).Should().Be(string.Join("_,_", new[] { 1, 2, 3 }));
         }
+
+        [Fact]
+        public void CooncatNullTest()
+        {
+            var str = ZString.Concat(default(string), "foo", "bar");
+            str.Should().Be(string.Concat(default(string), "foo", "bar"));
+        }
     }
 }
