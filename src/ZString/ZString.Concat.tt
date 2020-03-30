@@ -7,12 +7,12 @@
 <#
     static string CreateTypeArgument(int i)
     {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x));
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
     }
 
     static string CreateParameters(int i)
     {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
     }
 
 #>
@@ -30,17 +30,17 @@ namespace Cysharp.Text
             try
             {
 <# for(var j = 0; j < i; j++) { #>
-                if (typeof(T<#= j #>) == typeof(string))
+                if (typeof(T<#= j + 1 #>) == typeof(string))
                 {
-                    sb.Append(Unsafe.As<T<#= j #>, string>(ref arg<#= j #>));
+                    sb.Append(Unsafe.As<T<#= j + 1 #>, string>(ref arg<#= j + 1 #>));
                 }
-                else if (typeof(T<#= j #>) == typeof(int))
+                else if (typeof(T<#= j + 1 #>) == typeof(int))
                 {
-                    sb.Append(Unsafe.As<T<#= j #>, int>(ref arg<#= j #>));
+                    sb.Append(Unsafe.As<T<#= j + 1 #>, int>(ref arg<#= j + 1 #>));
                 }
                 else
                 {
-                    sb.Append(arg<#= j #>);
+                    sb.Append(arg<#= j + 1 #>);
                 }
 
 <# } #>

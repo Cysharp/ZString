@@ -1,6 +1,8 @@
 using Cysharp.Text;
 using FluentAssertions;
 using System;
+using System.Buffers;
+using System.Text;
 using Xunit;
 
 namespace ZStringTests
@@ -20,6 +22,30 @@ namespace ZStringTests
                 var actual = sb.ToString();
                 var expected = string.Format(format, t0, t1);
                 actual.Should().Be(expected);
+            }
+
+            // Prepare
+            {
+                var actual = ZString.PrepareUtf16<T0, T1>(format).Format(t0, t1);
+                var expected = string.Format(format, t0, t1);
+                actual.Should().Be(expected);
+            }
+            {
+                var sb = ZString.PrepareUtf8<T0, T1>(format);
+                var actual = sb.Format(t0, t1);
+                var expected = string.Format(format, t0, t1);
+                actual.Should().Be(expected);
+            }
+
+            // Direct
+            {
+#if !NETCOREAPP2_1
+                var writer = new ArrayBufferWriter<byte>();
+                ZString.Utf8Format(writer, format, t0, t1);
+                var actual = Encoding.UTF8.GetString(writer.WrittenSpan);
+                var expected = string.Format(format, t0, t1);
+                actual.Should().Be(expected);
+#endif
             }
         }
 

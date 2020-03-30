@@ -7,18 +7,18 @@
 <#
     static string CreateTypeArgument(int i)
     {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x));
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
     }
 
     static string CreateParameters(int i)
     {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
     }
 
 
     static string CreateParameterNames(int i)
     {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + (x + 1)));
     }
 #>
 using System.Runtime.CompilerServices;
