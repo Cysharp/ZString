@@ -1,12 +1,14 @@
 ﻿using System;
-using System.Buffers;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Linq;
+using System.Text;
 
 namespace Cysharp.Text
 {
     public static partial class ZString
     {
+        static Encoding UTF8NoBom = new UTF8Encoding(false);
+
         /// <summary>Create the Utf16 string StringBuilder.</summary>
         public static Utf16ValueStringBuilder CreateStringBuilder()
         {
@@ -126,6 +128,29 @@ namespace Cysharp.Text
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        public static string Join<T>(string separator, List<T> values)
+        {
+            var sb = new Utf8ValueStringBuilder(true);
+            try
+            {
+                var count = values.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    if (i != 0)
+                    {
+                        sb.Append(separator);
+                    }
+                    sb.Append(values[i]);
+                }
+                return sb.ToString();
+            }
+            finally
+            {
+                sb.Dispose();
+            }
+        }
+
+        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(string separator, ReadOnlySpan<T> values)
         {
             var sb = new Utf8ValueStringBuilder(true);
@@ -145,6 +170,26 @@ namespace Cysharp.Text
             {
                 sb.Dispose();
             }
+        }
+
+        public static string Join<T>(string separator, ICollection<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
+        }
+
+        public static string Join<T>(string separator, IList<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
+        }
+
+        public static string Join<T>(string separator, IReadOnlyList<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
+        }
+
+        public static string Join<T>(string separator, IReadOnlyCollection<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>

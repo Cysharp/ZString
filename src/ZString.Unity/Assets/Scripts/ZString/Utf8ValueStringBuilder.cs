@@ -93,7 +93,7 @@ namespace Cysharp.Text
             index = 0;
         }
 
-        void TryGrow(int sizeHint)
+        public void TryGrow(int sizeHint)
         {
             if (buffer.Length < index + sizeHint)
             {
@@ -101,7 +101,7 @@ namespace Cysharp.Text
             }
         }
 
-        void Grow(int sizeHint = 0)
+        public void Grow(int sizeHint = 0)
         {
             var nextSize = buffer.Length * 2;
             if (sizeHint != 0)
@@ -281,7 +281,7 @@ namespace Cysharp.Text
             FormatterCache<T>.TryFormatDelegate = formatMethod;
         }
 
-        static class FormatterCache<T>
+        public static class FormatterCache<T>
         {
             public static TryFormat<T> TryFormatDelegate;
             static FormatterCache()

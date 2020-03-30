@@ -7,8 +7,8 @@ ZString
 * Struct StringBuilder to avoid allocation of builder itself
 * Rent write buffer from `ThreadStatic` or `ArrayPool`
 * All append methods are generics(`Append<T>(T value)`) and write to buffer directly instead of concatenate `value.ToString`
-* `T0`~`T15` AppendFormat(`AppendFormat<T0,...,T15>(string format, T0 arg0, ..., T15 arg15)` avoids boxing of struct argument
-* Also `T0`~`T15` Concat(`Concat<T0,...,T15>(T0 arg0, ..., T15 arg15)`) avoid boxing and `value.ToString` allocation
+* `T1`~`T16` AppendFormat(`AppendFormat<T1,...,T16>(string format, T1 arg1, ..., T16 arg16)` avoids boxing of struct argument
+* Also `T1`~`T16` Concat(`Concat<T1,...,T16>(T1 arg1, ..., T16 arg16)`) avoid boxing and `value.ToString` allocation
 * Convinient `ZString.Format/Concat/Join` methods can replace instead of `String.Format/Concat/Join`
 * Can build both Utf16(`Span<char>`) and Utf8(`Span<byte>`) directly
 * Can use inner buffer to avoid allocate final string
@@ -72,6 +72,10 @@ async void Example(int x, int y, int z)
         sb.TryCopyTo(dest, out var written);
     }
 
+    // prepare format, return value should store to field(like RegexOptions.Compile)
+    var prepared = ZString.PrepareUtf16<int, int>("x:{0}, y:{1:000}");
+    _ = prepared.Format(10, 20);
+
     // C# 8.0, Using declarations
     // create Utf8 StringBuilder that build Utf8 directly to avoid encoding
     using var sb2 = ZString.CreateUtf8StringBuilder();
@@ -80,6 +84,7 @@ async void Example(int x, int y, int z)
 
     // directly write to steam or dest to avoid allocation
     await sb2.WriteToAsync(stream);
+    sb2.CopyTo(bufferWritter);
     sb2.TryCopyTo(dest, out var written);
 }
 ```
@@ -95,8 +100,11 @@ Reference
 | CreateUtf8StringBuilder() | Utf8ValueStringBuilder | Create the Utf8(`Span<byte>`) StringBuilder. |
 | CreateUtf8StringBuilder(bool notNested) | Utf8ValueStringBuilder | Create the Utf8(`Span<byte>`) StringBuilder, when true uses thread-static buffer that is faster but must return immediately. |
 | `Join(char/string, T[]/IE<T>)` | string | Concatenates the elements of an array, using the specified seperator between each element. |
-| `Concat<T0,..,T15>(T0,..,T15)` | string | Concatenates the string representation of some specified values. |
-| `Format<T0,..,T15>(string, T0,..,T15)` | string | Replaces one or more format items in a string with the string representation of some specified values. |
+| `PrepareUtf16<T1,..,T16>(string)` | `Utf16PreparedFormat<T1,...,T16>` | Prepare string format to avoid parse template in each operation. |
+| `PrepareUtf8<T1,..,T16>(string)` | `Utf8PreparedFormat<T1,...,T16>` | Prepare string format to avoid parse template in each operation. |
+| `Concat<T1,..,T16>(T1,..,T16)` | string | Concatenates the string representation of some specified values. |
+| `Format<T1,..,T16>(string, T1,..,T16)` | string | Replaces one or more format items in a string with the string representation of some specified values. |
+| `Utf8Format<T1,..,T16>(IBufferWriter<byte>, T1,..,T16)` | void | Replaces one or more format items in a string with the string representation of some specified values. |
 
 **struct Utf16ValueStringBuilder : `IBufferWriter<char>`, IDisposable**
 
@@ -112,7 +120,7 @@ Reference
 | `AppendLine()` | void | Appends the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value)` | void | Appends the string representation of a specified value followed by the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value, string format)` | void | Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance. |
-| `AppendFormat<T0,..,T15>(string, T0,..,T15)` | void | Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments. |
+| `AppendFormat<T1,..,T16>(string, T1,..,T16)` | void | Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments. |
 | `TryCopyTo(Span<char>, out int)` | bool | Copy inner buffer to the destination span. |
 | ToString() | string | Converts the value of this instance to a System.String. |
 | GetMemory(int sizeHint) | `Memory<char>` | IBufferWriter.GetMemory. |
@@ -134,7 +142,8 @@ Reference
 | `AppendLine()` | void | Appends the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value)` | void | Appends the string representation of a specified value followed by the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value, StandardFormat format)` | void | Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance. |
-| `AppendFormat<T0,..,T15>(string, T0,..,T15)` | void | Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments. |
+| `AppendFormat<T1,..,T16>(string, T1,..,T16)` | void | Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments. |
+| `CopyTo(IBufferWriter<byte>)` | void | Copy inner buffer to the buffer writer. |
 | `TryCopyTo(Span<byte>, out int)` | bool | Copy inner buffer to the destination span. |
 | WriteToAsync(Stream stream) | Task | Write inner buffer to stream. |
 | ToString() | string | Encode the innner utf8 buffer to a System.String. |
@@ -143,12 +152,26 @@ Reference
 | Advance(int count) | void | IBufferWriter.Advance. |
 | static `RegisterTryFormat<T>(TryFormat<T>)` | void | Register custom formatter. |
 
+**class `Utf16PreparedFormat<T1,..,T16>`**
+
+| method | returns | description |
+| -- | -- | -- |
+| `Format` | string | Replaces one or more format items in a string with the string representation of some specified values. |
+| `FormatTo<TBufferWriter>(ref TBufferWriter, T1,..,T16)` | void | Replaces one or more format items in a string with the string representation of some specified values. |
+
+**class `Utf8PreparedFormat<T1,..,T16>`**
+
+| method | returns | description |
+| -- | -- | -- |
+| `Format` | string | Replaces one or more format items in a string with the string representation of some specified values. |
+| `FormatTo<TBufferWriter>(ref TBufferWriter, T1,..,T16)` | void | Replaces one or more format items in a string with the string representation of some specified values. |
+
 **static class TextMeshProExtensions**(Unity only)
 
 | method | returns | description |
 | -- | -- | -- |
 | SetText(Utf16ValueStringBuilder) | void | Set inner buffer to text mesh pro directly to avoid string allocation. |
-| `SetTextFormat<T0,..,T15>(string, T0,..,T15)` | void | Set formatted string without string allocation. |
+| `SetTextFormat<T1,..,T16>(string, T1,..,T16)` | void | Set formatted string without string allocation. |
 
 Unity
 ---
@@ -215,6 +238,38 @@ Utf8ValueStringBuilder.RegisterTryFormat((MyStruct value, Span<byte> destination
 ---
 
 `CreateStringBuilder` and `CreateUtf8StringBuilder` must use with `using`. Because their builder rent 64K buffer from `ArrayPool`. If not return buffer, allocate 64K buffer when string builder is created.
+
+---
+
+`Utf16ValueStringBuilder` and `Utf8ValueStringBuilder` are mutable struct, be careful to copy by passing method. Use `ref` and `try-finally`.
+
+```csharp
+void Build()
+{
+    var sb = ZString.CreateStringBuilder();
+    try
+    {
+        BuildHeader(ref sb);
+        BuildMessage(ref sb);
+    }
+    finally
+    {
+        // when use with `ref`, can not use `using`.
+        sb.Dispose();
+    }
+}
+
+
+void BuildHeader(ref Utf16ValueStringBuilder builder)
+{
+    //..
+}
+
+void BuildMessage(ref Utf16ValueStringBuilder builder)
+{
+    //..
+}
+```
 
 ---
 

@@ -7,18 +7,12 @@
 <#
     static string CreateTypeArgument(int i)
     {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x));
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
     }
 
     static string CreateParameters(int i)
     {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + x + " arg" + x));
-    }
-
-
-    static string CreateParameterNames(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
     }
 #>
 using System;
@@ -69,12 +63,12 @@ namespace Cysharp.Text
 <# for(var j = 0; j < i; j++) { #>
                         case <#= j #>:
                             {
-                                if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out var written, writeFormat))
+                                if (!FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out var written, writeFormat))
                                 {
                                     Grow(written);
-                                    if (!FormatterCache<T<#= j #>>.TryFormatDelegate(arg<#= j #>, buffer.AsSpan(index), out written, writeFormat))
+                                    if (!FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out written, writeFormat))
                                     {
-                                        ThrowArgumentException(nameof(arg<#= j #>));
+                                        ThrowArgumentException(nameof(arg<#= j + 1 #>));
                                     }
                                 }
                                 index += written;

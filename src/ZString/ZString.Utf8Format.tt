@@ -16,15 +16,17 @@
     }
 
 #>
+using System.Runtime.CompilerServices;
+using System.Buffers;
 using System;
 
 namespace Cysharp.Text
 {
-    public partial struct Utf16ValueStringBuilder
+    public static partial class ZString
     {
 <# for(var i = 1; i <= 16; i++) { #>
-        /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
+        /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
+        public static void Utf8Format<<#= CreateTypeArgument(i) #>>(IBufferWriter<byte> bufferWriter, string format, <#= CreateParameters(i) #>)
         {
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
@@ -40,9 +42,9 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
+                        var written = UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer);
+                        bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -50,50 +52,52 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
+                        var written = UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer);
+                        bufferWriter.Advance(written);
                     }
 
                     // try to find range
                     var indexParse = FormatParser.Parse(format.AsSpan(i));
                     copyFrom = i + indexParse.LastIndex + 1;
                     i = i + indexParse.LastIndex;
+                    var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
 <# for(var j = 0; j < i; j++) { #>
                         case <#= j #>:
                             {
-                                if (!FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out var written, indexParse.FormatString))
+                                var buffer = bufferWriter.GetSpan();
+                                if (!Utf8ValueStringBuilder.FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j +1 #>, buffer, out var written, writeFormat))
                                 {
-                                    Grow(written);
-                                    if (!FormatterCache<T<#= j+ 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out written, indexParse.FormatString))
+                                    bufferWriter.Advance(0);
+                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
+                                    if (!Utf8ValueStringBuilder.FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer, out written, writeFormat))
                                     {
-                                        ThrowArgumentException(nameof(arg<#= j + 1 #>));
+                                        ExceptionUtil.ThrowArgumentException(nameof(arg<#= j + 1 #>));
                                     }
                                 }
-                                index += written;
+                                bufferWriter.Advance(written);
                                 goto NEXT_LOOP;
                             }
 <# } #>
                         default:
-                            ThrowFormatException();
+                            ExceptionUtil.ThrowFormatException();
                             break;
                     }
 
-                    ThrowFormatException();
+                    ExceptionUtil.ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
+                        var written = UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer);
+                        bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
-                        continue;
                     }
                 }
 
@@ -106,9 +110,9 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(copyLength));
+                    var written = UTF8NoBom.GetBytes(format.AsSpan(copyFrom, copyLength), buffer);
+                    bufferWriter.Advance(written);
                 }
             }
         }
