@@ -39,7 +39,7 @@ namespace ZStringTests
 
             // Direct
             {
-#if !NETCOREAPP2_1
+#if NETCOREAPP3_1
                 var writer = new ArrayBufferWriter<byte>();
                 ZString.Utf8Format(writer, format, t0, t1);
                 var actual = Encoding.UTF8.GetString(writer.WrittenSpan);

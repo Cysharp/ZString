@@ -32,8 +32,8 @@
 
     <ItemGroup>
         <None Update="PreparedFormat.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>PreparedFormat.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>PreparedFormat.cs</LastGenOutput>
         </None>
         <None Update="Unity\TextMeshProExtensions.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
@@ -80,20 +80,20 @@
             <LastGenOutput>ZString.Format.cs</LastGenOutput>
         </None>
         <None Update="ZString.Prepare.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>ZString.Prepare.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ZString.Prepare.cs</LastGenOutput>
         </None>
         <None Update="ZString.Utf8Format.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>ZString.Utf8Format.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+            <LastGenOutput>ZString.Utf8Format.cs</LastGenOutput>
         </None>
     </ItemGroup>
 
     <ItemGroup>
         <Compile Update="PreparedFormat.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>PreparedFormat.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>PreparedFormat.tt</DependentUpon>
         </Compile>
         <Compile Update="Utf16\Utf16ValueStringBuilder.AppendFormat.cs">
             <DesignTime>True</DesignTime>
@@ -146,15 +146,29 @@
             <DependentUpon>ZString.Format.tt</DependentUpon>
         </Compile>
         <Compile Update="ZString.Prepare.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>ZString.Prepare.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ZString.Prepare.tt</DependentUpon>
         </Compile>
         <Compile Update="ZString.Utf8Format.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>ZString.Utf8Format.tt</DependentUpon>
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ZString.Utf8Format.tt</DependentUpon>
         </Compile>
+
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="PreparedFormat.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>PreparedFormat.tt</DependentUpon>
+        </None>
+        <None Include="ZString.Utf8Format.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>ZString.Utf8Format.tt</DependentUpon>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
@@ -167,22 +181,6 @@
     </PropertyGroup>
     <ItemGroup>
         <TargetFiles1 Include="$(MSBuildProjectDirectory)\**\*.cs" Exclude="**\bin\**\*.*;**\obj\**\*.*;_InternalVisibleTo.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <TargetFiles1 Remove="ExceptionUtil.cs" />
-      <TargetFiles1 Remove="PreparedFormatHelper.cs" />
-    </ItemGroup>
-    <ItemGroup>
-      <None Include="PreparedFormat.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>PreparedFormat.tt</DependentUpon>
-      </None>
-      <None Include="ZString.Utf8Format.cs">
-        <DesignTime>True</DesignTime>
-        <AutoGen>True</AutoGen>
-        <DependentUpon>ZString.Utf8Format.tt</DependentUpon>
-      </None>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Copy SourceFiles="@(TargetFiles1)" DestinationFiles="$(DestinationRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
