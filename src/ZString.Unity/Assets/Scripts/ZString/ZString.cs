@@ -36,7 +36,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(char separator, params T[] values)
         {
-            var sb = new Utf8ValueStringBuilder(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 for (int i = 0; i < values.Length; i++)
@@ -58,7 +58,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(char separator, ReadOnlySpan<T> values)
         {
-            var sb = new Utf8ValueStringBuilder(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 for (int i = 0; i < values.Length; i++)
@@ -80,7 +80,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(char separator, IEnumerable<T> values)
         {
-            var sb = new Utf8ValueStringBuilder(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 var isFirst = true;
@@ -108,7 +108,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(string separator, params T[] values)
         {
-            var sb = new Utf8ValueStringBuilder(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 for (int i = 0; i < values.Length; i++)
@@ -130,7 +130,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(string separator, List<T> values)
         {
-            var sb = new Utf8ValueStringBuilder(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 var count = values.Count;
@@ -153,7 +153,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(string separator, ReadOnlySpan<T> values)
         {
-            var sb = new Utf8ValueStringBuilder(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 for (int i = 0; i < values.Length; i++)
@@ -195,7 +195,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(string separator, IEnumerable<T> values)
         {
-            var sb = new Utf8ValueStringBuilder(true);
+            var sb = new Utf16ValueStringBuilder(true);
             try
             {
                 var isFirst = true;

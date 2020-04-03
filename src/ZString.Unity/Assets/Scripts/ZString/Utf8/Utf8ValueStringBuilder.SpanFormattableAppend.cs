@@ -13,7 +13,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -28,7 +28,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -58,7 +58,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -73,7 +73,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -103,7 +103,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -118,7 +118,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -148,7 +148,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -163,7 +163,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -193,7 +193,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -208,7 +208,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -238,7 +238,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -253,7 +253,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -283,7 +283,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -298,7 +298,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -328,7 +328,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -343,7 +343,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -373,7 +373,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -388,7 +388,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -418,7 +418,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -433,7 +433,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -463,7 +463,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -478,7 +478,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -508,7 +508,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -523,7 +523,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -553,7 +553,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -568,7 +568,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -598,7 +598,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -613,7 +613,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));
@@ -643,7 +643,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -658,7 +658,7 @@ namespace Cysharp.Text
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
-                Grow();
+                Grow(written);
                 if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out written, format))
                 {
                     ThrowArgumentException(nameof(value));

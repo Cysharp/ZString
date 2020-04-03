@@ -69,5 +69,16 @@ namespace ZStringTests
             var str = ZString.Concat(default(string), "foo", "bar");
             str.Should().Be(string.Concat(default(string), "foo", "bar"));
         }
+
+        [Fact]
+        public void ConcatHugeString()
+        {
+            var a = new string('a', 10000);
+            var b = new string('b', 1000000);
+
+            var actrual = ZString.Join(',', new string[] { a, b });
+            var expected = string.Join(',', new string[] { a, b });
+            actrual.Should().Be(expected);
+        }
     }
 }

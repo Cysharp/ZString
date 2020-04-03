@@ -11,7 +11,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -26,7 +26,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -56,7 +56,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -71,7 +71,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -101,7 +101,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -116,7 +116,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -146,7 +146,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -161,7 +161,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -191,7 +191,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -206,7 +206,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -236,7 +236,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -251,7 +251,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -281,7 +281,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -296,7 +296,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -326,7 +326,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -341,7 +341,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -371,7 +371,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -386,7 +386,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -416,7 +416,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -431,7 +431,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -461,7 +461,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -476,7 +476,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -506,7 +506,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -521,7 +521,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -551,7 +551,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -566,7 +566,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -596,7 +596,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -611,7 +611,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));
@@ -641,7 +641,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written))
                 {
                     ThrowArgumentException(nameof(value));
@@ -656,7 +656,7 @@ namespace Cysharp.Text
         {
             if(!value.TryFormat(buffer.AsSpan(index), out var written, format.AsSpan()))
             {
-                Grow();
+                Grow(written);
                 if(!value.TryFormat(buffer.AsSpan(index), out written, format.AsSpan()))
                 {
                     ThrowArgumentException(nameof(value));

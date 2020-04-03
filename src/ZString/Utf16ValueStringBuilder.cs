@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Buffers;
+using System.IO;
 using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
-    public partial struct Utf16ValueStringBuilder : IDisposable, IBufferWriter<char>
+    public partial struct Utf16ValueStringBuilder : IDisposable, IBufferWriter<char>, IResettableBufferWriter<char>
     {
         public delegate bool TryFormat<T>(T value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format);
 
@@ -88,13 +89,14 @@ namespace Cysharp.Text
 
         public void TryGrow(int sizeHint)
         {
+
             if (buffer.Length < index + sizeHint)
             {
                 Grow(sizeHint);
             }
         }
 
-        public void Grow(int sizeHint = 0)
+        public void Grow(int sizeHint)
         {
             var nextSize = buffer.Length * 2;
             if (sizeHint != 0)
@@ -178,7 +180,7 @@ namespace Cysharp.Text
         {
             if (!FormatterCache<T>.TryFormatDelegate(value, buffer.AsSpan(index), out var written, default))
             {
-                Grow();
+                Grow(written);
                 if (!FormatterCache<T>.TryFormatDelegate(value, buffer.AsSpan(index), out written, default))
                 {
                     ThrowArgumentException(nameof(value));
@@ -244,6 +246,11 @@ namespace Cysharp.Text
         public void Advance(int count)
         {
             index += count;
+        }
+
+        void IResettableBufferWriter<char>.Reset()
+        {
+            index = 0;
         }
 
         void ThrowArgumentException(string paramName)
