@@ -56,6 +56,29 @@ namespace Cysharp.Text
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        public static string Join<T>(char separator, List<T> values)
+        {
+            var sb = new Utf16ValueStringBuilder(true);
+            try
+            {
+                var count = values.Count;
+                for (int i = 0; i < count; i++)
+                {
+                    if (i != 0)
+                    {
+                        sb.Append(separator);
+                    }
+                    sb.Append(values[i]);
+                }
+                return sb.ToString();
+            }
+            finally
+            {
+                sb.Dispose();
+            }
+        }
+
+        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(char separator, ReadOnlySpan<T> values)
         {
             var sb = new Utf16ValueStringBuilder(true);
@@ -103,6 +126,26 @@ namespace Cysharp.Text
             {
                 sb.Dispose();
             }
+        }
+
+        public static string Join<T>(char separator, ICollection<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
+        }
+
+        public static string Join<T>(char separator, IList<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
+        }
+
+        public static string Join<T>(char separator, IReadOnlyList<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
+        }
+
+        public static string Join<T>(char separator, IReadOnlyCollection<T> values)
+        {
+            return Join(separator, values.AsEnumerable());
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>

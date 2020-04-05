@@ -64,6 +64,35 @@ namespace ZStringTests
         }
 
         [Fact]
+        public void JoinOverloads3()
+        {
+            ZString.Join(',', new string[] { }.ToList()).Should().Be(string.Join(',', new string[0]));
+            ZString.Join(',', new[] { 1 }.ToList()).Should().Be(string.Join(',', new[] { 1 }));
+            ZString.Join(',', new[] { 1, 2 }.ToList()).Should().Be(string.Join(',', new[] { 1, 2 }));
+            ZString.Join(',', new[] { 1, 2, 3 }.ToList()).Should().Be(string.Join(',', new[] { 1, 2, 3 }));
+
+            ZString.Join(',', (IList<int>)new int[] { }).Should().Be(string.Join(',', new string[0]));
+            ZString.Join(',', (IList<int>)new[] { 1 }).Should().Be(string.Join(',', new[] { 1 }));
+            ZString.Join(',', (IList<int>)new[] { 1, 2 }).Should().Be(string.Join(',', new[] { 1, 2 }));
+            ZString.Join(',', (IList<int>)new[] { 1, 2, 3 }).Should().Be(string.Join(',', new[] { 1, 2, 3 }));
+
+            ZString.Join(',', (IReadOnlyList<int>)new int[] { }).Should().Be(string.Join(',', new string[0]));
+            ZString.Join(',', (IReadOnlyList<int>)new[] { 1 }).Should().Be(string.Join(',', new[] { 1 }));
+            ZString.Join(',', (IReadOnlyList<int>)new[] { 1, 2 }).Should().Be(string.Join(',', new[] { 1, 2 }));
+            ZString.Join(',', (IReadOnlyList<int>)new[] { 1, 2, 3 }).Should().Be(string.Join(',', new[] { 1, 2, 3 }));
+
+            ZString.Join(',', (ICollection<int>)new int[] { }).Should().Be(string.Join(',', new string[0]));
+            ZString.Join(',', (ICollection<int>)new[] { 1 }).Should().Be(string.Join(',', new[] { 1 }));
+            ZString.Join(',', (ICollection<int>)new[] { 1, 2 }).Should().Be(string.Join(',', new[] { 1, 2 }));
+            ZString.Join(',', (ICollection<int>)new[] { 1, 2, 3 }).Should().Be(string.Join(',', new[] { 1, 2, 3 }));
+
+            ZString.Join(',', (IReadOnlyCollection<int>)new int[] { }).Should().Be(string.Join(',', new string[0]));
+            ZString.Join(',', (IReadOnlyCollection<int>)new[] { 1 }).Should().Be(string.Join(',', new[] { 1 }));
+            ZString.Join(',', (IReadOnlyCollection<int>)new[] { 1, 2 }).Should().Be(string.Join(',', new[] { 1, 2 }));
+            ZString.Join(',', (IReadOnlyCollection<int>)new[] { 1, 2, 3 }).Should().Be(string.Join(',', new[] { 1, 2, 3 }));
+        }
+
+        [Fact]
         public void CooncatNullTest()
         {
             var str = ZString.Concat(default(string), "foo", "bar");
