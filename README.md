@@ -273,6 +273,12 @@ void BuildMessage(ref Utf16ValueStringBuilder builder)
 
 ---
 
+ Utf8Format, Utf8StringBuilder uses [Utf8Formatter.TryFormat](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.utf8formatter.tryformat) and there format string is not same as standard format. It uses [StandardFormat](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.standardformat), combinate of symbol char and precision. Supported format string symbol can find in Utf8Formatter.TryFormat document(For example Int32 supports `G`, `D`, `N`, `X` and Boolean supports `G`, `I`). Precision(zero padding) can pass after symbol like `D2`. For example `sb.AppendFormat("{0:D2}:{1:D2}:{2:D2}", hour, minute, second)`.
+
+[TryFormat(DateTime)](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.utf8formatter.tryformat?view=netcore-3.1#System_Buffers_Text_Utf8Formatter_TryFormat_System_DateTime_System_Span_System_Byte__System_Int32__System_Buffers_StandardFormat_) and [TryFormat(TimeSpan)](https://docs.microsoft.com/en-us/dotnet/api/system.buffers.text.utf8formatter.tryformat?view=netcore-3.1#System_Buffers_Text_Utf8Formatter_TryFormat_System_TimeSpan_System_Span_System_Byte__System_Int32__System_Buffers_StandardFormat_) symbol is too restricted than standard string format. If you want to use custom format, deconstruct there `Day`, `Hour`, etc.
+
+---
+
 `Utf8ValueStringBuilder` and `Utf16ValueStringBuilder` implements `IBufferWriter` so you can pass serializer(such as `JsonSerializer` of `System.Text.Json`). But be careful to boxing copy, `ValueStringBuilder` is mutable struct. For example,
 
 ```csharp
