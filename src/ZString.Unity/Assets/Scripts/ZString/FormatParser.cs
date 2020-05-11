@@ -42,7 +42,7 @@ namespace Cysharp.Text
                     }
                 }
 
-                if (index == -1 && format[i] == ',' || format[i] == ':')
+                if (index == -1 && (format[i] == ',' && format[i - 1] != '\\') || (format[i] == ':' && format[i - 1] != '\\'))
                 {
                     index = Int32.Parse(format.Slice(1, i - 1));
                     formatStart = i + 1;

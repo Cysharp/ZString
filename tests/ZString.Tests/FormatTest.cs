@@ -96,5 +96,15 @@ namespace ZStringTests
         {
             ZString.Format("{0:00000000}-{1:00000000}", 100, 200).Should().Be("00000100-00000200");
         }
+
+        [Fact]
+        public void Escape()
+        {
+            TimeSpan span = new TimeSpan(12, 34, 56);
+            var reference = string.Format(@"{0:h\,h\:mm\:ss}", span);
+
+            var actual = ZString.Format(@"{0:h\,h\:mm\:ss}", span);
+            actual.Should().Be(reference);
+        }
     }
 }

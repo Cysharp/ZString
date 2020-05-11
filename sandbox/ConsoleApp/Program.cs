@@ -25,12 +25,13 @@ namespace ConsoleApp
 
         static void Run()
         {
-var a = new string('a', 10000);
-var b = new string('b', 1000000);
+            TimeSpan span = new TimeSpan(12, 34, 56);
+            Console.WriteLine($"string.Format: {string.Format(@"{0:h\,h\:mm\:ss}", span)}");
 
-ZString.Join(',', new string[] { a, b });
 
-            
+            Console.WriteLine($"ZString.Format: {ZString.Format(@"{0:h\,h\:mm\:ss}", span)}");
+
+
 
         }
     }
