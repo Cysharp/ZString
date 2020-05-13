@@ -31,6 +31,8 @@ All `ZString` methods only allocate final string. Also, `ZString` has enabled to
 
 The blog post of detailed explanation by author: [medium@neuecc/ZString](https://medium.com/@neuecc/zstring-zero-allocation-stringbuilder-for-net-core-and-unity-f3163c88c887)
 
+Related project for loggin using with ZString, [Cysharp/ZLogger](https://github.com/Cysharp/ZLogger) - Zero Allocation Text/Strcutured Logger.
+
 Getting Started
 ---
 For .NET Core, use NuGet.
