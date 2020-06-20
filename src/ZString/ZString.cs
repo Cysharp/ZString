@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Cysharp.Text
@@ -45,7 +46,18 @@ namespace Cysharp.Text
                     {
                         sb.Append(separator);
                     }
-                    sb.Append(values[i]);
+                    var item = values[i];
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
                 return sb.ToString();
             }
@@ -68,7 +80,18 @@ namespace Cysharp.Text
                     {
                         sb.Append(separator);
                     }
-                    sb.Append(values[i]);
+                    var item = values[i];
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
                 return sb.ToString();
             }
@@ -90,7 +113,18 @@ namespace Cysharp.Text
                     {
                         sb.Append(separator);
                     }
-                    sb.Append(values[i]);
+                    var item = values[i];
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
                 return sb.ToString();
             }
@@ -117,7 +151,17 @@ namespace Cysharp.Text
                     {
                         isFirst = false;
                     }
-                    sb.Append(item);
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
 
                 return sb.ToString();
@@ -160,7 +204,18 @@ namespace Cysharp.Text
                     {
                         sb.Append(separator);
                     }
-                    sb.Append(values[i]);
+                    var item = values[i];
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
                 return sb.ToString();
             }
@@ -183,7 +238,18 @@ namespace Cysharp.Text
                     {
                         sb.Append(separator);
                     }
-                    sb.Append(values[i]);
+                    var item = values[i];
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
                 return sb.ToString();
             }
@@ -205,7 +271,18 @@ namespace Cysharp.Text
                     {
                         sb.Append(separator);
                     }
-                    sb.Append(values[i]);
+                    var item = values[i];
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
                 return sb.ToString();
             }
@@ -252,7 +329,17 @@ namespace Cysharp.Text
                     {
                         isFirst = false;
                     }
-                    sb.Append(item);
+                    if (typeof(T) == typeof(string))
+                    {
+                        if (item != null)
+                        {
+                            sb.Append(Unsafe.As<string>(item));
+                        }
+                    }
+                    else
+                    {
+                        sb.Append(item);
+                    }
                 }
 
                 return sb.ToString();
