@@ -121,3 +121,5 @@ src/ZString.Unity/Assembly-CSharp.csproj
 src/ZString.Unity/Assembly-CSharp-Editor.csproj
 src/ZString.Unity/ZString.csproj
 src/ZString.Unity/ZString.Unity.sln
+
+src/ZString.Unity/ZString.Unity.unitypackage
