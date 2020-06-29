@@ -109,5 +109,28 @@ namespace ZStringTests
             var expected = string.Join(',', new string[] { a, b });
             actrual.Should().Be(expected);
         }
+
+        [Fact]
+        public void JoinStrings()
+        {
+            var values = new[] { "abc", null, "def" };
+            {
+                const char sep = ',';
+                var expected = string.Join(sep, values);
+                ZString.Join(sep, new ReadOnlySpan<string>(values)).Should().Be(expected);
+                ZString.Join(sep, values).Should().Be(expected);
+                ZString.Join(sep, values.ToList()).Should().Be(expected);
+                ZString.Join(sep, values.AsEnumerable()).Should().Be(expected);
+            }
+
+            {
+                const string sep = "_,_";
+                var expected = string.Join(sep, values);
+                ZString.Join(sep, new ReadOnlySpan<string>(values)).Should().Be(expected);
+                ZString.Join(sep, values).Should().Be(expected);
+                ZString.Join(sep, values.ToList()).Should().Be(expected);
+                ZString.Join(sep, values.AsEnumerable()).Should().Be(expected);
+            }
+        }
     }
 }

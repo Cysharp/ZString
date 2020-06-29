@@ -158,12 +158,19 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
+            Append(value.AsSpan());
+        }
+
+        /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(ReadOnlySpan<char> value)
+        {
             if (buffer.Length - index < value.Length)
             {
                 Grow(value.Length);
             }
 
-            value.CopyTo(0, buffer, index, value.Length);
+            value.CopyTo(buffer.AsSpan(index));
             index += value.Length;
         }
 
