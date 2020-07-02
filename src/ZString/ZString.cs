@@ -126,6 +126,54 @@ namespace Cysharp.Text
             return JoinInternal(separator.AsSpan(), values);
         }
 
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(params T[] values)
+        {
+            return JoinInternal<T>(default, values.AsSpan());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(List<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(ReadOnlySpan<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(ICollection<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IList<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IReadOnlyList<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IReadOnlyCollection<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IEnumerable<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
         static string JoinInternal<T>(ReadOnlySpan<char> separator, IList<T> values)
         {
             var count = values.Count;
@@ -230,160 +278,6 @@ namespace Cysharp.Text
                         isFirst = false;
                     }
 
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
-
-                return sb.ToString();
-            }
-            finally
-            {
-                sb.Dispose();
-            }
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(params T[] values)
-        {
-            return ConcatInternal<T>(values.AsSpan());
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(List<T> values)
-        {
-            return ConcatInternal(values);
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(ReadOnlySpan<T> values)
-        {
-            return ConcatInternal(values);
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(ICollection<T> values)
-        {
-            return ConcatInternal(values.AsEnumerable());
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(IList<T> values)
-        {
-            return ConcatInternal(values);
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(IReadOnlyList<T> values)
-        {
-            return ConcatInternal(values.AsEnumerable());
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(IReadOnlyCollection<T> values)
-        {
-            return ConcatInternal(values.AsEnumerable());
-        }
-
-        /// <summary>Concatenates the string representation of some specified objects.</summary>
-        public static string Concat<T>(IEnumerable<T> values)
-        {
-            return ConcatInternal(values);
-        }
-
-        static string ConcatInternal<T>(IList<T> values)
-        {
-            var count = values.Count;
-            if (count == 0)
-            {
-                return string.Empty;
-            }
-            else if (typeof(T) == typeof(string) && count == 1)
-            {
-                return Unsafe.As<string>(values[0]);
-            }
-
-            var sb = new Utf16ValueStringBuilder(true);
-            try
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    var item = values[i];
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
-                return sb.ToString();
-            }
-            finally
-            {
-                sb.Dispose();
-            }
-        }
-
-        static string ConcatInternal<T>(ReadOnlySpan<T> values)
-        {
-            if (values.Length == 0)
-            {
-                return string.Empty;
-            }
-            else if (typeof(T) == typeof(string) && values.Length == 1)
-            {
-                return Unsafe.As<string>(values[0]);
-            }
-
-            var sb = new Utf16ValueStringBuilder(true);
-            try
-            {
-                for (int i = 0; i < values.Length; i++)
-                {
-                    var item = values[i];
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
-                return sb.ToString();
-            }
-            finally
-            {
-                sb.Dispose();
-            }
-        }
-
-        static string ConcatInternal<T>(IEnumerable<T> values)
-        {
-            var sb = new Utf16ValueStringBuilder(true);
-            try
-            {
-                foreach (var item in values)
-                {
                     if (typeof(T) == typeof(string))
                     {
                         var s = Unsafe.As<string>(item);
