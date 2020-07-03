@@ -227,6 +227,141 @@ namespace Cysharp.Text
             AppendLine();
         }
 
+        /// <summary>
+        /// Replaces all instances of one character with another in this builder.
+        /// </summary>
+        /// <param name="oldChar">The character to replace.</param>
+        /// <param name="newChar">The character to replace <paramref name="oldChar"/> with.</param>
+        public void Replace(char oldChar, char newChar) => Replace(oldChar, newChar, 0, Length);
+
+        /// <summary>
+        /// Replaces all instances of one character with another in this builder.
+        /// </summary>
+        /// <param name="oldChar">The character to replace.</param>
+        /// <param name="newChar">The character to replace <paramref name="oldChar"/> with.</param>
+        /// <param name="startIndex">The index to start in this builder.</param>
+        /// <param name="count">The number of characters to read in this builder.</param>
+        public void Replace(char oldChar, char newChar, int startIndex, int count)
+        {
+            int currentLength = Length;
+            if ((uint)startIndex > (uint)currentLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (count < 0 || startIndex > currentLength - count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            int endIndex = startIndex + count;
+
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                if (buffer[i] == oldChar)
+                {
+                    buffer[i] = newChar;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Replaces all instances of one string with another in this builder.
+        /// </summary>
+        /// <param name="oldValue">The string to replace.</param>
+        /// <param name="newValue">The string to replace <paramref name="oldValue"/> with.</param>
+        /// <remarks>
+        /// If <paramref name="newValue"/> is <c>null</c>, instances of <paramref name="oldValue"/>
+        /// are removed from this builder.
+        /// </remarks>
+        public void Replace(string oldValue, string newValue) => Replace(oldValue, newValue, 0, Length);
+
+        /// <summary>
+        /// Replaces all instances of one string with another in part of this builder.
+        /// </summary>
+        /// <param name="oldValue">The string to replace.</param>
+        /// <param name="newValue">The string to replace <paramref name="oldValue"/> with.</param>
+        /// <param name="startIndex">The index to start in this builder.</param>
+        /// <param name="count">The number of characters to read in this builder.</param>
+        /// <remarks>
+        /// If <paramref name="newValue"/> is <c>null</c>, instances of <paramref name="oldValue"/>
+        /// are removed from this builder.
+        /// </remarks>
+        public void Replace(string oldValue, string newValue, int startIndex, int count)
+        {
+            int currentLength = Length;
+
+            if ((uint)startIndex > (uint)currentLength)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (count < 0 || startIndex > currentLength - count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            if (oldValue == null)
+            {
+                throw new ArgumentNullException(nameof(oldValue));
+            }
+
+            if (oldValue.Length == 0)
+            {
+                throw new ArgumentException("oldValue.Length is 0", nameof(oldValue));
+            }
+
+            newValue = newValue ?? string.Empty;
+
+            var readOnlySpan = AsSpan();
+            int endIndex = startIndex + count;
+            int matchCount = 0;
+
+            for (int i = startIndex; i < endIndex; i += oldValue.Length)
+            {
+                var span = readOnlySpan.Slice(i, endIndex - i);
+                var pos = span.IndexOf(oldValue.AsSpan(), StringComparison.Ordinal);
+                if (pos == -1)
+                {
+                    break;
+                }
+                i += pos;
+                matchCount++;
+            }
+
+            if (matchCount == 0)
+                return;
+
+            var newBuffer = ArrayPool<char>.Shared.Rent(Math.Max(DefaultBufferSize, Length + (newValue.Length - oldValue.Length) * matchCount));
+
+            buffer.AsSpan(0, startIndex).CopyTo(newBuffer);
+            int newBufferIndex = startIndex;
+
+            for (int i = startIndex; i < endIndex; i += oldValue.Length)
+            {
+                var span = readOnlySpan.Slice(i, endIndex - i);
+                var pos = span.IndexOf(oldValue.AsSpan(), StringComparison.Ordinal);
+                if (pos == -1)
+                {
+                    var remain = readOnlySpan.Slice(i);
+                    remain.CopyTo(newBuffer.AsSpan(newBufferIndex));
+                    newBufferIndex += remain.Length;
+                    break;
+                }
+                readOnlySpan.Slice(i, pos).CopyTo(newBuffer.AsSpan(newBufferIndex));
+                newValue.AsSpan().CopyTo(newBuffer.AsSpan(newBufferIndex + pos));
+                newBufferIndex += pos + newValue.Length;
+                i += pos;
+            }
+
+            if (buffer.Length != ThreadStaticBufferSize)
+            {
+                ArrayPool<char>.Shared.Return(buffer);
+            }
+            buffer = newBuffer;
+            index = newBufferIndex;
+        }
+
         // Output
 
         /// <summary>Copy inner buffer to the destination span.</summary>
