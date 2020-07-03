@@ -87,6 +87,11 @@ namespace Cysharp.Text
             index = 0;
         }
 
+        public void Clear()
+        {
+            index = 0;
+        }
+
         public void TryGrow(int sizeHint)
         {
 
@@ -146,6 +151,18 @@ namespace Cysharp.Text
             buffer[index++] = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(char value, int repeatCount)
+        {
+            if (repeatCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(repeatCount));
+            }
+
+            GetSpan(repeatCount).Fill(value);
+            Advance(repeatCount);
+        }
+
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendLine(char value)
@@ -161,6 +178,14 @@ namespace Cysharp.Text
             Append(value.AsSpan());
         }
 
+        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendLine(string value)
+        {
+            Append(value);
+            AppendLine();
+        }
+
         /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(ReadOnlySpan<char> value)
@@ -174,9 +199,8 @@ namespace Cysharp.Text
             index += value.Length;
         }
 
-        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(string value)
+        public void AppendLine(ReadOnlySpan<char> value)
         {
             Append(value);
             AppendLine();
