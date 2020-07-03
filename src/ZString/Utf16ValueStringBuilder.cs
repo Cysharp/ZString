@@ -362,6 +362,44 @@ namespace Cysharp.Text
             index = newBufferIndex;
         }
 
+        /// <summary>
+        /// Removes a range of characters from this builder.
+        /// </summary>
+        /// <remarks>
+        /// This method does not reduce the capacity of this builder.
+        /// </remarks>
+        public void Remove(int startIndex, int length)
+        {
+            if (length < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (startIndex < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (length > Length - startIndex)
+            {
+                throw new ArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (Length == length && startIndex == 0)
+            {
+                index = 0;
+                return;
+            }
+
+            if (length == 0)
+            {
+                return;
+            }
+
+            buffer.AsSpan(startIndex + length).CopyTo(buffer.AsSpan(startIndex));
+            index -= length;
+        }
+
         // Output
 
         /// <summary>Copy inner buffer to the destination span.</summary>
