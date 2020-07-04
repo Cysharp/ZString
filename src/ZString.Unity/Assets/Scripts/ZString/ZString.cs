@@ -179,25 +179,11 @@ namespace Cysharp.Text
             return JoinInternal(default, values);
         }
 
-        readonly struct ReadOnlyListAdoptor<T> : IReadOnlyList<T>
-        {
-            readonly IList<T> _list;
-
-            public ReadOnlyListAdoptor(IList<T> list) => _list = list;
-
-            public T this[int index] => _list[index];
-
-            public int Count => _list.Count;
-
-            public IEnumerator<T> GetEnumerator() => _list.GetEnumerator();
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-        }
-
         static string JoinInternal<T>(ReadOnlySpan<char> separator, IList<T> values)
         {
             var readOnlyList = values as IReadOnlyList<T>;
-            readOnlyList = readOnlyList ?? new ReadOnlyListAdoptor<T>(values); // occur boxing
+            // Boxing will occur, but JIT will be de-virtualized.
+            readOnlyList = readOnlyList ?? new ReadOnlyListAdaptor<T>(values);
             return JoinInternal(separator, readOnlyList);
         }
 
@@ -216,27 +202,7 @@ namespace Cysharp.Text
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                for (int i = 0; i < count; i++)
-                {
-                    if (i != 0)
-                    {
-                        sb.Append(separator);
-                    }
-
-                    var item = values[i];
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
+                sb.AppendJoinInternal(separator, values);
                 return sb.ToString();
             }
             finally
@@ -259,27 +225,7 @@ namespace Cysharp.Text
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                for (int i = 0; i < values.Length; i++)
-                {
-                    if (i != 0)
-                    {
-                        sb.Append(separator);
-                    }
-
-                    var item = values[i];
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
+                sb.AppendJoinInternal(separator, values);
                 return sb.ToString();
             }
             finally
@@ -293,32 +239,7 @@ namespace Cysharp.Text
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                var isFirst = true;
-                foreach (var item in values)
-                {
-                    if (!isFirst)
-                    {
-                        sb.Append(separator);
-                    }
-                    else
-                    {
-                        isFirst = false;
-                    }
-
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
-
+                sb.AppendJoinInternal(separator, values);
                 return sb.ToString();
             }
             finally
