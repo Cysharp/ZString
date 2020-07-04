@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 
 namespace Cysharp.Text
 {
@@ -17,7 +18,7 @@ namespace Cysharp.Text
                     {
                         throw new FormatException("invalid format");
                     }
-                    
+
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
