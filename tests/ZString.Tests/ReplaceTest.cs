@@ -43,6 +43,19 @@ namespace ZStringTests
                 zsb.ToString().Should().Be(bcl.ToString());
             }
 
+            using (var zsb = ZString.CreateStringBuilder(notNested: true))
+            {
+                var text = "num num num";
+                zsb.Append(text);
+                var bcl = new StringBuilder(text);
+
+                // over DefaultBufferSize
+                zsb.Replace("num", new string('1', 32768), 1, text.Length - 2);
+                bcl.Replace("num", new string('1', 32768), 1, text.Length - 2);
+
+                zsb.ToString().Should().Be(bcl.ToString());
+            }
+
             using (var zsb = ZString.CreateStringBuilder())
             {
                 var text = "The quick brown dog jumps over the lazy cat.";

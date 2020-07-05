@@ -227,6 +227,14 @@ namespace Cysharp.Text
             AppendLine();
         }
 
+        static class ExceptionUtil
+        {
+            public static void ThrowArgumentOutOfRangeException(string paramName)
+            {
+                throw new ArgumentOutOfRangeException(paramName);
+            }
+        }
+
         /// <summary>
         /// Replaces all instances of one character with another in this builder.
         /// </summary>
@@ -246,12 +254,12 @@ namespace Cysharp.Text
             int currentLength = Length;
             if ((uint)startIndex > (uint)currentLength)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
             }
 
             if (count < 0 || startIndex > currentLength - count)
             {
-                throw new ArgumentOutOfRangeException(nameof(count));
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
             }
 
             int endIndex = startIndex + count;
@@ -275,6 +283,8 @@ namespace Cysharp.Text
         /// are removed from this builder.
         /// </remarks>
         public void Replace(string oldValue, string newValue) => Replace(oldValue, newValue, 0, Length);
+        
+        public void Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue) => Replace(oldValue, newValue, 0, Length);
 
         /// <summary>
         /// Replaces all instances of one string with another in part of this builder.
@@ -289,29 +299,32 @@ namespace Cysharp.Text
         /// </remarks>
         public void Replace(string oldValue, string newValue, int startIndex, int count)
         {
+            if (oldValue == null)
+            {
+                throw new ArgumentNullException(nameof(oldValue));
+            }
+
+            Replace(oldValue.AsSpan(), newValue.AsSpan(), startIndex, count);
+        }
+
+        public void Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, int startIndex, int count)
+        {
             int currentLength = Length;
 
             if ((uint)startIndex > (uint)currentLength)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
             }
 
             if (count < 0 || startIndex > currentLength - count)
             {
-                throw new ArgumentOutOfRangeException(nameof(count));
-            }
-
-            if (oldValue == null)
-            {
-                throw new ArgumentNullException(nameof(oldValue));
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
             }
 
             if (oldValue.Length == 0)
             {
                 throw new ArgumentException("oldValue.Length is 0", nameof(oldValue));
             }
-
-            newValue = newValue ?? string.Empty;
 
             var readOnlySpan = AsSpan();
             int endIndex = startIndex + count;
@@ -320,7 +333,7 @@ namespace Cysharp.Text
             for (int i = startIndex; i < endIndex; i += oldValue.Length)
             {
                 var span = readOnlySpan.Slice(i, endIndex - i);
-                var pos = span.IndexOf(oldValue.AsSpan(), StringComparison.Ordinal);
+                var pos = span.IndexOf(oldValue, StringComparison.Ordinal);
                 if (pos == -1)
                 {
                     break;
@@ -340,7 +353,7 @@ namespace Cysharp.Text
             for (int i = startIndex; i < endIndex; i += oldValue.Length)
             {
                 var span = readOnlySpan.Slice(i, endIndex - i);
-                var pos = span.IndexOf(oldValue.AsSpan(), StringComparison.Ordinal);
+                var pos = span.IndexOf(oldValue, StringComparison.Ordinal);
                 if (pos == -1)
                 {
                     var remain = readOnlySpan.Slice(i);
@@ -349,7 +362,7 @@ namespace Cysharp.Text
                     break;
                 }
                 readOnlySpan.Slice(i, pos).CopyTo(newBuffer.AsSpan(newBufferIndex));
-                newValue.AsSpan().CopyTo(newBuffer.AsSpan(newBufferIndex + pos));
+                newValue.CopyTo(newBuffer.AsSpan(newBufferIndex + pos));
                 newBufferIndex += pos + newValue.Length;
                 i += pos;
             }
@@ -372,17 +385,17 @@ namespace Cysharp.Text
         {
             if (length < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(length));
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(length));
             }
 
             if (startIndex < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(startIndex));
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
             }
 
             if (length > Length - startIndex)
             {
-                throw new ArgumentOutOfRangeException(nameof(length));
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(length));
             }
 
             if (Length == length && startIndex == 0)
@@ -396,9 +409,11 @@ namespace Cysharp.Text
                 return;
             }
 
-            buffer.AsSpan(startIndex + length).CopyTo(buffer.AsSpan(startIndex));
+            int remain = startIndex + length;
+            buffer.AsSpan(remain, Length - remain).CopyTo(buffer.AsSpan(startIndex));
             index -= length;
         }
+
 
         // Output
 
