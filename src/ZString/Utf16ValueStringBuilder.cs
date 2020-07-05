@@ -53,6 +53,16 @@ namespace Cysharp.Text
         /// <summary>Get the written buffer data.</summary>
         public ArraySegment<char> AsArraySegment() => new ArraySegment<char>(buffer, 0, index);
 
+        /// <summary>
+        /// Initializes a new instance
+        /// </summary>
+        /// <param name="disposeImmediately">
+        /// If true uses thread-static buffer that is faster but must return immediately.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown when <c>new StringBuilder(disposeImmediately: true)</c> or <c>ZString.CreateStringBuilder(notNested: true)</c> is nested.
+        /// See the README.md
+        /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Utf16ValueStringBuilder(bool disposeImmediately)
         {
