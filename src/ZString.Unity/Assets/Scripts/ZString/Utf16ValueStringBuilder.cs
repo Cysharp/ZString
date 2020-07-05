@@ -37,8 +37,12 @@ namespace Cysharp.Text
         [ThreadStatic]
         static char[] scratchBuffer;
 
+        [ThreadStatic]
+        internal static bool scratchBufferUsed;
+
         char[] buffer;
         int index;
+        bool disposeImmediately;
 
         /// <summary>Length of written buffer.</summary>
         public int Length => index;
@@ -52,6 +56,11 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Utf16ValueStringBuilder(bool disposeImmediately)
         {
+            if (disposeImmediately && scratchBufferUsed)
+            {
+                ThrowNestedException();
+            }
+
             char[] buf;
             if (disposeImmediately)
             {
@@ -60,6 +69,7 @@ namespace Cysharp.Text
                 {
                     buf = scratchBuffer = new char[ThreadStaticBufferSize];
                 }
+                scratchBufferUsed = true;
             }
             else
             {
@@ -68,6 +78,7 @@ namespace Cysharp.Text
 
             buffer = buf;
             index = 0;
+            this.disposeImmediately = disposeImmediately;
         }
 
         /// <summary>
@@ -85,6 +96,10 @@ namespace Cysharp.Text
             }
             buffer = null;
             index = 0;
+            if (disposeImmediately)
+            {
+                scratchBufferUsed = false;
+            }
         }
 
         public void TryGrow(int sizeHint)
@@ -268,6 +283,11 @@ namespace Cysharp.Text
         void ThrowFormatException()
         {
             throw new FormatException("Index (zero based) must be greater than or equal to zero and less than the size of the argument list.");
+        }
+
+        static void ThrowNestedException()
+        {
+            throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
         }
 
         /// <summary>
