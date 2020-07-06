@@ -236,6 +236,59 @@ namespace Cysharp.Text
         }
 
         /// <summary>
+        /// Inserts a string 0 or more times into this builder at the specified position.
+        /// </summary>
+        /// <param name="index">The index to insert in this builder.</param>
+        /// <param name="value">The string to insert.</param>
+        /// <param name="count">The number of times to insert the string.</param>
+        public void Insert(int index, string value, int count)
+        {
+            Insert(index, value.AsSpan(), count);
+        }
+
+        public void Insert(int index, string value)
+        {
+            Insert(index, value.AsSpan(), 1);
+        }
+
+        public void Insert(int index, ReadOnlySpan<char> value, int count)
+        {
+            if (count < 0)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
+            }
+
+            int currentLength = Length;
+            if ((uint)index > (uint)currentLength)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (value.Length == 0 || count == 0)
+            {
+                return;
+            }
+
+            var newSize = index + value.Length * count;
+            var newBuffer = ArrayPool<char>.Shared.Rent(Math.Max(DefaultBufferSize, newSize));
+
+            buffer.AsSpan(0, index).CopyTo(newBuffer);
+            int newBufferIndex = index;
+
+            for (int i = 0; i < count; i++)
+            {
+                value.CopyTo(newBuffer.AsSpan(newBufferIndex));
+                newBufferIndex += value.Length;
+            }
+
+            int remainLnegth = this.index - index;
+            buffer.AsSpan(index, remainLnegth).CopyTo(newBuffer.AsSpan(newBufferIndex));
+
+            buffer = newBuffer;
+            this.index = newBufferIndex + remainLnegth;
+        }
+
+        /// <summary>
         /// Replaces all instances of one character with another in this builder.
         /// </summary>
         /// <param name="oldChar">The character to replace.</param>
