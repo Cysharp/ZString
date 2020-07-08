@@ -68,6 +68,20 @@ namespace Cysharp.Text
             {
                 return new TryFormat<System.UInt64>((System.UInt64 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
+            if (type == typeof(System.IntPtr))
+            {
+                // ignore format
+                return new TryFormat<System.IntPtr>((System.IntPtr x, Span<byte> dest, out int written, StandardFormat _) => System.IntPtr.Size == 4
+                    ? Utf8Formatter.TryFormat(x.ToInt32(),  dest, out written, default)
+                    : Utf8Formatter.TryFormat(x.ToInt64(),  dest, out written, default));
+            }
+            if (type == typeof(System.UIntPtr))
+            {
+                // ignore format
+                return new TryFormat<System.UIntPtr>((System.UIntPtr x, Span<byte> dest, out int written, StandardFormat _) => System.UIntPtr.Size == 4
+                    ? Utf8Formatter.TryFormat(x.ToUInt32(),  dest, out written, default)
+                    : Utf8Formatter.TryFormat(x.ToUInt64(),  dest, out written, default));
+            }
 
             return null;
         }

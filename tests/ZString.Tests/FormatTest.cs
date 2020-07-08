@@ -98,6 +98,19 @@ namespace ZStringTests
         }
 
         [Fact]
+        public void FormatIntPtr()
+        {
+            // IntPtr/UIntPtr ignores format
+            Test("abc{0}def{1:X}", new IntPtr(int.MinValue), new IntPtr(int.MaxValue));
+            Test("abc{0}def{1:X}", new UIntPtr(uint.MinValue), new UIntPtr(uint.MaxValue));
+            if (IntPtr.Size == 8)
+            {
+                Test("abc{0}def{1:X}", new IntPtr(long.MinValue), new IntPtr(long.MaxValue));
+                Test("abc{0}def{1:X}", new UIntPtr(ulong.MinValue), new UIntPtr(ulong.MaxValue));
+            }
+        }
+
+        [Fact]
         public void Escape()
         {
             TimeSpan span = new TimeSpan(12, 34, 56);
