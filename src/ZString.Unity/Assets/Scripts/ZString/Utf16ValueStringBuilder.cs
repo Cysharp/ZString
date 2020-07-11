@@ -278,6 +278,27 @@ namespace Cysharp.Text
             FormatterCache<T>.TryFormatDelegate = formatMethod;
         }
 
+        static TryFormat<T?> CreateNullableFormatter<T>() where T : struct
+        {
+            return new TryFormat<T?>((T? x, Span<char> dest, out int written, ReadOnlySpan<char> format) =>
+            {
+                if (x == null)
+                {
+                    written = 0;
+                    return true;
+                }
+                return FormatterCache<T>.TryFormatDelegate(x.Value, dest, out written, format);
+            });
+        }
+
+        /// <summary>
+        /// Supports the Nullable type for a given struct type.
+        /// </summary>
+        public static void EnableNullableFormat<T>() where T : struct
+        {
+            RegisterTryFormat<T?>(CreateNullableFormatter<T>());
+        }
+
         public static class FormatterCache<T>
         {
             public static TryFormat<T> TryFormatDelegate;

@@ -86,6 +86,15 @@ namespace ZStringTests
         }
 
         [Fact]
+        public void Nullable()
+        {
+            Test("abc{0}def{1}ghi", (int?)100, (int?)1);
+            Test("abc{0:X}def{1:X}ghi", (int?)100, (int?)1);
+            Test("abc{0}def{1}ghi", (Guid?)Guid.NewGuid(), (Guid?)null);
+            Test("abc{0:e}def{1:e}ghi", (double?)Math.PI, (double?)null);
+        }
+
+        [Fact]
         public void Comment()
         {
             Test("abc{{0}}def{1}ghi", 100, 200);
