@@ -347,7 +347,9 @@ namespace Cysharp.Text
                     return true;
                 }
 
-                var s = value.ToString();
+                var s = (value is IFormattable formattable && format.Length != 0) ?
+                    formattable.ToString(format.ToString(), null) :
+                    value.ToString();
 
                 // also use this length when result is false.
                 written = s.Length;

@@ -344,7 +344,9 @@ namespace Cysharp.Text
                     return true;
                 }
 
-                var s = value.ToString();
+                var s = typeof(T) == typeof(string) ? Unsafe.As<string>(value) :
+                    (value is IFormattable formattable && format != default) ? formattable.ToString(format.ToString(), null) :
+                    value.ToString();
 
                 // also use this length when result is false.
                 written = UTF8NoBom.GetMaxByteCount(s.Length);

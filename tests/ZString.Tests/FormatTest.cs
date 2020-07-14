@@ -2,6 +2,7 @@ using Cysharp.Text;
 using FluentAssertions;
 using System;
 using System.Buffers;
+using System.Numerics;
 using System.Text;
 using Xunit;
 
@@ -117,6 +118,14 @@ namespace ZStringTests
                 Test("abc{0}def{1:X}", new IntPtr(long.MinValue), new IntPtr(long.MaxValue));
                 Test("abc{0}def{1:X}", new UIntPtr(ulong.MinValue), new UIntPtr(ulong.MaxValue));
             }
+        }
+
+        [Fact]
+        public void FormattableObject()
+        {
+            Test("abc{0:}def{1:F3}", (object)default(Vector2), (object)new Vector2(MathF.PI));
+            Test("abc{0:E0}def{1:N}", (object)new Vector3(float.MinValue, float.NaN, float.MaxValue),
+                (object)new Vector3(MathF.PI));
         }
 
         [Fact]
