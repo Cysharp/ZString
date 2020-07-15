@@ -168,18 +168,26 @@ namespace Cysharp.Text
                 throw new ArgumentOutOfRangeException(nameof(repeatCount));
             }
 
-            var maxLen = UTF8NoBom.GetMaxByteCount(1);
-            Span<byte> utf8Bytes = stackalloc byte[maxLen];
-            ReadOnlySpan<char> chars = stackalloc char[1] { value };
-
-            int len = UTF8NoBom.GetBytes(chars, utf8Bytes);
-
-            TryGrow(len * repeatCount);
-
-            for (int i = 0; i < repeatCount; i++)
+            if (value <= 0x7F) // ASCII
             {
-                utf8Bytes.CopyTo(GetSpan(len));
-                Advance(len);
+                GetSpan(repeatCount).Fill((byte)value);
+                Advance(repeatCount);
+            }
+            else
+            { 
+                var maxLen = UTF8NoBom.GetMaxByteCount(1);
+                Span<byte> utf8Bytes = stackalloc byte[maxLen];
+                ReadOnlySpan<char> chars = stackalloc char[1] { value };
+
+                int len = UTF8NoBom.GetBytes(chars, utf8Bytes);
+
+                TryGrow(len * repeatCount);
+
+                for (int i = 0; i < repeatCount; i++)
+                {
+                    utf8Bytes.CopyTo(GetSpan(len));
+                    Advance(len);
+                }
             }
         }
 
