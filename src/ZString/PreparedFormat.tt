@@ -55,49 +55,34 @@ namespace Cysharp.Text
         {
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
+                    case FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = FormatString.AsSpan(item.Offset, item.Count);
 <# if(isUtf16) { #>
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
 <# } else { #>
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
+                            var size = Utf8ValueStringBuilder.UTF8NoBom.GetMaxByteCount(item.Count);
+                            var span = sb.GetSpan(size);
+                            var count = Utf8ValueStringBuilder.UTF8NoBom.GetBytes(strSpan, span);
+                            sb.Advance(count);
 <# } #>
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
+                        }
+                        break;
 <# for(var j = 0; j < i; j++) { #>
-                        case <#= j #>:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!<#= utf #>ValueStringBuilder.FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, span, out var argWritten, <#= isUtf16 ? "item.FormatString.AsSpan()" : "item.StandardFormat" #>))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!<#= utf #>ValueStringBuilder.FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, span, out argWritten, <#= isUtf16 ? "item.FormatString.AsSpan()" : "item.StandardFormat" #>))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg<#= j + 1 #>));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-<# } // for(j) #>
-                        default:
+                    case <#= j #>:
+                        {
+                            <#= utf #>PreparedFormat.FormatTo(ref sb, item, arg<#= j + 1 #>, nameof(arg<#= j + 1 #>));
                             break;
-                    }
+                        }
+<# } // for(j) #>
                 }
             }
         }
     }
-
 <# } // for(i) #>
 <# } // foreach(utf) #>
 }

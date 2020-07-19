@@ -1,6 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
 using System.Buffers;
-using System;
+using System.Runtime.CompilerServices;
+
+using static Cysharp.Text.Utf8ValueStringBuilder;
 
 namespace Cysharp.Text
 {
@@ -9,10 +11,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1>(IBufferWriter<byte> bufferWriter, string format, T1 arg1)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -39,27 +47,15 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -67,9 +63,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -77,11 +73,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -99,10 +97,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -129,42 +133,18 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -172,9 +152,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -182,11 +162,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -204,10 +186,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -234,57 +222,21 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -292,9 +244,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -302,11 +254,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -324,10 +278,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -354,72 +314,24 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -427,9 +339,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -437,11 +349,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -459,10 +373,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -489,87 +409,27 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -577,9 +437,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -587,11 +447,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -609,10 +471,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -639,102 +507,30 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -742,9 +538,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -752,11 +548,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -774,10 +572,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -804,117 +608,33 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -922,9 +642,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -932,11 +652,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -954,10 +676,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -984,132 +712,36 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -1117,9 +749,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -1127,11 +759,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1149,10 +783,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -1179,147 +819,39 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -1327,9 +859,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -1337,11 +869,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1359,10 +893,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -1389,162 +929,42 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -1552,9 +972,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -1562,11 +982,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1584,10 +1006,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -1614,177 +1042,45 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -1792,9 +1088,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -1802,11 +1098,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1824,10 +1122,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -1854,192 +1158,48 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -2047,9 +1207,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -2057,11 +1217,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2079,10 +1241,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -2109,207 +1277,51 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -2317,9 +1329,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -2327,11 +1339,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2349,10 +1363,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -2379,222 +1399,54 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            continue;
                         case 13:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -2602,9 +1454,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -2612,11 +1464,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2634,10 +1488,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -2664,237 +1524,57 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            continue;
                         case 13:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
+                            continue;
                         case 14:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg15, indexParse.Alignment, writeFormat, nameof(arg15));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -2902,9 +1582,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -2912,11 +1592,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2934,10 +1616,16 @@ namespace Cysharp.Text
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -2964,252 +1652,60 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     var writeFormat = StandardFormat.Parse(indexParse.FormatString);
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            continue;
                         case 13:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
+                            continue;
                         case 14:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg15, indexParse.Alignment, writeFormat, nameof(arg15));
+                            continue;
                         case 15:
-                            {
-                                var buffer = bufferWriter.GetSpan();
-                                if (!Utf8ValueStringBuilder.FormatterCache<T16>.TryFormatDelegate(arg16, buffer, out var written, writeFormat))
-                                {
-                                    bufferWriter.Advance(0);
-                                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T16>.TryFormatDelegate(arg16, buffer, out written, writeFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg16));
-                                    }
-                                }
-                                bufferWriter.Advance(written);
-                                goto NEXT_LOOP;
-                            }
+                            Utf8FormatInternal(bufferWriter, arg16, indexParse.Alignment, writeFormat, nameof(arg16));
+                            continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
                             break;
@@ -3217,9 +1713,9 @@ namespace Cysharp.Text
 
                     ExceptionUtil.ThrowFormatException();
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         var buffer = bufferWriter.GetSpan(UTF8NoBom.GetMaxByteCount(size));
@@ -3227,11 +1723,13 @@ namespace Cysharp.Text
                         bufferWriter.Advance(written);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                    	ExceptionUtil.ThrowFormatException();
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -3246,5 +1744,77 @@ namespace Cysharp.Text
             }
         }
 
+
+        static void Utf8FormatInternal<T>(IBufferWriter<byte> bufferWriter, T arg, int width, StandardFormat format, string argName)
+        {
+            if (width <= 0) // leftJustify
+            {
+                width *= -1;
+
+                var buffer = bufferWriter.GetSpan();
+
+                if (!FormatterCache<T>.TryFormatDelegate(arg, buffer, out var written, format))
+                {
+                    bufferWriter.Advance(0);
+                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
+
+                    if (!FormatterCache<T>.TryFormatDelegate(arg, buffer, out written, format))
+                    {
+                        ExceptionUtil.ThrowArgumentException(argName);
+                    }
+                }
+
+                bufferWriter.Advance(written);
+
+                int padding = width - written;
+                if (width > 0 && padding > 0)
+                {
+                    // TODO Append(' ', padding);
+                    bufferWriter.GetSpan(padding).Fill((byte)' ');  // TODO Fill Method is too slow.
+                    bufferWriter.Advance(padding);
+                }
+            }
+            else // rightJustify
+            {
+                if (typeof(T) == typeof(string))
+                {
+                    var s = Unsafe.As<string>(arg);
+                    int padding = width - s.Length;
+                    if (padding > 0)
+                    {
+                        // TODO Append(' ', padding);
+                        bufferWriter.GetSpan(padding).Fill((byte)' '); // TODO Fill Method is too slow.
+                        bufferWriter.Advance(padding);
+                    }
+
+                    ZString.AppendChars(ref bufferWriter, s.AsSpan());
+                }
+                else
+                {
+                    Span<byte> s = stackalloc byte[typeof(T).IsValueType ? Unsafe.SizeOf<T>() * 8 : 1024];
+
+                    if (!FormatterCache<T>.TryFormatDelegate(arg, s, out var charsWritten, format))
+                    {
+                        s = stackalloc byte[s.Length * 2];
+                        if (!FormatterCache<T>.TryFormatDelegate(arg, s, out charsWritten, format))
+                        {
+                            ExceptionUtil.ThrowArgumentException(argName);
+                        }
+                    }
+
+                    int padding = width - charsWritten;
+                    if (padding > 0)
+                    {
+                        // TODO Append(' ', padding);
+                        bufferWriter.GetSpan(padding).Fill((byte)' '); // TODO Fill Method is too slow.
+                        bufferWriter.Advance(padding);
+                    }
+
+                    s.CopyTo(bufferWriter.GetSpan(charsWritten));
+                    bufferWriter.Advance(charsWritten);
+                }
+            }
+        }
+    
     }
 }

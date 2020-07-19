@@ -31,6 +31,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Update="FormatHelper.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>FormatHelper.cs</LastGenOutput>
+        </None>
         <None Update="PreparedFormat.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>PreparedFormat.cs</LastGenOutput>
@@ -94,6 +98,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Update="FormatHelper.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>FormatHelper.tt</DependentUpon>
+        </Compile>
         <Compile Update="PreparedFormat.cs">
             <DesignTime>True</DesignTime>
             <AutoGen>True</AutoGen>

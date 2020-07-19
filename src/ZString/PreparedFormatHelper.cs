@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Cysharp.Text
 {
@@ -8,97 +9,92 @@ namespace Cysharp.Text
     {
         internal static FormatSegment[] Parse(string format, bool withStandardFormat)
         {
-            var list = new List<FormatSegment>();
-
-            var copyFrom = 0;
-            for (int i = 0; i < format.Length; i++)
+            if (format == null)
             {
-                if (format[i] == '{')
-                {
-                    // escape.
-                    if (i == format.Length - 1)
-                    {
-                        throw new FormatException("invalid format");
-                    }
-
-                    if (i != format.Length && format[i + 1] == '{')
-                    {
-                        var size = i - copyFrom;
-                        if (size != 0)
-                        {
-                            list.Add(new FormatSegment(copyFrom, size, false, 0, null, withStandardFormat));
-                        }
-                        i = i + 1; // skip escaped '{'
-                        copyFrom = i;
-                        continue;
-                    }
-                    else
-                    {
-                        var size = i - copyFrom;
-                        if (size != 0)
-                        {
-                            list.Add(new FormatSegment(copyFrom, size, false, 0, null, withStandardFormat));
-                        }
-                    }
-
-                    // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    list.Add(new FormatSegment(0, 0, true, indexParse.Index, indexParse.FormatString.ToString(), withStandardFormat));
-
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
-                }
-                else if (format[i] == '}')
-                {
-                    if (i != format.Length && format[i + 1] == '}')
-                    {
-                        var size = i - copyFrom;
-                        if (size != 0)
-                        {
-                            list.Add(new FormatSegment(copyFrom, size, false, 0, null, withStandardFormat));
-                        }
-                        i = i + 1; // skip escaped '}'
-                        copyFrom = i;
-                        continue;
-                    }
-                }
+                throw new ArgumentNullException(nameof(format));
             }
 
+            var list = new List<FormatSegment>();
+
+            int i = 0;
+            int len = format.Length;
+
+            var copyFrom = 0;
+            var formatSpan = format.AsSpan();
+
+            while (true)
             {
-                // final string
-                var copyLength = format.Length - copyFrom;
-                if (copyLength > 0)
+                while (i < len)
                 {
-                    list.Add(new FormatSegment(copyFrom, copyLength, false, 0, null, withStandardFormat));
+                    var parserScanResult = FormatParser.ScanFormatString(formatSpan, ref i);
+
+                    if (ParserScanResult.NormalChar == parserScanResult && i < len)
+                    {
+                        // skip normal char
+                        continue;
+                    }
+
+                    var size = i - copyFrom;
+                    if (ParserScanResult.EscapedChar == parserScanResult)
+                    {
+                        size--;
+                    }
+
+                    if (size != 0)
+                    {
+                        list.Add(new FormatSegment(copyFrom, size, FormatSegment.NotFormatIndex, format, default, 0));
+                    }
+
+                    copyFrom = i;
+
+                    if (ParserScanResult.BraceOpen == parserScanResult)
+                    {
+                        break;
+                    }
                 }
+
+                if (i >= len)
+                {
+                    break;
+                }
+
+                // Here it is before `{`.
+                var indexParse = FormatParser.Parse(format, i);
+                copyFrom = indexParse.LastIndex; // continue after '}'
+                i = indexParse.LastIndex;
+
+                list.Add(new FormatSegment(indexParse.LastIndex - indexParse.FormatString.Length - 1, indexParse.FormatString.Length, indexParse.Index, format, withStandardFormat, indexParse.Alignment));
+
             }
 
             return list.ToArray();
         }
     }
 
-
     internal readonly struct FormatSegment
     {
+        public const int NotFormatIndex = -1;
+
         public readonly int Offset;
         public readonly int Count;
-        public readonly bool IsFormatArgument;
+        public bool IsFormatArgument => FormatIndex != NotFormatIndex;
         public readonly int FormatIndex;
         public readonly string FormatString;
+        public readonly int Alignment;
 
         // Utf8
         public readonly StandardFormat StandardFormat;
 
-        public FormatSegment(int offset, int count, bool isFormatArgument, int formatIndex, string formatString, bool utf8)
+        public FormatSegment(int offset, int count, int formatIndex, string formatString, bool utf8, int alignment)
         {
             Offset = offset;
             Count = count;
-            IsFormatArgument = isFormatArgument;
             FormatIndex = formatIndex;
             FormatString = formatString;
+            Alignment = alignment;
             if (utf8)
             {
-                StandardFormat = (formatString != null) ? StandardFormat.Parse(formatString) : default;
+                StandardFormat = (formatString != null) ? StandardFormat.Parse(formatString.AsSpan(Offset, Count)) : default;
             }
             else
             {

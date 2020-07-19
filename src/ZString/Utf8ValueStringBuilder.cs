@@ -13,7 +13,7 @@ namespace Cysharp.Text
 
         const int ThreadStaticBufferSize = 64444;
         const int DefaultBufferSize = 65536; // use 64K default buffer.
-        static Encoding UTF8NoBom = new UTF8Encoding(false);
+        internal static readonly Encoding UTF8NoBom = new UTF8Encoding(false);
 
         static byte newLine1;
         static byte newLine2;
@@ -366,19 +366,66 @@ namespace Cysharp.Text
             throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
         }
 
-        private void AppendFormatInternal<T>(T arg, StandardFormat writeFormat, string argName)
+        private void AppendFormatInternal<T>(T arg, int width, StandardFormat format, string argName)
         {
-            if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out var written, writeFormat))
+            if (width <= 0) // leftJustify
             {
-                Grow(written);
-                if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out written, writeFormat))
+                width *= -1;
+
+                if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out var charsWritten, format))
                 {
-                    ThrowArgumentException(argName);
+                    Grow(charsWritten);
+                    if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out charsWritten, format))
+                    {
+                        ThrowArgumentException(argName);
+                    }
+                }
+
+                index += charsWritten;
+
+                int padding = width - charsWritten;
+                if (width > 0 && padding > 0)
+                {
+                    Append(' ', padding);  // TODO Fill Method is too slow.
                 }
             }
-            index += written;
-        }
+            else // rightJustify
+            {
+                if (typeof(T) == typeof(string))
+                {
+                    var s = Unsafe.As<string>(arg);
+                    int padding = width - s.Length;
+                    if (padding > 0)
+                    {
+                        Append(' ', padding);  // TODO Fill Method is too slow.
+                    }
 
+                    Append(s);
+                }
+                else
+                {
+                    Span<byte> s = stackalloc byte[typeof(T).IsValueType ? Unsafe.SizeOf<T>() * 8 : 1024];
+
+                    if (!FormatterCache<T>.TryFormatDelegate(arg, s, out var charsWritten, format))
+                    {
+                        s = stackalloc byte[s.Length * 2];
+                        if (!FormatterCache<T>.TryFormatDelegate(arg, s, out charsWritten, format))
+                        {
+                            ThrowArgumentException(argName);
+                        }
+                    }
+
+                    int padding = width - charsWritten;
+                    if (padding > 0)
+                    {
+                        Append(' ', padding);  // TODO Fill Method is too slow.
+                    }
+
+                    s.CopyTo(GetSpan(charsWritten));
+                    Advance(charsWritten);
+                }
+            }
+        }
 
         /// <summary>
         /// Register custom formatter
