@@ -106,5 +106,11 @@ namespace ZStringTests
             var actual = ZString.Format(@"{0:h\,h\:mm\:ss}", span);
             actual.Should().Be(reference);
         }
+
+        [Fact]
+        public void Unicode()
+        {
+            Test("\u30cf\u30fc\u30c8: {0}, \u5bb6\u65cf: {1}(\u7d75\u6587\u5b57)", "\u2764", "\uD83D\uDC69\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC67");
+        }
     }
 }
