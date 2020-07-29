@@ -13,7 +13,7 @@ namespace Cysharp.Text
 
         const int ThreadStaticBufferSize = 64444;
         const int DefaultBufferSize = 65536; // use 64K default buffer.
-        internal static readonly Encoding UTF8NoBom = new UTF8Encoding(false);
+        static Encoding UTF8NoBom = new UTF8Encoding(false);
 
         static byte newLine1;
         static byte newLine2;

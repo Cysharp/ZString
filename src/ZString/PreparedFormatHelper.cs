@@ -75,12 +75,14 @@ namespace Cysharp.Text
     {
         public const int NotFormatIndex = -1;
 
+        //public readonly bool IsFormatArgument;
+        public bool IsFormatArgument => FormatIndex != NotFormatIndex;
+
         public readonly int Offset;
         public readonly int Count;
-        public bool IsFormatArgument => FormatIndex != NotFormatIndex;
+        public readonly int Alignment;
         public readonly int FormatIndex;
         public readonly string FormatString;
-        public readonly int Alignment;
 
         // Utf8
         public readonly StandardFormat StandardFormat;
@@ -89,6 +91,7 @@ namespace Cysharp.Text
         {
             Offset = offset;
             Count = count;
+            //IsFormatArgument = formatIndex != NotFormatIndex;
             FormatIndex = formatIndex;
             FormatString = formatString;
             Alignment = alignment;

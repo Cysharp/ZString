@@ -54,7 +54,7 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -93,7 +93,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2)
         {
@@ -140,10 +139,10 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -182,7 +181,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3)
         {
@@ -229,13 +227,13 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -274,7 +272,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
@@ -321,16 +318,16 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -369,7 +366,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         {
@@ -416,19 +412,19 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -467,7 +463,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
         {
@@ -514,22 +509,22 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -568,7 +563,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
         {
@@ -615,25 +609,25 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -672,7 +666,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
         {
@@ -719,28 +712,28 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -779,7 +772,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
         {
@@ -826,31 +818,31 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -889,7 +881,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
         {
@@ -936,34 +927,34 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         case 9:
-                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -1002,7 +993,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
         {
@@ -1049,37 +1039,37 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         case 9:
-                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
                             continue;
                         case 10:
-                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -1118,7 +1108,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
         {
@@ -1165,40 +1154,40 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         case 9:
-                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
                             continue;
                         case 10:
-                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
                             continue;
                         case 11:
-                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -1237,7 +1226,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
         {
@@ -1284,43 +1272,43 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         case 9:
-                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
                             continue;
                         case 10:
-                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
                             continue;
                         case 11:
-                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
                             continue;
                         case 12:
-                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -1359,7 +1347,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
         {
@@ -1406,46 +1393,46 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         case 9:
-                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
                             continue;
                         case 10:
-                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
                             continue;
                         case 11:
-                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
                             continue;
                         case 12:
-                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
                             continue;
                         case 13:
-                            Utf8FormatInternal(bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -1484,7 +1471,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
         {
@@ -1531,49 +1517,49 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         case 9:
-                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
                             continue;
                         case 10:
-                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
                             continue;
                         case 11:
-                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
                             continue;
                         case 12:
-                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
                             continue;
                         case 13:
-                            Utf8FormatInternal(bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
                             continue;
                         case 14:
-                            Utf8FormatInternal(bufferWriter, arg15, indexParse.Alignment, writeFormat, nameof(arg15));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg15, indexParse.Alignment, writeFormat, nameof(arg15));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -1612,7 +1598,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(IBufferWriter<byte> bufferWriter, string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
         {
@@ -1659,52 +1644,52 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            Utf8FormatInternal(bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg1, indexParse.Alignment, writeFormat, nameof(arg1));
                             continue;
                         case 1:
-                            Utf8FormatInternal(bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg2, indexParse.Alignment, writeFormat, nameof(arg2));
                             continue;
                         case 2:
-                            Utf8FormatInternal(bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg3, indexParse.Alignment, writeFormat, nameof(arg3));
                             continue;
                         case 3:
-                            Utf8FormatInternal(bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg4, indexParse.Alignment, writeFormat, nameof(arg4));
                             continue;
                         case 4:
-                            Utf8FormatInternal(bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg5, indexParse.Alignment, writeFormat, nameof(arg5));
                             continue;
                         case 5:
-                            Utf8FormatInternal(bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg6, indexParse.Alignment, writeFormat, nameof(arg6));
                             continue;
                         case 6:
-                            Utf8FormatInternal(bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg7, indexParse.Alignment, writeFormat, nameof(arg7));
                             continue;
                         case 7:
-                            Utf8FormatInternal(bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg8, indexParse.Alignment, writeFormat, nameof(arg8));
                             continue;
                         case 8:
-                            Utf8FormatInternal(bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg9, indexParse.Alignment, writeFormat, nameof(arg9));
                             continue;
                         case 9:
-                            Utf8FormatInternal(bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg10, indexParse.Alignment, writeFormat, nameof(arg10));
                             continue;
                         case 10:
-                            Utf8FormatInternal(bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg11, indexParse.Alignment, writeFormat, nameof(arg11));
                             continue;
                         case 11:
-                            Utf8FormatInternal(bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg12, indexParse.Alignment, writeFormat, nameof(arg12));
                             continue;
                         case 12:
-                            Utf8FormatInternal(bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg13, indexParse.Alignment, writeFormat, nameof(arg13));
                             continue;
                         case 13:
-                            Utf8FormatInternal(bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg14, indexParse.Alignment, writeFormat, nameof(arg14));
                             continue;
                         case 14:
-                            Utf8FormatInternal(bufferWriter, arg15, indexParse.Alignment, writeFormat, nameof(arg15));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg15, indexParse.Alignment, writeFormat, nameof(arg15));
                             continue;
                         case 15:
-                            Utf8FormatInternal(bufferWriter, arg16, indexParse.Alignment, writeFormat, nameof(arg16));
+                            Utf8FormatHelper.FormatTo(ref bufferWriter, arg16, indexParse.Alignment, writeFormat, nameof(arg16));
                             continue;
                         default:
                             ExceptionUtil.ThrowFormatException();
@@ -1743,78 +1728,5 @@ namespace Cysharp.Text
                 }
             }
         }
-
-
-        static void Utf8FormatInternal<T>(IBufferWriter<byte> bufferWriter, T arg, int width, StandardFormat format, string argName)
-        {
-            if (width <= 0) // leftJustify
-            {
-                width *= -1;
-
-                var buffer = bufferWriter.GetSpan();
-
-                if (!FormatterCache<T>.TryFormatDelegate(arg, buffer, out var written, format))
-                {
-                    bufferWriter.Advance(0);
-                    buffer = bufferWriter.GetSpan(Math.Max(buffer.Length + 1, written));
-
-                    if (!FormatterCache<T>.TryFormatDelegate(arg, buffer, out written, format))
-                    {
-                        ExceptionUtil.ThrowArgumentException(argName);
-                    }
-                }
-
-                bufferWriter.Advance(written);
-
-                int padding = width - written;
-                if (width > 0 && padding > 0)
-                {
-                    // TODO Append(' ', padding);
-                    bufferWriter.GetSpan(padding).Fill((byte)' ');  // TODO Fill Method is too slow.
-                    bufferWriter.Advance(padding);
-                }
-            }
-            else // rightJustify
-            {
-                if (typeof(T) == typeof(string))
-                {
-                    var s = Unsafe.As<string>(arg);
-                    int padding = width - s.Length;
-                    if (padding > 0)
-                    {
-                        // TODO Append(' ', padding);
-                        bufferWriter.GetSpan(padding).Fill((byte)' '); // TODO Fill Method is too slow.
-                        bufferWriter.Advance(padding);
-                    }
-
-                    ZString.AppendChars(ref bufferWriter, s.AsSpan());
-                }
-                else
-                {
-                    Span<byte> s = stackalloc byte[typeof(T).IsValueType ? Unsafe.SizeOf<T>() * 8 : 1024];
-
-                    if (!FormatterCache<T>.TryFormatDelegate(arg, s, out var charsWritten, format))
-                    {
-                        s = stackalloc byte[s.Length * 2];
-                        if (!FormatterCache<T>.TryFormatDelegate(arg, s, out charsWritten, format))
-                        {
-                            ExceptionUtil.ThrowArgumentException(argName);
-                        }
-                    }
-
-                    int padding = width - charsWritten;
-                    if (padding > 0)
-                    {
-                        // TODO Append(' ', padding);
-                        bufferWriter.GetSpan(padding).Fill((byte)' '); // TODO Fill Method is too slow.
-                        bufferWriter.Advance(padding);
-                    }
-
-                    s.CopyTo(bufferWriter.GetSpan(charsWritten));
-                    bufferWriter.Advance(charsWritten);
-                }
-            }
-        }
-    
     }
 }

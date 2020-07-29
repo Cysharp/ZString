@@ -13,19 +13,16 @@ using System.Runtime.CompilerServices;
 namespace Cysharp.Text
 {
 <# foreach(var utf in utfTypes ) { var isUtf16 = (utf == "Utf16"); var elemType = isUtf16 ? "char" : "byte"; #>
-    internal static partial class <#= utf #>PreparedFormat
+    internal static partial class <#= utf #>FormatHelper
     {
-        public static void FormatTo<TBufferWriter, T>(ref TBufferWriter sb, in FormatSegment item, T arg, string argName)
+        const <#= elemType #> sp = (<#= elemType #>)' ';
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void FormatTo<TBufferWriter, T>(ref TBufferWriter sb, T arg, int width, <#= isUtf16 ? "ReadOnlySpan<char>" : "StandardFormat" #> format, string argName)
             where TBufferWriter : IBufferWriter<<#= elemType #>>
         {
-            const <#= elemType #> sp = (<#= elemType #>)' ';
-            var width = item.Alignment;
-            var format = <#= isUtf16 ? "item.FormatString.AsSpan(item.Offset, item.Count)" : "item.StandardFormat" #>;
-
             if (width <= 0) // leftJustify
             {
-                width *= -1;
-
                 var span = sb.GetSpan(0);
                 if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, span, out var argWritten, format))
                 {
@@ -38,6 +35,7 @@ namespace Cysharp.Text
                 }
                 sb.Advance(argWritten);
 
+                width *= -1;
                 int padding = width - argWritten;
                 if (width > 0 && padding > 0)
                 {
@@ -46,54 +44,61 @@ namespace Cysharp.Text
                     sb.Advance(padding);
                 }
             }
-            else // rightJustify
+            else
             {
-                if (typeof(T) == typeof(string))
+                FormatToRightJustify(ref sb, arg, width, format, argName);
+            }
+        }
+
+        private static void FormatToRightJustify<TBufferWriter, T>(ref TBufferWriter sb, T arg, int width, <#= isUtf16 ? "ReadOnlySpan<char>" : "StandardFormat" #> format, string argName)
+            where TBufferWriter : IBufferWriter<<#= elemType #>>
+        {
+            if (typeof(T) == typeof(string))
+            {
+                var s = Unsafe.As<string>(arg);
+                int padding = width - s.Length;
+                if (padding > 0)
                 {
-                    var s = Unsafe.As<string>(arg);
-                    int padding = width - s.Length;
-                    if (padding > 0)
-                    {
-                        var paddingSpan = sb.GetSpan(padding);
-                        paddingSpan.Fill(sp);
-                        sb.Advance(padding);
-                    }
+                    var paddingSpan = sb.GetSpan(padding);
+                    paddingSpan.Fill(sp);
+                    sb.Advance(padding);
+                }
 
 <# if(isUtf16) { #>
-                    var span = sb.GetSpan(s.Length);
-                    s.AsSpan().CopyTo(span);
-                    sb.Advance(s.Length);
+                var span = sb.GetSpan(s.Length);
+                s.AsSpan().CopyTo(span);
+                sb.Advance(s.Length);
 <# }else { #>
-                    ZString.AppendChars(ref sb, s.AsSpan());
+                ZString.AppendChars(ref sb, s.AsSpan());
 <# } #>
-                }
-                else
+            }
+            else
+            {
+                Span<<#= elemType #>> s = stackalloc <#= elemType #>[typeof(T).IsValueType ? Unsafe.SizeOf<T>() * 8 : 1024];
+
+                if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, s, out var charsWritten, format))
                 {
-                    Span<<#= elemType #>> s = stackalloc <#= elemType #>[typeof(T).IsValueType ? Unsafe.SizeOf<T>() * 8 : 1024];
-
-                    if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, s, out var charsWritten, format))
+                    s = stackalloc <#= elemType #>[s.Length * 2];
+                    if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, s, out charsWritten, format))
                     {
-                        s = stackalloc <#= elemType #>[s.Length * 2];
-                        if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, s, out charsWritten, format))
-                        {
-                            ExceptionUtil.ThrowArgumentException(argName);
-                        }
+                        ExceptionUtil.ThrowArgumentException(argName);
                     }
-
-                    int padding = width - charsWritten;
-                    if (padding > 0)
-                    {
-                        var paddingSpan = sb.GetSpan(padding);
-                        paddingSpan.Fill(sp);
-                        sb.Advance(padding);
-                    }
-
-                    var span = sb.GetSpan(charsWritten);
-                    s.CopyTo(span);
-                    sb.Advance(charsWritten);
                 }
+
+                int padding = width - charsWritten;
+                if (padding > 0)
+                {
+                    var paddingSpan = sb.GetSpan(padding);
+                    paddingSpan.Fill(sp);
+                    sb.Advance(padding);
+                }
+
+                var span = sb.GetSpan(charsWritten);
+                s.CopyTo(span);
+                sb.Advance(charsWritten);
             }
         }
     }
+
 <# } // foreach(utf) #>
 }
