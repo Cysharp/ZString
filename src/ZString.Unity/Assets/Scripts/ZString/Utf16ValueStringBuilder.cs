@@ -87,6 +87,11 @@ namespace Cysharp.Text
             index = 0;
         }
 
+        public void Clear()
+        {
+            index = 0;
+        }
+
         public void TryGrow(int sizeHint)
         {
 
@@ -146,6 +151,18 @@ namespace Cysharp.Text
             buffer[index++] = value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(char value, int repeatCount)
+        {
+            if (repeatCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(repeatCount));
+            }
+
+            GetSpan(repeatCount).Fill(value);
+            Advance(repeatCount);
+        }
+
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendLine(char value)
@@ -161,6 +178,14 @@ namespace Cysharp.Text
             Append(value.AsSpan());
         }
 
+        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendLine(string value)
+        {
+            Append(value);
+            AppendLine();
+        }
+
         /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(ReadOnlySpan<char> value)
@@ -174,9 +199,8 @@ namespace Cysharp.Text
             index += value.Length;
         }
 
-        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(string value)
+        public void AppendLine(ReadOnlySpan<char> value)
         {
             Append(value);
             AppendLine();
@@ -202,6 +226,247 @@ namespace Cysharp.Text
             Append(value);
             AppendLine();
         }
+
+        static class ExceptionUtil
+        {
+            public static void ThrowArgumentOutOfRangeException(string paramName)
+            {
+                throw new ArgumentOutOfRangeException(paramName);
+            }
+        }
+
+        /// <summary>
+        /// Inserts a string 0 or more times into this builder at the specified position.
+        /// </summary>
+        /// <param name="index">The index to insert in this builder.</param>
+        /// <param name="value">The string to insert.</param>
+        /// <param name="count">The number of times to insert the string.</param>
+        public void Insert(int index, string value, int count)
+        {
+            Insert(index, value.AsSpan(), count);
+        }
+
+        public void Insert(int index, string value)
+        {
+            Insert(index, value.AsSpan(), 1);
+        }
+
+        public void Insert(int index, ReadOnlySpan<char> value, int count)
+        {
+            if (count < 0)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
+            }
+
+            int currentLength = Length;
+            if ((uint)index > (uint)currentLength)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (value.Length == 0 || count == 0)
+            {
+                return;
+            }
+
+            var newSize = index + value.Length * count;
+            var newBuffer = ArrayPool<char>.Shared.Rent(Math.Max(DefaultBufferSize, newSize));
+
+            buffer.AsSpan(0, index).CopyTo(newBuffer);
+            int newBufferIndex = index;
+
+            for (int i = 0; i < count; i++)
+            {
+                value.CopyTo(newBuffer.AsSpan(newBufferIndex));
+                newBufferIndex += value.Length;
+            }
+
+            int remainLnegth = this.index - index;
+            buffer.AsSpan(index, remainLnegth).CopyTo(newBuffer.AsSpan(newBufferIndex));
+
+            buffer = newBuffer;
+            this.index = newBufferIndex + remainLnegth;
+        }
+
+        /// <summary>
+        /// Replaces all instances of one character with another in this builder.
+        /// </summary>
+        /// <param name="oldChar">The character to replace.</param>
+        /// <param name="newChar">The character to replace <paramref name="oldChar"/> with.</param>
+        public void Replace(char oldChar, char newChar) => Replace(oldChar, newChar, 0, Length);
+
+        /// <summary>
+        /// Replaces all instances of one character with another in this builder.
+        /// </summary>
+        /// <param name="oldChar">The character to replace.</param>
+        /// <param name="newChar">The character to replace <paramref name="oldChar"/> with.</param>
+        /// <param name="startIndex">The index to start in this builder.</param>
+        /// <param name="count">The number of characters to read in this builder.</param>
+        public void Replace(char oldChar, char newChar, int startIndex, int count)
+        {
+            int currentLength = Length;
+            if ((uint)startIndex > (uint)currentLength)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (count < 0 || startIndex > currentLength - count)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
+            }
+
+            int endIndex = startIndex + count;
+
+            for (int i = startIndex; i < endIndex; i++)
+            {
+                if (buffer[i] == oldChar)
+                {
+                    buffer[i] = newChar;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Replaces all instances of one string with another in this builder.
+        /// </summary>
+        /// <param name="oldValue">The string to replace.</param>
+        /// <param name="newValue">The string to replace <paramref name="oldValue"/> with.</param>
+        /// <remarks>
+        /// If <paramref name="newValue"/> is <c>null</c>, instances of <paramref name="oldValue"/>
+        /// are removed from this builder.
+        /// </remarks>
+        public void Replace(string oldValue, string newValue) => Replace(oldValue, newValue, 0, Length);
+        
+        public void Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue) => Replace(oldValue, newValue, 0, Length);
+
+        /// <summary>
+        /// Replaces all instances of one string with another in part of this builder.
+        /// </summary>
+        /// <param name="oldValue">The string to replace.</param>
+        /// <param name="newValue">The string to replace <paramref name="oldValue"/> with.</param>
+        /// <param name="startIndex">The index to start in this builder.</param>
+        /// <param name="count">The number of characters to read in this builder.</param>
+        /// <remarks>
+        /// If <paramref name="newValue"/> is <c>null</c>, instances of <paramref name="oldValue"/>
+        /// are removed from this builder.
+        /// </remarks>
+        public void Replace(string oldValue, string newValue, int startIndex, int count)
+        {
+            if (oldValue == null)
+            {
+                throw new ArgumentNullException(nameof(oldValue));
+            }
+
+            Replace(oldValue.AsSpan(), newValue.AsSpan(), startIndex, count);
+        }
+
+        public void Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, int startIndex, int count)
+        {
+            int currentLength = Length;
+
+            if ((uint)startIndex > (uint)currentLength)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (count < 0 || startIndex > currentLength - count)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
+            }
+
+            if (oldValue.Length == 0)
+            {
+                throw new ArgumentException("oldValue.Length is 0", nameof(oldValue));
+            }
+
+            var readOnlySpan = AsSpan();
+            int endIndex = startIndex + count;
+            int matchCount = 0;
+
+            for (int i = startIndex; i < endIndex; i += oldValue.Length)
+            {
+                var span = readOnlySpan.Slice(i, endIndex - i);
+                var pos = span.IndexOf(oldValue, StringComparison.Ordinal);
+                if (pos == -1)
+                {
+                    break;
+                }
+                i += pos;
+                matchCount++;
+            }
+
+            if (matchCount == 0)
+                return;
+
+            var newBuffer = ArrayPool<char>.Shared.Rent(Math.Max(DefaultBufferSize, Length + (newValue.Length - oldValue.Length) * matchCount));
+
+            buffer.AsSpan(0, startIndex).CopyTo(newBuffer);
+            int newBufferIndex = startIndex;
+
+            for (int i = startIndex; i < endIndex; i += oldValue.Length)
+            {
+                var span = readOnlySpan.Slice(i, endIndex - i);
+                var pos = span.IndexOf(oldValue, StringComparison.Ordinal);
+                if (pos == -1)
+                {
+                    var remain = readOnlySpan.Slice(i);
+                    remain.CopyTo(newBuffer.AsSpan(newBufferIndex));
+                    newBufferIndex += remain.Length;
+                    break;
+                }
+                readOnlySpan.Slice(i, pos).CopyTo(newBuffer.AsSpan(newBufferIndex));
+                newValue.CopyTo(newBuffer.AsSpan(newBufferIndex + pos));
+                newBufferIndex += pos + newValue.Length;
+                i += pos;
+            }
+
+            if (buffer.Length != ThreadStaticBufferSize)
+            {
+                ArrayPool<char>.Shared.Return(buffer);
+            }
+            buffer = newBuffer;
+            index = newBufferIndex;
+        }
+
+        /// <summary>
+        /// Removes a range of characters from this builder.
+        /// </summary>
+        /// <remarks>
+        /// This method does not reduce the capacity of this builder.
+        /// </remarks>
+        public void Remove(int startIndex, int length)
+        {
+            if (length < 0)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (startIndex < 0)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (length > Length - startIndex)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(length));
+            }
+
+            if (Length == length && startIndex == 0)
+            {
+                index = 0;
+                return;
+            }
+
+            if (length == 0)
+            {
+                return;
+            }
+
+            int remain = startIndex + length;
+            buffer.AsSpan(remain, Length - remain).CopyTo(buffer.AsSpan(startIndex));
+            index -= length;
+        }
+
 
         // Output
 
