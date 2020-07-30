@@ -126,6 +126,54 @@ namespace Cysharp.Text
             return JoinInternal(separator.AsSpan(), values);
         }
 
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(params T[] values)
+        {
+            return JoinInternal<T>(default, values.AsSpan());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(List<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(ReadOnlySpan<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(ICollection<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IList<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IReadOnlyList<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IReadOnlyCollection<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IEnumerable<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
         static string JoinInternal<T>(ReadOnlySpan<char> separator, IList<T> values)
         {
             var count = values.Count;
