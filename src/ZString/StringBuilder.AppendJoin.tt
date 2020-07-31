@@ -4,10 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<#
-
-    string[] utfTypes = new [] { "Utf16", "Utf8" };
-#>
+<#@ include file="T4Common.t4" once="true" #>
 using System;
 using System.Text;
 using System.Collections;

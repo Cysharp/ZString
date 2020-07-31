@@ -4,18 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<#
-    static string CreateTypeArgument(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
-    }
-
-    static string CreateParameters(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
-    }
-
-#>
+<#@ include file="T4Common.t4" once="true" #>
 using System.Runtime.CompilerServices;
 using System.Buffers;
 using System;
@@ -24,7 +13,7 @@ namespace Cysharp.Text
 {
     public static partial class ZString
     {
-<# for(var i = 1; i <= 16; i++) { #>
+<# for(var i = 1; i <= TypeParamMax; i++) { #>
         /// <summary>Replaces one or more format items in a string with the string representation of some specified values.</summary>
         public static void Utf8Format<<#= CreateTypeArgument(i) #>>(IBufferWriter<byte> bufferWriter, string format, <#= CreateParameters(i) #>)
         {

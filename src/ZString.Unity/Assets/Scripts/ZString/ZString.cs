@@ -24,12 +24,26 @@ namespace Cysharp.Text
         }
 
         /// <summary>Create the Utf8(`Span[byte]`) StringBuilder.</summary>
+        /// <param name="notNested">
+        /// If true uses thread-static buffer that is faster but must return immediately.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown when <c>new StringBuilder(disposeImmediately: true)</c> or <c>ZString.CreateUtf8StringBuilder(notNested: true)</c> is nested.
+        /// See the README.md
+        /// </exception>
         public static Utf16ValueStringBuilder CreateStringBuilder(bool notNested)
         {
             return new Utf16ValueStringBuilder(notNested);
         }
 
         /// <summary>Create the Utf8(`Span[byte]`) StringBuilder, when true uses thread-static buffer that is faster but must return immediately.</summary>
+        /// <param name="notNested">
+        /// If true uses thread-static buffer that is faster but must return immediately.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown when <c>new StringBuilder(disposeImmediately: true)</c> or <c>ZString.CreateUtf8StringBuilder(notNested: true)</c> is nested.
+        /// See the README.md
+        /// </exception>
         public static Utf8ValueStringBuilder CreateUtf8StringBuilder(bool notNested)
         {
             return new Utf8ValueStringBuilder(notNested);

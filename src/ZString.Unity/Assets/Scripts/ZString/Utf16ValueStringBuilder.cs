@@ -37,8 +37,12 @@ namespace Cysharp.Text
         [ThreadStatic]
         static char[] scratchBuffer;
 
+        [ThreadStatic]
+        internal static bool scratchBufferUsed;
+
         char[] buffer;
         int index;
+        bool disposeImmediately;
 
         /// <summary>Length of written buffer.</summary>
         public int Length => index;
@@ -49,9 +53,24 @@ namespace Cysharp.Text
         /// <summary>Get the written buffer data.</summary>
         public ArraySegment<char> AsArraySegment() => new ArraySegment<char>(buffer, 0, index);
 
+        /// <summary>
+        /// Initializes a new instance
+        /// </summary>
+        /// <param name="disposeImmediately">
+        /// If true uses thread-static buffer that is faster but must return immediately.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown when <c>new StringBuilder(disposeImmediately: true)</c> or <c>ZString.CreateStringBuilder(notNested: true)</c> is nested.
+        /// See the README.md
+        /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Utf16ValueStringBuilder(bool disposeImmediately)
         {
+            if (disposeImmediately && scratchBufferUsed)
+            {
+                ThrowNestedException();
+            }
+
             char[] buf;
             if (disposeImmediately)
             {
@@ -60,6 +79,7 @@ namespace Cysharp.Text
                 {
                     buf = scratchBuffer = new char[ThreadStaticBufferSize];
                 }
+                scratchBufferUsed = true;
             }
             else
             {
@@ -68,6 +88,7 @@ namespace Cysharp.Text
 
             buffer = buf;
             index = 0;
+            this.disposeImmediately = disposeImmediately;
         }
 
         /// <summary>
@@ -85,6 +106,10 @@ namespace Cysharp.Text
             }
             buffer = null;
             index = 0;
+            if (disposeImmediately)
+            {
+                scratchBufferUsed = false;
+            }
         }
 
         public void Clear()
@@ -533,6 +558,11 @@ namespace Cysharp.Text
         void ThrowFormatException()
         {
             throw new FormatException("Index (zero based) must be greater than or equal to zero and less than the size of the argument list.");
+        }
+
+        static void ThrowNestedException()
+        {
+            throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
         }
 
         /// <summary>

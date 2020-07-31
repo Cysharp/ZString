@@ -1,0 +1,44 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#
+    const int TypeParamMax = 16;
+
+    string[] utfTypes = new [] { "Utf16", "Utf8" };
+
+    static string CreateTypeArgument(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
+    }
+
+    static string CreateParameters(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
+    }
+    
+    static string CreateParameterNames(int i)
+    {
+        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + (x + 1)));
+    }
+
+    Type[] spanFormattables = new Type[]
+    {
+        typeof(Byte),
+        typeof(DateTime),
+        typeof(DateTimeOffset),
+        typeof(Decimal),
+        typeof(Double),
+        typeof(Int16),
+        typeof(Int32),
+        typeof(Int64),
+        typeof(SByte),
+        typeof(Single),
+        typeof(TimeSpan),
+        typeof(UInt16),
+        typeof(UInt32),
+        typeof(UInt64),
+        typeof(Guid),
+        // typeof(Version),
+    };
+#>
