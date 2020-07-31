@@ -4,24 +4,7 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<#
-    static string CreateTypeArgument(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
-    }
-
-    static string CreateParameters(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
-    }
-
-    static string CreateParameterNames(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + (x + 1)));
-    }
-
-    string[] utfTypes = new [] { "Utf16", "Utf8" };
-#>
+<#@ include file="T4Common.t4" once="true" #>
 using System;
 using System.Text;
 using System.Buffers;
@@ -29,7 +12,7 @@ using System.Buffers;
 namespace Cysharp.Text
 {
 <# foreach(var utf in utfTypes) { var isUtf16 = (utf == "Utf16"); #>
-<# for(var i = 1; i <= 16; i++) { #>
+<# for(var i = 1; i <= TypeParamMax; i++) { #>
     public sealed partial class <#= utf #>PreparedFormat<<#= CreateTypeArgument(i) #>>
     {
         public string FormatString { get; }

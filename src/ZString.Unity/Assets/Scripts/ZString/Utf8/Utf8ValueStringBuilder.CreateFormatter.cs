@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Buffers;
 using System.Buffers.Text;
 
@@ -27,10 +28,6 @@ namespace Cysharp.Text
             if (type == typeof(System.Double))
             {
                 return new TryFormat<System.Double>((System.Double x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
-            }
-            if (type == typeof(System.Guid))
-            {
-                return new TryFormat<System.Guid>((System.Guid x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
             if (type == typeof(System.Int16))
             {
@@ -67,6 +64,10 @@ namespace Cysharp.Text
             if (type == typeof(System.UInt64))
             {
                 return new TryFormat<System.UInt64>((System.UInt64 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+            }
+            if (type == typeof(System.Guid))
+            {
+                return new TryFormat<System.Guid>((System.Guid x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
 
             return null;

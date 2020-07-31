@@ -4,19 +4,14 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<#
-    static string CreateTypeArgument(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
-    }
-#>
+<#@ include file="T4Common.t4" once="true" #>
 using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
     public static partial class ZString
     {
-<# for(var i = 1; i <= 16; i++) { #>
+<# for(var i = 1; i <= TypeParamMax; i++) { #>
         /// <summary>Prepare string format to avoid parse template in each operation.</summary>
         public static Utf16PreparedFormat<<#= CreateTypeArgument(i) #>> PrepareUtf16<<#= CreateTypeArgument(i) #>>(string format)
         {
