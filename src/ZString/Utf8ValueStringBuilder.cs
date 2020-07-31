@@ -40,8 +40,12 @@ namespace Cysharp.Text
         [ThreadStatic]
         static byte[] scratchBuffer;
 
+        [ThreadStatic]
+        internal static bool scratchBufferUsed; 
+
         byte[] buffer;
         int index;
+        bool disposeImmediately;
 
         /// <summary>Length of written buffer.</summary>
         public int Length => index;
@@ -55,9 +59,24 @@ namespace Cysharp.Text
         /// <summary>Get the written buffer data.</summary>
         public ArraySegment<byte> AsArraySegment() => new ArraySegment<byte>(buffer, 0, index);
 
+        /// <summary>
+        /// Initializes a new instance
+        /// </summary>
+        /// <param name="disposeImmediately">
+        /// If true uses thread-static buffer that is faster but must return immediately.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown when <c>new StringBuilder(disposeImmediately: true)</c> or <c>ZString.CreateUtf8StringBuilder(notNested: true)</c> is nested.
+        /// See the README.md
+        /// </exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public Utf8ValueStringBuilder(bool disposeImmediately)
         {
+            if (disposeImmediately && scratchBufferUsed)
+            {
+                ThrowNestedException();
+            }
+
             byte[] buf;
             if (disposeImmediately)
             {
@@ -66,6 +85,7 @@ namespace Cysharp.Text
                 {
                     buf = scratchBuffer = new byte[ThreadStaticBufferSize];
                 }
+                scratchBufferUsed = true;
             }
             else
             {
@@ -74,6 +94,7 @@ namespace Cysharp.Text
 
             buffer = buf;
             index = 0;
+            this.disposeImmediately = disposeImmediately;
         }
 
         /// <summary>
@@ -90,6 +111,15 @@ namespace Cysharp.Text
                 }
             }
             buffer = null;
+            index = 0;
+            if (disposeImmediately)
+            {
+                scratchBufferUsed = false;
+            }
+        }
+
+        public void Clear()
+        {
             index = 0;
         }
 
@@ -155,6 +185,37 @@ namespace Cysharp.Text
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(char value, int repeatCount)
+        {
+            if (repeatCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(repeatCount));
+            }
+
+            if (value <= 0x7F) // ASCII
+            {
+                GetSpan(repeatCount).Fill((byte)value);
+                Advance(repeatCount);
+            }
+            else
+            { 
+                var maxLen = UTF8NoBom.GetMaxByteCount(1);
+                Span<byte> utf8Bytes = stackalloc byte[maxLen];
+                ReadOnlySpan<char> chars = stackalloc char[1] { value };
+
+                int len = UTF8NoBom.GetBytes(chars, utf8Bytes);
+
+                TryGrow(len * repeatCount);
+
+                for (int i = 0; i < repeatCount; i++)
+                {
+                    utf8Bytes.CopyTo(GetSpan(len));
+                    Advance(len);
+                }
+            }
+        }
+
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void AppendLine(char value)
@@ -167,18 +228,32 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
+            Append(value.AsSpan());
+        }
+
+        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendLine(string value)
+        {
+            Append(value);
+            AppendLine();
+        }
+
+        /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(ReadOnlySpan<char> value)
+        {
             var maxLen = UTF8NoBom.GetMaxByteCount(value.Length);
             if (buffer.Length - index < maxLen)
             {
                 Grow(maxLen);
             }
 
-            index += UTF8NoBom.GetBytes(value, 0, value.Length, buffer, index);
+            index += UTF8NoBom.GetBytes(value, buffer.AsSpan(index));
         }
 
-        /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(string value)
+        public void AppendLine(ReadOnlySpan<char> value)
         {
             Append(value);
             AppendLine();
@@ -284,6 +359,11 @@ namespace Cysharp.Text
         void ThrowFormatException()
         {
             throw new FormatException("Index (zero based) must be greater than or equal to zero and less than the size of the argument list.");
+        }
+
+        static void ThrowNestedException()
+        {
+            throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
         }
 
         /// <summary>

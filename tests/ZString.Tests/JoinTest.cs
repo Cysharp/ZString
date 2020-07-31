@@ -132,5 +132,17 @@ namespace ZStringTests
                 ZString.Join(sep, values.AsEnumerable()).Should().Be(expected);
             }
         }
+
+        [Fact]
+        public void ConcatStrings()
+        {
+            var values = new[] { "abc", null, "def" };
+
+            var expected = string.Concat(values);
+            ZString.Concat(new ReadOnlySpan<string>(values)).Should().Be(expected);
+            ZString.Concat(values).Should().Be(expected);
+            ZString.Concat(values.ToList()).Should().Be(expected);
+            ZString.Concat(values.AsEnumerable()).Should().Be(expected);
+        }
     }
 }

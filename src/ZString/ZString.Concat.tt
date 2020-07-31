@@ -4,25 +4,14 @@
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
 <#@ output extension=".cs" #>
-<#
-    static string CreateTypeArgument(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
-    }
-
-    static string CreateParameters(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
-    }
-
-#>
+<#@ include file="T4Common.t4" once="true" #>
 using System.Runtime.CompilerServices;
 
 namespace Cysharp.Text
 {
     public static partial class ZString
     {
-<# for(var i = 1; i <= 16; i++) { #>
+<# for(var i = 1; i <= TypeParamMax; i++) { #>
         /// <summary>Concatenates the string representation of some specified objects.</summary>
         public static string Concat<<#= CreateTypeArgument(i) #>>(<#= CreateParameters(i) #>)
         {

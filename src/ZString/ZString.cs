@@ -23,12 +23,26 @@ namespace Cysharp.Text
         }
 
         /// <summary>Create the Utf8(`Span[byte]`) StringBuilder.</summary>
+        /// <param name="notNested">
+        /// If true uses thread-static buffer that is faster but must return immediately.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown when <c>new StringBuilder(disposeImmediately: true)</c> or <c>ZString.CreateUtf8StringBuilder(notNested: true)</c> is nested.
+        /// See the README.md
+        /// </exception>
         public static Utf16ValueStringBuilder CreateStringBuilder(bool notNested)
         {
             return new Utf16ValueStringBuilder(notNested);
         }
 
         /// <summary>Create the Utf8(`Span[byte]`) StringBuilder, when true uses thread-static buffer that is faster but must return immediately.</summary>
+        /// <param name="notNested">
+        /// If true uses thread-static buffer that is faster but must return immediately.
+        /// </param>
+        /// <exception cref="InvalidOperationException">
+        /// This exception is thrown when <c>new StringBuilder(disposeImmediately: true)</c> or <c>ZString.CreateUtf8StringBuilder(notNested: true)</c> is nested.
+        /// See the README.md
+        /// </exception>
         public static Utf8ValueStringBuilder CreateUtf8StringBuilder(bool notNested)
         {
             return new Utf8ValueStringBuilder(notNested);
@@ -124,6 +138,54 @@ namespace Cysharp.Text
         public static string Join<T>(string separator, IEnumerable<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(params T[] values)
+        {
+            return JoinInternal<T>(default, values.AsSpan());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(List<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(ReadOnlySpan<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(ICollection<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IList<T> values)
+        {
+            return JoinInternal(default, values);
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IReadOnlyList<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IReadOnlyCollection<T> values)
+        {
+            return JoinInternal(default, values.AsEnumerable());
+        }
+
+        /// <summary>Concatenates the string representation of some specified objects.</summary>
+        public static string Concat<T>(IEnumerable<T> values)
+        {
+            return JoinInternal(default, values);
         }
 
         static string JoinInternal<T>(ReadOnlySpan<char> separator, IList<T> values)

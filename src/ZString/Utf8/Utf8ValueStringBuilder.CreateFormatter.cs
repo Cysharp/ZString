@@ -28,10 +28,6 @@ namespace Cysharp.Text
             {
                 return new TryFormat<System.Double>((System.Double x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
-            if (type == typeof(System.Guid))
-            {
-                return new TryFormat<System.Guid>((System.Guid x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
-            }
             if (type == typeof(System.Int16))
             {
                 return new TryFormat<System.Int16>((System.Int16 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
@@ -68,6 +64,10 @@ namespace Cysharp.Text
             {
                 return new TryFormat<System.UInt64>((System.UInt64 x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
+            if (type == typeof(System.Guid))
+            {
+                return new TryFormat<System.Guid>((System.Guid x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+            }
             if (type == typeof(System.Byte?))
             {
                 return CreateNullableFormatter<System.Byte>();
@@ -87,10 +87,6 @@ namespace Cysharp.Text
             if (type == typeof(System.Double?))
             {
                 return CreateNullableFormatter<System.Double>();
-            }
-            if (type == typeof(System.Guid?))
-            {
-                return CreateNullableFormatter<System.Guid>();
             }
             if (type == typeof(System.Int16?))
             {
@@ -127,6 +123,10 @@ namespace Cysharp.Text
             if (type == typeof(System.UInt64?))
             {
                 return CreateNullableFormatter<System.UInt64>();
+            }
+            if (type == typeof(System.Guid?))
+            {
+                return CreateNullableFormatter<System.Guid>();
             }
             if (type == typeof(System.IntPtr))
             {

@@ -3,18 +3,8 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
+<#@ include file="../T4Common.t4" once="true" #>
 <#@ output extension=".cs" #>
-<#
-    static string CreateTypeArgument(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1)));
-    }
-
-    static string CreateParameters(int i)
-    {
-        return string.Join(", ", Enumerable.Range(0, i).Select(x => "T" + (x + 1) + " arg" + (x + 1)));
-    }
-#>
 using System;
 using System.Buffers;
 
@@ -22,7 +12,7 @@ namespace Cysharp.Text
 {
     public partial struct Utf8ValueStringBuilder
     {
-<# for(var i = 1; i <= 16; i++) { #>
+<# for(var i = 1; i <= TypeParamMax; i++) { #>
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
         public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
         {
