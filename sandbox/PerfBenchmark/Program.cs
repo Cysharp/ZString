@@ -16,8 +16,8 @@ namespace PerfBenchmark
     {
         public BenchmarkConfig()
         {
-            Add(MemoryDiagnoser.Default);
-            Add(Job.ShortRun.WithWarmupCount(1).WithIterationCount(1));
+            AddDiagnoser(MemoryDiagnoser.Default);
+            AddJob(Job.ShortRun.WithWarmupCount(1).WithIterationCount(1));
         }
     }
 
