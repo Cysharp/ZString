@@ -366,6 +366,20 @@ namespace Cysharp.Text
             throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
         }
 
+        private void AppendFormatInternal<T>(T arg, StandardFormat writeFormat, string argName)
+        {
+            if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out var written, writeFormat))
+            {
+                Grow(written);
+                if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out written, writeFormat))
+                {
+                    ThrowArgumentException(argName);
+                }
+            }
+            index += written;
+        }
+
+
         /// <summary>
         /// Register custom formatter
         /// </summary>
