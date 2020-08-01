@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -58,7 +59,8 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(char separator, List<T> values)
         {
-            return Join(separator, (IList<T>)values);
+            ReadOnlySpan<char> s = stackalloc char[1] { separator };
+            return JoinInternal(s, (IReadOnlyList<T>)values);
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
@@ -77,7 +79,8 @@ namespace Cysharp.Text
 
         public static string Join<T>(char separator, ICollection<T> values)
         {
-            return Join(separator, values.AsEnumerable());
+            ReadOnlySpan<char> s = stackalloc char[1] { separator };
+            return JoinInternal(s, values.AsEnumerable());
         }
 
         public static string Join<T>(char separator, IList<T> values)
@@ -88,12 +91,14 @@ namespace Cysharp.Text
 
         public static string Join<T>(char separator, IReadOnlyList<T> values)
         {
-            return Join(separator, values.AsEnumerable());
+            ReadOnlySpan<char> s = stackalloc char[1] { separator };
+            return JoinInternal(s, values);
         }
 
         public static string Join<T>(char separator, IReadOnlyCollection<T> values)
         {
-            return Join(separator, values.AsEnumerable());
+            ReadOnlySpan<char> s = stackalloc char[1] { separator };
+            return JoinInternal(s, values.AsEnumerable());
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
@@ -105,7 +110,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
         public static string Join<T>(string separator, List<T> values)
         {
-            return JoinInternal(separator.AsSpan(), values);
+            return JoinInternal(separator.AsSpan(), (IReadOnlyList<T>)values);
         }
         
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
@@ -126,7 +131,7 @@ namespace Cysharp.Text
 
         public static string Join<T>(string separator, IReadOnlyList<T> values)
         {
-            return JoinInternal(separator.AsSpan(), values.AsEnumerable());
+            return JoinInternal(separator.AsSpan(), values);
         }
 
         public static string Join<T>(string separator, IReadOnlyCollection<T> values)
@@ -149,7 +154,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the string representation of some specified objects.</summary>
         public static string Concat<T>(List<T> values)
         {
-            return JoinInternal(default, values);
+            return JoinInternal(default, (IReadOnlyList<T>)values);
         }
 
         /// <summary>Concatenates the string representation of some specified objects.</summary>
@@ -173,7 +178,7 @@ namespace Cysharp.Text
         /// <summary>Concatenates the string representation of some specified objects.</summary>
         public static string Concat<T>(IReadOnlyList<T> values)
         {
-            return JoinInternal(default, values.AsEnumerable());
+            return JoinInternal(default, values);
         }
 
         /// <summary>Concatenates the string representation of some specified objects.</summary>
@@ -190,6 +195,14 @@ namespace Cysharp.Text
 
         static string JoinInternal<T>(ReadOnlySpan<char> separator, IList<T> values)
         {
+            var readOnlyList = values as IReadOnlyList<T>;
+            // Boxing will occur, but JIT will be de-virtualized.
+            readOnlyList = readOnlyList ?? new ReadOnlyListAdaptor<T>(values);
+            return JoinInternal(separator, readOnlyList);
+        }
+
+        static string JoinInternal<T>(ReadOnlySpan<char> separator, IReadOnlyList<T> values)
+        {
             var count = values.Count;
             if (count == 0)
             {
@@ -203,27 +216,7 @@ namespace Cysharp.Text
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                for (int i = 0; i < count; i++)
-                {
-                    if (i != 0)
-                    {
-                        sb.Append(separator);
-                    }
-
-                    var item = values[i];
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
+                sb.AppendJoinInternal(separator, values);
                 return sb.ToString();
             }
             finally
@@ -246,27 +239,7 @@ namespace Cysharp.Text
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                for (int i = 0; i < values.Length; i++)
-                {
-                    if (i != 0)
-                    {
-                        sb.Append(separator);
-                    }
-
-                    var item = values[i];
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
+                sb.AppendJoinInternal(separator, values);
                 return sb.ToString();
             }
             finally
@@ -280,32 +253,7 @@ namespace Cysharp.Text
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
-                var isFirst = true;
-                foreach (var item in values)
-                {
-                    if (!isFirst)
-                    {
-                        sb.Append(separator);
-                    }
-                    else
-                    {
-                        isFirst = false;
-                    }
-
-                    if (typeof(T) == typeof(string))
-                    {
-                        var s = Unsafe.As<string>(item);
-                        if (!string.IsNullOrEmpty(s))
-                        {
-                            sb.Append(s);
-                        }
-                    }
-                    else
-                    {
-                        sb.Append(item);
-                    }
-                }
-
+                sb.AppendJoinInternal(separator, values);
                 return sb.ToString();
             }
             finally
