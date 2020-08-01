@@ -3,8 +3,8 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ include file="../T4Common.t4" once="true" #>
 <#@ output extension=".cs" #>
+<#@ include file="../T4Common.t4" once="true" #>
 using System;
 using System.Buffers;
 

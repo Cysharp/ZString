@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 namespace Cysharp.Text
 {
     public partial struct Utf16ValueStringBuilder
-    {        
+    {
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(System.Byte value)
