@@ -374,6 +374,27 @@ namespace Cysharp.Text
             FormatterCache<T>.TryFormatDelegate = formatMethod;
         }
 
+        static TryFormat<T?> CreateNullableFormatter<T>() where T : struct
+        {
+            return new TryFormat<T?>((T? x, Span<byte> destination, out int written, StandardFormat format) =>
+            {
+                if (x == null)
+                {
+                    written = 0;
+                    return true;
+                }
+                return FormatterCache<T>.TryFormatDelegate(x.Value, destination, out written, format);
+            });
+        }
+
+        /// <summary>
+        /// Supports the Nullable type for a given struct type.
+        /// </summary>
+        public static void EnableNullableFormat<T>() where T : struct
+        {
+            RegisterTryFormat<T?>(CreateNullableFormatter<T>());
+        }
+
         public static class FormatterCache<T>
         {
             public static TryFormat<T> TryFormatDelegate;
@@ -403,7 +424,9 @@ namespace Cysharp.Text
                     return true;
                 }
 
-                var s = value.ToString();
+                var s = typeof(T) == typeof(string) ? Unsafe.As<string>(value) :
+                    (value is IFormattable formattable && format != default) ? formattable.ToString(format.ToString(), null) :
+                    value.ToString();
 
                 // also use this length when result is false.
                 written = UTF8NoBom.GetMaxByteCount(s.Length);
