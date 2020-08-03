@@ -124,6 +124,9 @@ src/ZString.Unity/ZString.Unity.sln
 
 src/ZString.Unity/ZString.Unity.unitypackage
 
+# Benchmark Results
+**/BenchmarkDotNet.Artifacts/*
+
 src/ZString.Unity/Unity.Analytics.DataPrivacy.csproj
 
 src/ZString.Unity/Unity.CollabProxy.Editor.csproj

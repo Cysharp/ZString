@@ -565,12 +565,46 @@ namespace Cysharp.Text
             throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
         }
 
+        void AppendFormatInternal<T>(T arg1, ReadOnlySpan<char> format, string argName)
+        {
+            if (!FormatterCache<T>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, format))
+            {
+                Grow(written);
+                if (!FormatterCache<T>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, format))
+                {
+                    ThrowArgumentException(argName);
+                }
+            }
+            index += written;
+        }
+
         /// <summary>
         /// Register custom formatter
         /// </summary>
         public static void RegisterTryFormat<T>(TryFormat<T> formatMethod)
         {
             FormatterCache<T>.TryFormatDelegate = formatMethod;
+        }
+
+        static TryFormat<T?> CreateNullableFormatter<T>() where T : struct
+        {
+            return new TryFormat<T?>((T? x, Span<char> dest, out int written, ReadOnlySpan<char> format) =>
+            {
+                if (x == null)
+                {
+                    written = 0;
+                    return true;
+                }
+                return FormatterCache<T>.TryFormatDelegate(x.Value, dest, out written, format);
+            });
+        }
+
+        /// <summary>
+        /// Supports the Nullable type for a given struct type.
+        /// </summary>
+        public static void EnableNullableFormat<T>() where T : struct
+        {
+            RegisterTryFormat<T?>(CreateNullableFormatter<T>());
         }
 
         public static class FormatterCache<T>
@@ -621,7 +655,9 @@ namespace Cysharp.Text
                     return true;
                 }
 
-                var s = value.ToString();
+                var s = (value is IFormattable formattable && format.Length != 0) ?
+                    formattable.ToString(format.ToString(), null) :
+                    value.ToString();
 
                 // also use this length when result is false.
                 written = s.Length;

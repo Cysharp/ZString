@@ -119,6 +119,7 @@ Reference
 | Dispose() | void | Return the inner buffer to pool. |
 | `Append<T>(T value)` | void | Appends the string representation of a specified value to this instance. |
 | `Append<T>(T value, string format)` | void | Appends the string representation of a specified value to this instance with numeric format strings. |
+| `AppendJoin(char/string, T[]/IE<T>)`| void | Concatenates and appends the elements of an array, using the specified seperator between each element. |
 | `AppendLine()` | void | Appends the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value)` | void | Appends the string representation of a specified value followed by the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value, string format)` | void | Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance. |
@@ -141,6 +142,7 @@ Reference
 | Dispose() | void | Return the inner buffer to pool. |
 | `Append<T>(T value)` | void | Appends the string representation of a specified value to this instance. |
 | `Append<T>(T value, StandardFormat format)` | void | Appends the string representation of a specified value to this instance with numeric format strings. |
+| `AppendJoin(char/string, T[]/IE<T>)`| void | Concatenates and appends the elements of an array, using the specified seperator between each element. |
 | `AppendLine()` | void | Appends the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value)` | void | Appends the string representation of a specified value followed by the default line terminator to the end of this instance. |
 | `AppendLine<T>(T value, StandardFormat format)` | void | Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance. |

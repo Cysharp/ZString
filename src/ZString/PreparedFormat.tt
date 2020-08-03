@@ -19,9 +19,6 @@ namespace Cysharp.Text
         public int MinSize { get; }
 
         readonly FormatSegment[] segments;
-<# if(!isUtf16) { #>
-        readonly byte[] utf8Format;
-<# } #>
 
         public <#= utf #>PreparedFormat(string format)
         {
@@ -37,9 +34,6 @@ namespace Cysharp.Text
                 }
             }
             this.MinSize = size;
-<# if(!isUtf16) { #>
-            this.utf8Format = Encoding.UTF8.GetBytes(format);
-<# } #>
         }
 
         public string Format(<#= CreateParameters(i) #>)
@@ -59,14 +53,21 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, <#= CreateParameters(i) #>)
             where TBufferWriter : IBufferWriter<<#= isUtf16 ? "char" : "byte" #>>
         {
-            var strSpan = <#= isUtf16 ? "FormatString" : "utf8Format" #>.AsSpan();
             foreach (var item in segments)
             {
                 if (!item.IsFormatArgument)
                 {
+                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
+<# if(isUtf16) { #>
                     var span = sb.GetSpan(item.Count);
-                    strSpan.Slice(item.Offset, item.Count).TryCopyTo(span);
+                    strSpan.TryCopyTo(span);
                     sb.Advance(item.Count);
+<# } else { #>
+                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
+                    var span = sb.GetSpan(size);
+                    var count = Encoding.UTF8.GetBytes(strSpan, span);
+                    sb.Advance(count);
+<# } #>
                 }
                 else
                 {

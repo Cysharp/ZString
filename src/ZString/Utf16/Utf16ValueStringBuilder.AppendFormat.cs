@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 namespace Cysharp.Text
 {
@@ -22,9 +21,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -32,9 +29,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -44,41 +39,24 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -86,9 +64,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -110,9 +86,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -120,9 +94,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -132,54 +104,27 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -187,9 +132,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -211,9 +154,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -221,9 +162,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -233,67 +172,30 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -301,9 +203,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -325,9 +225,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -335,9 +233,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -347,80 +243,33 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -428,9 +277,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -452,9 +299,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -462,9 +307,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -474,93 +317,36 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -568,9 +354,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -592,9 +376,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -602,9 +384,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -614,106 +394,39 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -721,9 +434,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -745,9 +456,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -755,9 +464,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -767,119 +474,42 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -887,9 +517,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -911,9 +539,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -921,9 +547,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -933,132 +557,45 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1066,9 +603,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -1090,9 +625,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1100,9 +633,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -1112,145 +643,48 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1258,9 +692,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -1282,9 +714,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1292,9 +722,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -1304,158 +732,51 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg10, indexParse.FormatString, nameof(arg10));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1463,9 +784,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -1487,9 +806,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1497,9 +814,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -1509,171 +824,54 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg10, indexParse.FormatString, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg11, indexParse.FormatString, nameof(arg11));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1681,9 +879,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -1705,9 +901,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1715,9 +909,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -1727,184 +919,57 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg10, indexParse.FormatString, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg11, indexParse.FormatString, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg12, indexParse.FormatString, nameof(arg12));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -1912,9 +977,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -1936,9 +999,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1946,9 +1007,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -1958,197 +1017,60 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg10, indexParse.FormatString, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg11, indexParse.FormatString, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg12, indexParse.FormatString, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg13, indexParse.FormatString, nameof(arg13));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2156,9 +1078,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -2180,9 +1100,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -2190,9 +1108,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -2202,210 +1118,63 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg10, indexParse.FormatString, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg11, indexParse.FormatString, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg12, indexParse.FormatString, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg13, indexParse.FormatString, nameof(arg13));
+                            continue;
                         case 13:
-                            {
-                                if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg14, indexParse.FormatString, nameof(arg14));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2413,9 +1182,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -2437,9 +1204,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -2447,9 +1212,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -2459,223 +1222,66 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg10, indexParse.FormatString, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg11, indexParse.FormatString, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg12, indexParse.FormatString, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg13, indexParse.FormatString, nameof(arg13));
+                            continue;
                         case 13:
-                            {
-                                if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg14, indexParse.FormatString, nameof(arg14));
+                            continue;
                         case 14:
-                            {
-                                if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg15, indexParse.FormatString, nameof(arg15));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2683,9 +1289,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
@@ -2707,9 +1311,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -2717,9 +1319,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -2729,236 +1329,69 @@ namespace Cysharp.Text
                     switch (indexParse.Index)
                     {
                         case 0:
-                            {
-                                if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T1>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg1, indexParse.FormatString, nameof(arg1));
+                            continue;
                         case 1:
-                            {
-                                if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T2>.TryFormatDelegate(arg2, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg2, indexParse.FormatString, nameof(arg2));
+                            continue;
                         case 2:
-                            {
-                                if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T3>.TryFormatDelegate(arg3, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg3, indexParse.FormatString, nameof(arg3));
+                            continue;
                         case 3:
-                            {
-                                if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T4>.TryFormatDelegate(arg4, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg4, indexParse.FormatString, nameof(arg4));
+                            continue;
                         case 4:
-                            {
-                                if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T5>.TryFormatDelegate(arg5, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg5, indexParse.FormatString, nameof(arg5));
+                            continue;
                         case 5:
-                            {
-                                if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T6>.TryFormatDelegate(arg6, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg6, indexParse.FormatString, nameof(arg6));
+                            continue;
                         case 6:
-                            {
-                                if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T7>.TryFormatDelegate(arg7, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg7, indexParse.FormatString, nameof(arg7));
+                            continue;
                         case 7:
-                            {
-                                if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T8>.TryFormatDelegate(arg8, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg8, indexParse.FormatString, nameof(arg8));
+                            continue;
                         case 8:
-                            {
-                                if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T9>.TryFormatDelegate(arg9, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg9, indexParse.FormatString, nameof(arg9));
+                            continue;
                         case 9:
-                            {
-                                if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T10>.TryFormatDelegate(arg10, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg10, indexParse.FormatString, nameof(arg10));
+                            continue;
                         case 10:
-                            {
-                                if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T11>.TryFormatDelegate(arg11, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg11, indexParse.FormatString, nameof(arg11));
+                            continue;
                         case 11:
-                            {
-                                if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T12>.TryFormatDelegate(arg12, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg12, indexParse.FormatString, nameof(arg12));
+                            continue;
                         case 12:
-                            {
-                                if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T13>.TryFormatDelegate(arg13, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg13, indexParse.FormatString, nameof(arg13));
+                            continue;
                         case 13:
-                            {
-                                if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T14>.TryFormatDelegate(arg14, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg14, indexParse.FormatString, nameof(arg14));
+                            continue;
                         case 14:
-                            {
-                                if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T15>.TryFormatDelegate(arg15, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg15, indexParse.FormatString, nameof(arg15));
+                            continue;
                         case 15:
-                            {
-                                if (!FormatterCache<T16>.TryFormatDelegate(arg16, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T16>.TryFormatDelegate(arg16, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg16));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg16, indexParse.FormatString, nameof(arg16));
+                            continue;
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -2966,9 +1399,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }
