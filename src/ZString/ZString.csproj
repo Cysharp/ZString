@@ -35,9 +35,9 @@
             <Generator>TextTemplatingFileGenerator</Generator>
             <LastGenOutput>PreparedFormat.cs</LastGenOutput>
         </None>
-        <None Update="StringBuilderExtension.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>StringBuilderExtension.cs</LastGenOutput>
+        <None Update="StringBuilder.AppendJoin.tt">
+          <Generator>TextTemplatingFileGenerator</Generator>
+          <LastGenOutput>StringBuilder.AppendJoin.cs</LastGenOutput>
         </None>
         <None Update="Unity\TextMeshProExtensions.tt">
             <Generator>TextTemplatingFileGenerator</Generator>
@@ -99,10 +99,10 @@
             <AutoGen>True</AutoGen>
             <DependentUpon>PreparedFormat.tt</DependentUpon>
         </Compile>
-        <Compile Update="StringBuilderExtension.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-          <DependentUpon>StringBuilderExtension.tt</DependentUpon>
+        <Compile Update="StringBuilder.AppendJoin.cs">
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+          <DependentUpon>StringBuilder.AppendJoin.tt</DependentUpon>
         </Compile>
         <Compile Update="Utf16\Utf16ValueStringBuilder.AppendFormat.cs">
             <DesignTime>True</DesignTime>
