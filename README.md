@@ -36,6 +36,13 @@ Related project for loggin using with ZString, [Cysharp/ZLogger](https://github.
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 ## Table of Contents
+
+- [Getting Started](#getting-started)
+- [Reference](#reference)
+- [Unity](#unity)
+- [Advanced Tips](#advanced-tips)
+- [License](#license)
+
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Getting Started
