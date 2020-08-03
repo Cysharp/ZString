@@ -1,0 +1,11 @@
+{
+    "name": "com.cysharp.zstring",
+    "displayName": "ZString",
+    "version": "2.2.0",
+    "unity": "2018.4",
+    "description": "Zero Allocation StringBuilder for .NET Core and Unity.",
+    "keywords": [ "String", "Performance" ],
+    "license": "MIT",
+    "category": "Scripting",
+    "dependencies": {}
+}
