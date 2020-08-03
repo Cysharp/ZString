@@ -1,6 +1,6 @@
 ZString
 ===
-[![CircleCI](https://circleci.com/gh/Cysharp/ZString.svg?style=svg)](https://circleci.com/gh/Cysharp/ZString)
+[![GitHub Actions](https://github.com/Cysharp/ZString/workflows/Build-Debug/badge.svg)](https://github.com/Cysharp/ZString/actions) [![Releases](https://img.shields.io/github/release/Cysharp/ZString.svg)](https://github.com/Cysharp/ZString/releases)
 
 **Z**ero Allocation **String**Builder for .NET Core and Unity.
 
@@ -32,6 +32,11 @@ All `ZString` methods only allocate final string. Also, `ZString` has enabled to
 The blog post of detailed explanation by author: [medium@neuecc/ZString](https://medium.com/@neuecc/zstring-zero-allocation-stringbuilder-for-net-core-and-unity-f3163c88c887)
 
 Related project for loggin using with ZString, [Cysharp/ZLogger](https://github.com/Cysharp/ZLogger) - Zero Allocation Text/Strcutured Logger.
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+## Table of Contents
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Getting Started
 ---
