@@ -3,8 +3,8 @@
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
 <#@ import namespace="System.Collections.Generic" #>
-<#@ include file="../T4Common.t4" once="true" #>
 <#@ output extension=".cs" #>
+<#@ include file="../T4Common.t4" once="true" #>
 using System;
 using System.Buffers;
 
@@ -30,8 +30,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
-                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -39,8 +38,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
-                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -52,40 +50,25 @@ namespace Cysharp.Text
                     {
 <# for(var j = 0; j < i; j++) { #>
                         case <#= j #>:
-                            {
-                                if (!FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out var written, writeFormat))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out written, writeFormat))
-                                    {
-                                        ThrowArgumentException(nameof(arg<#= j + 1 #>));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg<#= j + 1 #>, writeFormat, nameof(arg<#= j + 1 #>));
+                            continue;
 <# } #>
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(UTF8NoBom.GetMaxByteCount(size));
-                        index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, size), buffer.AsSpan(index));
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                     }
                 }
 
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -93,8 +76,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(UTF8NoBom.GetMaxByteCount(copyLength));
-                    index += UTF8NoBom.GetBytes(format.AsSpan(copyFrom, copyLength), buffer.AsSpan(index));
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }

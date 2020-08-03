@@ -1,0 +1,22 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+      <TargetFramework>netcoreapp3.1</TargetFramework>
+      <!-- <TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net472</TargetFrameworks> -->
+      <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" Condition="$(TargetFramework) != 'netstandard3.1'" />
+      <PackageReference Include="ZString" Version="2.1.3" />
+      <PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\ZString\ZString.csproj">
+          <Aliases>NewZString</Aliases>
+        </ProjectReference>
+    </ItemGroup>
+
+</Project>

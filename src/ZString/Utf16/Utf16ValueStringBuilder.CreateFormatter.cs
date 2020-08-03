@@ -66,9 +66,25 @@ namespace Cysharp.Text
             {
                 return new TryFormat<System.Guid>((System.Guid x, Span<char> dest, out int written, ReadOnlySpan<char> format) => x.TryFormat(dest, out written, format));
             }
-            if (type == typeof(System.SByte?))
+            if (type == typeof(System.Byte?))
             {
-                return CreateNullableFormatter<System.SByte>();
+                return CreateNullableFormatter<System.Byte>();
+            }
+            if (type == typeof(System.DateTime?))
+            {
+                return CreateNullableFormatter<System.DateTime>();
+            }
+            if (type == typeof(System.DateTimeOffset?))
+            {
+                return CreateNullableFormatter<System.DateTimeOffset>();
+            }
+            if (type == typeof(System.Decimal?))
+            {
+                return CreateNullableFormatter<System.Decimal>();
+            }
+            if (type == typeof(System.Double?))
+            {
+                return CreateNullableFormatter<System.Double>();
             }
             if (type == typeof(System.Int16?))
             {
@@ -82,9 +98,17 @@ namespace Cysharp.Text
             {
                 return CreateNullableFormatter<System.Int64>();
             }
-            if (type == typeof(System.Byte?))
+            if (type == typeof(System.SByte?))
             {
-                return CreateNullableFormatter<System.Byte>();
+                return CreateNullableFormatter<System.SByte>();
+            }
+            if (type == typeof(System.Single?))
+            {
+                return CreateNullableFormatter<System.Single>();
+            }
+            if (type == typeof(System.TimeSpan?))
+            {
+                return CreateNullableFormatter<System.TimeSpan>();
             }
             if (type == typeof(System.UInt16?))
             {
@@ -97,30 +121,6 @@ namespace Cysharp.Text
             if (type == typeof(System.UInt64?))
             {
                 return CreateNullableFormatter<System.UInt64>();
-            }
-            if (type == typeof(System.Single?))
-            {
-                return CreateNullableFormatter<System.Single>();
-            }
-            if (type == typeof(System.Double?))
-            {
-                return CreateNullableFormatter<System.Double>();
-            }
-            if (type == typeof(System.TimeSpan?))
-            {
-                return CreateNullableFormatter<System.TimeSpan>();
-            }
-            if (type == typeof(System.DateTime?))
-            {
-                return CreateNullableFormatter<System.DateTime>();
-            }
-            if (type == typeof(System.DateTimeOffset?))
-            {
-                return CreateNullableFormatter<System.DateTimeOffset>();
-            }
-            if (type == typeof(System.Decimal?))
-            {
-                return CreateNullableFormatter<System.Decimal>();
             }
             if (type == typeof(System.Guid?))
             {

@@ -27,7 +27,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleAppNet472", "sandbox
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZString.NetCore2Tests", "tests\ZString.NetCore2Tests\ZString.NetCore2Tests.csproj", "{62C44156-F55C-4006-B9A2-108DAB340FAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerfBenchmark", "sandbox\PerfBenchmark\PerfBenchmark.csproj", "{D766AEB3-3609-4F1D-8D81-5549F748F372}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerfBenchmark", "sandbox\PerfBenchmark\PerfBenchmark.csproj", "{D766AEB3-3609-4F1D-8D81-5549F748F372}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BenchmarkVsReleasedVersion", "sandbox\BenchmarkVsReleasedVersion\BenchmarkVsReleasedVersion.csproj", "{94F4D0E1-25FA-4C83-B11A-098754D5554F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -59,6 +61,8 @@ Global
 		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Release|Any CPU.Build.0 = Release|Any CPU
+		{94F4D0E1-25FA-4C83-B11A-098754D5554F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{94F4D0E1-25FA-4C83-B11A-098754D5554F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -70,6 +74,7 @@ Global
 		{BE8A17AA-504A-410D-B86D-92431B0F5594} = {A7D7AA7D-9A79-48A8-978D-0C98EBD81ED0}
 		{62C44156-F55C-4006-B9A2-108DAB340FAC} = {0803618F-C4E8-4D37-831E-5D26C5574F49}
 		{D766AEB3-3609-4F1D-8D81-5549F748F372} = {A7D7AA7D-9A79-48A8-978D-0C98EBD81ED0}
+		{94F4D0E1-25FA-4C83-B11A-098754D5554F} = {A7D7AA7D-9A79-48A8-978D-0C98EBD81ED0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF39BF43-3E0E-4F7D-9943-7E50D301234D}

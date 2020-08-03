@@ -29,9 +29,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -39,9 +37,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                     }
 
                     // try to find range
@@ -52,42 +48,25 @@ namespace Cysharp.Text
                     {
 <# for(var j = 0; j < i; j++) { #>
                         case <#= j #>:
-                            {
-                                if (!FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out var written, indexParse.FormatString))
-                                {
-                                    Grow(written);
-                                    if (!FormatterCache<T<#= j+ 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, buffer.AsSpan(index), out written, indexParse.FormatString))
-                                    {
-                                        ThrowArgumentException(nameof(arg<#= j + 1 #>));
-                                    }
-                                }
-                                index += written;
-                                goto NEXT_LOOP;
-                            }
+                            AppendFormatInternal(arg<#= j + 1 #>, indexParse.FormatString, nameof(arg<#= j + 1 #>));
+                            continue;
 <# } #>
                         default:
                             ThrowFormatException();
                             break;
                     }
-
-                    ThrowFormatException();
                 }
                 else if (format[i] == '}')
                 {
                     if (i != format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        TryGrow(size);
-                        format.AsSpan(copyFrom, size).CopyTo(buffer.AsSpan(index));
-                        index += size;
+                        Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
                     }
                 }
-
-                NEXT_LOOP:
-                continue;
             }
 
             {
@@ -95,9 +74,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    TryGrow(copyLength);
-                    format.AsSpan(copyFrom, copyLength).CopyTo(buffer.AsSpan(index));
-                    index += copyLength;
+                    Append(format.AsSpan(copyFrom, copyLength));
                 }
             }
         }

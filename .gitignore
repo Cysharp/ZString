@@ -123,3 +123,6 @@ src/ZString.Unity/ZString.csproj
 src/ZString.Unity/ZString.Unity.sln
 
 src/ZString.Unity/ZString.Unity.unitypackage
+
+# Benchmark Results
+**/BenchmarkDotNet.Artifacts/*
