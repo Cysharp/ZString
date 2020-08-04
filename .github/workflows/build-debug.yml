@@ -54,7 +54,7 @@ jobs:
         working-directory: src/ZString.Unity
 
       # Store artifacts.
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v2
         with:
-          name: ZString.Unity.unitypackage
-          path: ./src/ZString.Unity/ZString.Unity.unitypackage
+          name: ZString.Unity.unitypackage.zip
+          path: ./src/ZString.Unity/*.unitypackage
