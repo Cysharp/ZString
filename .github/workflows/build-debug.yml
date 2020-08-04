@@ -29,7 +29,7 @@ jobs:
   build-unity:
     strategy:
       matrix:
-        unity: ['2019.3.9f1', '2020.1.0b5']
+        unity: ["2019.3.9f1", "2020.1.0b5"]
         include:
           - unity: 2019.3.9f1
             license: UNITY_2019_3
@@ -42,13 +42,6 @@ jobs:
     steps:
       - run: apt update && apt install git -y
       - uses: actions/checkout@v2
-      # create unity activation file and store to artifacts.
-      - run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -logFile -createManualActivationFile || exit 0
-      - uses: actions/upload-artifact@v1
-        with:
-          name: Unity_v${{ matrix.unity }}.alf
-          path: ./Unity_v${{ matrix.unity }}.alf
-      # activate Unity from manual license file(ulf)
       - run: echo -n "$UNITY_LICENSE" >> .Unity.ulf
         env:
           UNITY_LICENSE: ${{ secrets[matrix.license] }}
@@ -60,7 +53,7 @@ jobs:
         run: /opt/Unity/Editor/Unity -quit -batchmode -nographics -silent-crashes -logFile -projectPath . -executeMethod PackageExporter.Export
         working-directory: src/ZString.Unity
 
-      # Store artifacts.      
+      # Store artifacts.
       - uses: actions/upload-artifact@v1
         with:
           name: ZString.Unity.unitypackage
