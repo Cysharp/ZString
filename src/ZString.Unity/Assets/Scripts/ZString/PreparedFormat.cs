@@ -9,12 +9,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -50,7 +50,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -74,12 +74,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -115,7 +115,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -144,12 +144,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -185,7 +185,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -219,12 +219,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -260,7 +260,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -299,12 +299,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -340,7 +340,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -384,12 +384,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -425,7 +425,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -474,12 +474,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -515,7 +515,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -569,12 +569,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -610,7 +610,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -669,12 +669,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -710,7 +710,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -774,12 +774,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -815,7 +815,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -884,12 +884,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -925,7 +925,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -999,12 +999,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1040,7 +1040,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -1119,12 +1119,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1160,7 +1160,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -1244,12 +1244,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1285,7 +1285,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -1374,12 +1374,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1415,7 +1415,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -1509,12 +1509,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1550,7 +1550,7 @@ namespace Cysharp.Text
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf16FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
                             var span = sb.GetSpan(item.Count);
@@ -1649,12 +1649,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -1684,19 +1685,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -1715,12 +1715,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -1750,19 +1751,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -1786,12 +1786,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -1821,19 +1822,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -1862,12 +1862,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -1897,19 +1898,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -1943,12 +1943,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -1978,19 +1979,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2029,12 +2029,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2064,19 +2065,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2120,12 +2120,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2155,19 +2156,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2216,12 +2216,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2251,19 +2252,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2317,12 +2317,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2352,19 +2353,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2423,12 +2423,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2458,19 +2459,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2534,12 +2534,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2569,19 +2570,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2650,12 +2650,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2685,19 +2686,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2771,12 +2771,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2806,19 +2807,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -2897,12 +2897,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -2932,19 +2933,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -3028,12 +3028,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3063,19 +3064,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:
@@ -3164,12 +3164,13 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3199,19 +3200,18 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
             where TBufferWriter : IBufferWriter<byte>
         {
-            var formatSpan = FormatString.AsSpan();
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case Utf8FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
                         }
                     case 0:

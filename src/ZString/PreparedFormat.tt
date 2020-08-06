@@ -18,12 +18,15 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly <#= utf #>FormatSegment[] segments;
+<# if(!isUtf16) { #>
+        readonly byte[] utf8PreEncodedbuffer;
+<# } #>
 
         public <#= utf #>PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, <#= (utf == "Utf16" ? false : true).ToString().ToLower() #>);
+            this.segments = PreparedFormatHelper.<#= utf #>Parse(format<#= (!isUtf16 ? ", out utf8PreEncodedbuffer" : "")  #>);
 
             var size = 0;
             foreach (var item in segments)
@@ -53,25 +56,22 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, <#= CreateParameters(i) #>)
             where TBufferWriter : IBufferWriter<<#= isUtf16 ? "char" : "byte" #>>
         {
+<# if(isUtf16) { #>
             var formatSpan = FormatString.AsSpan();
+<# } else { #>
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+<# } #>
 
             foreach (var item in segments)
             {
                 switch (item.FormatIndex)
                 {
-                    case FormatSegment.NotFormatIndex:
+                    case <#= utf #>FormatSegment.NotFormatIndex:
                         {
                             var strSpan = formatSpan.Slice(item.Offset, item.Count);
-<# if(isUtf16) { #>
                             var span = sb.GetSpan(item.Count);
                             strSpan.TryCopyTo(span);
                             sb.Advance(item.Count);
-<# } else { #>
-                            var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                            var span = sb.GetSpan(size);
-                            var count = Encoding.UTF8.GetBytes(strSpan, span);
-                            sb.Advance(count);
-<# } #>
                             break;
                         }
 <# for(var j = 0; j < i; j++) { #>
