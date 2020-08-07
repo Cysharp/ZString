@@ -68,6 +68,10 @@ namespace Cysharp.Text
             {
                 return new TryFormat<System.Guid>((System.Guid x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
+            if (type == typeof(System.Boolean))
+            {
+                return new TryFormat<System.Boolean>((System.Boolean x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
+            }
             if (type == typeof(System.Byte?))
             {
                 return CreateNullableFormatter<System.Byte>();
@@ -127,6 +131,10 @@ namespace Cysharp.Text
             if (type == typeof(System.Guid?))
             {
                 return CreateNullableFormatter<System.Guid>();
+            }
+            if (type == typeof(System.Boolean?))
+            {
+                return CreateNullableFormatter<System.Boolean>();
             }
             if (type == typeof(System.IntPtr))
             {

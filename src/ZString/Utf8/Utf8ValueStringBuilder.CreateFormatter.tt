@@ -15,13 +15,13 @@ namespace Cysharp.Text
     {
         static object CreateFormatter(Type type)
         {
-<# foreach(var t in spanFormattables) { #>
+<# foreach(var t in utf8spanFormattables) { #>
             if (type == typeof(<#= t.FullName #>))
             {
                 return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<byte> dest, out int written, StandardFormat format) => Utf8Formatter.TryFormat(x, dest, out written, format));
             }
 <# } #>
-<# foreach(var t in spanFormattables) { #>
+<# foreach(var t in utf8spanFormattables) { #>
             if (type == typeof(<#= t.FullName #>?))
             {
                 return CreateNullableFormatter<<#= t.FullName #>>();

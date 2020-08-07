@@ -57,7 +57,7 @@ namespace Cysharp.Text
                 return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<char> dest, out int written, ReadOnlySpan<char> format) => x.TryFormat(dest, out written, format));
             }
 <# } #>
-<# foreach(var t in spanFormattables) { #>
+<# foreach(var t in spanFormattables.Append(typeof(bool))) { #>
             if (type == typeof(<#= t.FullName #>?))
             {
                 return CreateNullableFormatter<<#= t.FullName #>>();
