@@ -309,6 +309,6 @@ var str = unboxed.ToString();
 
 License
 ---
-This library is licensed under the the MIT License.
+This library is licensed under the MIT License.
 
 .NET Standard 2.0 and Unity version borrows [dotnet/runtime](https://github.com/dotnet/runtime) conversion methods, there exists under `ZString/Number` directory. This third-party license follows [runtime/LICENSE.TXT](https://github.com/dotnet/runtime/blob/master/LICENSE.TXT).
