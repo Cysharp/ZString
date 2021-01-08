@@ -205,5 +205,29 @@ namespace ZStringTests
                 sb1.ToString().Should().Be(sb5.ToString());
             }
         }
+
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void BoolTest(bool x)
+        {
+            using (var sb1 = ZString.CreateStringBuilder())
+            using (var sb2 = ZString.CreateUtf8StringBuilder())
+            using (var sb3 = ZString.CreateStringBuilder())
+            using (var sb4 = ZString.CreateUtf8StringBuilder())
+            {
+                var sb5 = new StringBuilder();
+                sb1.Append(x);
+                sb2.Append(x);
+                sb3.Append(x);
+                sb4.Append(x);
+                sb5.Append(x);
+
+                sb1.ToString().Should().Be(sb2.ToString());
+                sb1.ToString().Should().Be(sb3.ToString());
+                sb1.ToString().Should().Be(sb4.ToString());
+                sb1.ToString().Should().Be(sb5.ToString());
+            }
+        }
     }
 }

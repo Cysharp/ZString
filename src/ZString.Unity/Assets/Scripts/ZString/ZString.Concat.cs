@@ -7,6 +7,11 @@ namespace Cysharp.Text
         /// <summary>Concatenates the string representation of some specified objects.</summary>
         public static string Concat<T1>(T1 arg1)
         {
+            if (typeof(T1) == typeof(string))
+            {
+                return (arg1 != null) ? Unsafe.As<string>(arg1) : string.Empty;
+            }
+
             var sb = new Utf16ValueStringBuilder(true);
             try
             {

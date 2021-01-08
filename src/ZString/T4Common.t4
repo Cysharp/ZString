@@ -41,4 +41,6 @@
         typeof(Guid),
         // typeof(Version),
     };
+    
+    var utf8spanFormattables = spanFormattables.Append(typeof(bool));
 #>

@@ -512,6 +512,9 @@ namespace Cysharp.Text
         /// <summary>Converts the value of this instance to a System.String.</summary>
         public override string ToString()
         {
+            if (index == 0)
+                return string.Empty;
+
             return new string(buffer, 0, index);
         }
 

@@ -126,6 +126,10 @@ namespace Cysharp.Text
             {
                 return CreateNullableFormatter<System.Guid>();
             }
+            if (type == typeof(System.Boolean?))
+            {
+                return CreateNullableFormatter<System.Boolean>();
+            }
             if (type == typeof(System.IntPtr))
             {
                 // ignore format

@@ -14,7 +14,7 @@ namespace Cysharp.Text
 {
     public partial struct Utf8ValueStringBuilder
     {
-<# foreach(var t in spanFormattables) { #>
+<# foreach(var t in utf8spanFormattables) { #>
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(<#= t.FullName #> value)
@@ -60,6 +60,7 @@ namespace Cysharp.Text
             Append(value, format);
             AppendLine();
         }
+
 <# } #>
     }
 }

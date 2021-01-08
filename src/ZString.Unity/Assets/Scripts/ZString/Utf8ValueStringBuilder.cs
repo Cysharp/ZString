@@ -313,6 +313,9 @@ namespace Cysharp.Text
         /// <summary>Encode the innner utf8 buffer to a System.String.</summary>
         public override string ToString()
         {
+            if (index == 0)
+                return string.Empty;
+
             return UTF8NoBom.GetString(buffer, 0, index);
         }
 
