@@ -11,6 +11,14 @@ namespace Cysharp.Text
     {
         static Encoding UTF8NoBom = new UTF8Encoding(false);
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        internal static void AppendChars<TBufferWriter>(ref TBufferWriter sb, ReadOnlySpan<char> chars)
+            where TBufferWriter : System.Buffers.IBufferWriter<byte>
+        {
+            var span = sb.GetSpan(UTF8NoBom.GetMaxByteCount(chars.Length));
+            sb.Advance(UTF8NoBom.GetBytes(chars, span));
+        }
+
         /// <summary>Create the Utf16 string StringBuilder.</summary>
         public static Utf16ValueStringBuilder CreateStringBuilder()
         {

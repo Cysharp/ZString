@@ -1,0 +1,104 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".cs" #>
+<#@ include file="T4Common.t4" once="true" #>
+using System;
+using System.Text;
+using System.Buffers;
+using System.Runtime.CompilerServices;
+
+namespace Cysharp.Text
+{
+<# foreach(var utf in utfTypes ) { var isUtf16 = (utf == "Utf16"); var elemType = isUtf16 ? "char" : "byte"; #>
+    internal static partial class <#= utf #>FormatHelper
+    {
+        const <#= elemType #> sp = (<#= elemType #>)' ';
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void FormatTo<TBufferWriter, T>(ref TBufferWriter sb, T arg, int width, <#= isUtf16 ? "ReadOnlySpan<char>" : "StandardFormat" #> format, string argName)
+            where TBufferWriter : IBufferWriter<<#= elemType #>>
+        {
+            if (width <= 0) // leftJustify
+            {
+                var span = sb.GetSpan(0);
+                if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, span, out var argWritten, format))
+                {
+                    sb.Advance(0);
+                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
+                    if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, span, out argWritten, format))
+                    {
+                        ExceptionUtil.ThrowArgumentException(argName);
+                    }
+                }
+                sb.Advance(argWritten);
+
+                width *= -1;
+                int padding = width - argWritten;
+                if (width > 0 && padding > 0)
+                {
+                    var paddingSpan = sb.GetSpan(padding);
+                    paddingSpan.Fill(sp);
+                    sb.Advance(padding);
+                }
+            }
+            else
+            {
+                FormatToRightJustify(ref sb, arg, width, format, argName);
+            }
+        }
+
+        private static void FormatToRightJustify<TBufferWriter, T>(ref TBufferWriter sb, T arg, int width, <#= isUtf16 ? "ReadOnlySpan<char>" : "StandardFormat" #> format, string argName)
+            where TBufferWriter : IBufferWriter<<#= elemType #>>
+        {
+            if (typeof(T) == typeof(string))
+            {
+                var s = Unsafe.As<string>(arg);
+                int padding = width - s.Length;
+                if (padding > 0)
+                {
+                    var paddingSpan = sb.GetSpan(padding);
+                    paddingSpan.Fill(sp);
+                    sb.Advance(padding);
+                }
+
+<# if(isUtf16) { #>
+                var span = sb.GetSpan(s.Length);
+                s.AsSpan().CopyTo(span);
+                sb.Advance(s.Length);
+<# }else { #>
+                ZString.AppendChars(ref sb, s.AsSpan());
+<# } #>
+            }
+            else
+            {
+                Span<<#= elemType #>> s = stackalloc <#= elemType #>[typeof(T).IsValueType ? Unsafe.SizeOf<T>() * 8 : 1024];
+
+                if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, s, out var charsWritten, format))
+                {
+                    s = stackalloc <#= elemType #>[s.Length * 2];
+                    if (!<#= utf #>ValueStringBuilder.FormatterCache<T>.TryFormatDelegate(arg, s, out charsWritten, format))
+                    {
+                        ExceptionUtil.ThrowArgumentException(argName);
+                    }
+                }
+
+                int padding = width - charsWritten;
+                if (padding > 0)
+                {
+                    var paddingSpan = sb.GetSpan(padding);
+                    paddingSpan.Fill(sp);
+                    sb.Advance(padding);
+                }
+
+                var span = sb.GetSpan(charsWritten);
+                s.CopyTo(span);
+                sb.Advance(charsWritten);
+            }
+        }
+    }
+
+<# } // foreach(utf) #>
+}

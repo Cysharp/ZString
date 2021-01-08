@@ -18,12 +18,15 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly <#= utf #>FormatSegment[] segments;
+<# if(!isUtf16) { #>
+        readonly byte[] utf8PreEncodedbuffer;
+<# } #>
 
         public <#= utf #>PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, <#= (utf == "Utf16" ? false : true).ToString().ToLower() #>);
+            this.segments = PreparedFormatHelper.<#= utf #>Parse(format<#= (!isUtf16 ? ", out utf8PreEncodedbuffer" : "")  #>);
 
             var size = 0;
             foreach (var item in segments)
@@ -53,51 +56,37 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, <#= CreateParameters(i) #>)
             where TBufferWriter : IBufferWriter<<#= isUtf16 ? "char" : "byte" #>>
         {
+<# if(isUtf16) { #>
+            var formatSpan = FormatString.AsSpan();
+<# } else { #>
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+<# } #>
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-<# if(isUtf16) { #>
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-<# } else { #>
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-<# } #>
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-<# for(var j = 0; j < i; j++) { #>
-                        case <#= j #>:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!<#= utf #>ValueStringBuilder.FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, span, out var argWritten, <#= isUtf16 ? "item.FormatString.AsSpan()" : "item.StandardFormat" #>))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!<#= utf #>ValueStringBuilder.FormatterCache<T<#= j + 1 #>>.TryFormatDelegate(arg<#= j + 1 #>, span, out argWritten, <#= isUtf16 ? "item.FormatString.AsSpan()" : "item.StandardFormat" #>))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg<#= j + 1 #>));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-<# } // for(j) #>
-                        default:
+                    case <#= utf #>FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+<# for(var j = 0; j < i; j++) { #>
+                    case <#= j #>:
+                        {
+                            <#= utf #>FormatHelper.FormatTo(ref sb, arg<#= j + 1 #>, item.Alignment, <#= isUtf16 ? "formatSpan.Slice(item.Offset, item.Count)" : "item.StandardFormat" #>, nameof(arg<#= j + 1 #>));
+                            break;
+                        }
+<# } // for(j) #>
+                    default:
+                        break;
                 }
             }
         }
     }
-
 <# } // for(i) #>
 <# } // foreach(utf) #>
 }

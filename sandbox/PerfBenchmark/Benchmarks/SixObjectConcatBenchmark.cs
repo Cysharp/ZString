@@ -19,7 +19,7 @@ namespace PerfBenchmark.Benchmarks
             z = int.Parse("555");
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public string StringPlus()
         {
             return "x:" + x + " y:" + y + " z:" + z;

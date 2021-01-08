@@ -14,6 +14,7 @@ namespace PerfBenchmark.Benchmarks
         int y;
         string format;
         StringBuilder stringBuilder;
+        Utf16PreparedFormat<int, int> preparedFormat;
 
         public FormatBenchmark()
         {
@@ -21,9 +22,10 @@ namespace PerfBenchmark.Benchmarks
             y = int.Parse("200");
             format = "x:{0}, y:{1}";
             stringBuilder = new StringBuilder();
+            preparedFormat = new Utf16PreparedFormat<int,int>(format);
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public string StringFormat()
         {
             return string.Format(format, x, y);
@@ -33,6 +35,12 @@ namespace PerfBenchmark.Benchmarks
         public string ZStringFormat()
         {
             return ZString.Format(format, x, y);
+        }
+
+        [Benchmark]
+        public string ZStringPreparedFormat()
+        {
+            return preparedFormat.Format(x, y);
         }
 
         [Benchmark]

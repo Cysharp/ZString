@@ -61,16 +61,28 @@ namespace BenchmarkVsReleasedVersion
             return NZString.Format(FormatString, x, y);
         }
 
-        [BenchmarkCategory("CreatePreparedFormat"), Benchmark(Baseline = true)]
-        public object CreatePreparedFormat_()
+        [BenchmarkCategory("CreateUtf16PreparedFormat"), Benchmark(Baseline = true)]
+        public object CreateUtf16PreparedFormat_()
         {
             return new Utf16PreparedFormat<int, int>(FormatString);
         }
 
-        [BenchmarkCategory("CreatePreparedFormat"), Benchmark]
-        public object CreatePreparedFormatN()
+        [BenchmarkCategory("CreateUtf16PreparedFormat"), Benchmark]
+        public object CreateUtf16PreparedFormatN()
         {
             return new NewZString::Cysharp.Text.Utf16PreparedFormat<int, int>(FormatString);
+        }
+
+        [BenchmarkCategory("CreateUtf8PreparedFormat"), Benchmark(Baseline = true)]
+        public object CreateUtf8PreparedFormat_()
+        {
+            return new Utf8PreparedFormat<int, int>(FormatString);
+        }
+
+        [BenchmarkCategory("CreateUtf8PreparedFormat"), Benchmark]
+        public object CreateUtf8PreparedFormatN()
+        {
+            return new NewZString::Cysharp.Text.Utf8PreparedFormat<int, int>(FormatString);
         }
 
         [BenchmarkCategory("Utf16PreparedFormat"), Benchmark(Baseline = true)]

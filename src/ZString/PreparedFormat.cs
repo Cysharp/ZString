@@ -9,12 +9,12 @@ namespace Cysharp.Text
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -44,53 +44,42 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -120,68 +109,47 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -211,83 +179,52 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -317,98 +254,57 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -438,113 +334,62 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -574,128 +419,67 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -725,143 +509,72 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -891,158 +604,77 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1072,173 +704,82 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1268,188 +809,87 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg10, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg10));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1479,203 +919,92 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg10, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg11, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg11));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1705,218 +1034,97 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg10, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg11, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg12, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg12));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -1946,233 +1154,102 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg10, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg11, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg12, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg13, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg13));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -2202,248 +1279,107 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 13:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg10, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg11, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg12, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg13, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg13));
+                            break;
+                        }
+                    case 13:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg14, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg14));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -2473,263 +1409,112 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 13:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 14:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg10, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg11, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg12, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg13, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg13));
+                            break;
+                        }
+                    case 13:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg14, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg14));
+                            break;
+                        }
+                    case 14:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg15, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg15));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf16PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf16FormatSegment[] segments;
 
         public Utf16PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, false);
+            this.segments = PreparedFormatHelper.Utf16Parse(format);
 
             var size = 0;
             foreach (var item in segments)
@@ -2759,278 +1544,118 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
             where TBufferWriter : IBufferWriter<char>
         {
+            var formatSpan = FormatString.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var span = sb.GetSpan(item.Count);
-                    strSpan.TryCopyTo(span);
-                    sb.Advance(item.Count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 13:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 14:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 15:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf16ValueStringBuilder.FormatterCache<T16>.TryFormatDelegate(arg16, span, out var argWritten, item.FormatString.AsSpan()))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf16ValueStringBuilder.FormatterCache<T16>.TryFormatDelegate(arg16, span, out argWritten, item.FormatString.AsSpan()))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg16));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf16FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg1, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg2, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg3, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg4, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg5, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg6, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg7, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg8, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg9, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg10, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg11, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg12, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg13, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg13));
+                            break;
+                        }
+                    case 13:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg14, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg14));
+                            break;
+                        }
+                    case 14:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg15, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg15));
+                            break;
+                        }
+                    case 15:
+                        {
+                            Utf16FormatHelper.FormatTo(ref sb, arg16, item.Alignment, formatSpan.Slice(item.Offset, item.Count), nameof(arg16));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3060,54 +1685,43 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3137,69 +1751,48 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3229,84 +1822,53 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3336,99 +1898,58 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3458,114 +1979,63 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3595,129 +2065,68 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3747,144 +2156,73 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -3914,159 +2252,78 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -4096,174 +2353,83 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -4293,189 +2459,88 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg10, item.Alignment, item.StandardFormat, nameof(arg10));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -4505,204 +2570,93 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg10, item.Alignment, item.StandardFormat, nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg11, item.Alignment, item.StandardFormat, nameof(arg11));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -4732,219 +2686,98 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg10, item.Alignment, item.StandardFormat, nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg11, item.Alignment, item.StandardFormat, nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg12, item.Alignment, item.StandardFormat, nameof(arg12));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -4974,234 +2807,103 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg10, item.Alignment, item.StandardFormat, nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg11, item.Alignment, item.StandardFormat, nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg12, item.Alignment, item.StandardFormat, nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg13, item.Alignment, item.StandardFormat, nameof(arg13));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -5231,249 +2933,108 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 13:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg10, item.Alignment, item.StandardFormat, nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg11, item.Alignment, item.StandardFormat, nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg12, item.Alignment, item.StandardFormat, nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg13, item.Alignment, item.StandardFormat, nameof(arg13));
+                            break;
+                        }
+                    case 13:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg14, item.Alignment, item.StandardFormat, nameof(arg14));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -5503,264 +3064,113 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 13:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 14:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg10, item.Alignment, item.StandardFormat, nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg11, item.Alignment, item.StandardFormat, nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg12, item.Alignment, item.StandardFormat, nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg13, item.Alignment, item.StandardFormat, nameof(arg13));
+                            break;
+                        }
+                    case 13:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg14, item.Alignment, item.StandardFormat, nameof(arg14));
+                            break;
+                        }
+                    case 14:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg15, item.Alignment, item.StandardFormat, nameof(arg15));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
     public sealed partial class Utf8PreparedFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>
     {
         public string FormatString { get; }
         public int MinSize { get; }
 
-        readonly FormatSegment[] segments;
+        readonly Utf8FormatSegment[] segments;
+        readonly byte[] utf8PreEncodedbuffer;
 
         public Utf8PreparedFormat(string format)
         {
             this.FormatString = format;
-            this.segments = PreparedFormatHelper.Parse(format, true);
+            this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
 
             var size = 0;
             foreach (var item in segments)
@@ -5790,266 +3200,104 @@ namespace Cysharp.Text
         public void FormatTo<TBufferWriter>(ref TBufferWriter sb, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
             where TBufferWriter : IBufferWriter<byte>
         {
+            var formatSpan = utf8PreEncodedbuffer.AsSpan();
+
             foreach (var item in segments)
             {
-                if (!item.IsFormatArgument)
+                switch (item.FormatIndex)
                 {
-                    var strSpan = FormatString.AsSpan(item.Offset, item.Count);
-                    var size = Encoding.UTF8.GetMaxByteCount(item.Count);
-                    var span = sb.GetSpan(size);
-                    var count = Encoding.UTF8.GetBytes(strSpan, span);
-                    sb.Advance(count);
-                }
-                else
-                {
-                    switch (item.FormatIndex)
-                    {
-                        case 0:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T1>.TryFormatDelegate(arg1, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg1));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 1:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T2>.TryFormatDelegate(arg2, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg2));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 2:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T3>.TryFormatDelegate(arg3, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg3));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 3:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T4>.TryFormatDelegate(arg4, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg4));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 4:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T5>.TryFormatDelegate(arg5, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg5));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 5:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T6>.TryFormatDelegate(arg6, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg6));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 6:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T7>.TryFormatDelegate(arg7, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg7));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 7:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T8>.TryFormatDelegate(arg8, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg8));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 8:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T9>.TryFormatDelegate(arg9, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg9));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 9:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T10>.TryFormatDelegate(arg10, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg10));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 10:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T11>.TryFormatDelegate(arg11, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg11));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 11:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T12>.TryFormatDelegate(arg12, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg12));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 12:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T13>.TryFormatDelegate(arg13, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg13));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 13:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T14>.TryFormatDelegate(arg14, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg14));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 14:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T15>.TryFormatDelegate(arg15, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg15));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        case 15:
-                            {
-                                var span = sb.GetSpan(0);
-                                if (!Utf8ValueStringBuilder.FormatterCache<T16>.TryFormatDelegate(arg16, span, out var argWritten, item.StandardFormat))
-                                {
-                                    sb.Advance(0);
-                                    span = sb.GetSpan(Math.Max(span.Length + 1, argWritten));
-                                    if (!Utf8ValueStringBuilder.FormatterCache<T16>.TryFormatDelegate(arg16, span, out argWritten, item.StandardFormat))
-                                    {
-                                        ExceptionUtil.ThrowArgumentException(nameof(arg16));
-                                    }
-                                }
-                                sb.Advance(argWritten);
-                                break;
-                            }
-                        default:
+                    case Utf8FormatSegment.NotFormatIndex:
+                        {
+                            var strSpan = formatSpan.Slice(item.Offset, item.Count);
+                            var span = sb.GetSpan(item.Count);
+                            strSpan.TryCopyTo(span);
+                            sb.Advance(item.Count);
                             break;
-                    }
+                        }
+                    case 0:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg1, item.Alignment, item.StandardFormat, nameof(arg1));
+                            break;
+                        }
+                    case 1:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg2, item.Alignment, item.StandardFormat, nameof(arg2));
+                            break;
+                        }
+                    case 2:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg3, item.Alignment, item.StandardFormat, nameof(arg3));
+                            break;
+                        }
+                    case 3:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg4, item.Alignment, item.StandardFormat, nameof(arg4));
+                            break;
+                        }
+                    case 4:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg5, item.Alignment, item.StandardFormat, nameof(arg5));
+                            break;
+                        }
+                    case 5:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg6, item.Alignment, item.StandardFormat, nameof(arg6));
+                            break;
+                        }
+                    case 6:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg7, item.Alignment, item.StandardFormat, nameof(arg7));
+                            break;
+                        }
+                    case 7:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg8, item.Alignment, item.StandardFormat, nameof(arg8));
+                            break;
+                        }
+                    case 8:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg9, item.Alignment, item.StandardFormat, nameof(arg9));
+                            break;
+                        }
+                    case 9:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg10, item.Alignment, item.StandardFormat, nameof(arg10));
+                            break;
+                        }
+                    case 10:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg11, item.Alignment, item.StandardFormat, nameof(arg11));
+                            break;
+                        }
+                    case 11:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg12, item.Alignment, item.StandardFormat, nameof(arg12));
+                            break;
+                        }
+                    case 12:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg13, item.Alignment, item.StandardFormat, nameof(arg13));
+                            break;
+                        }
+                    case 13:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg14, item.Alignment, item.StandardFormat, nameof(arg14));
+                            break;
+                        }
+                    case 14:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg15, item.Alignment, item.StandardFormat, nameof(arg15));
+                            break;
+                        }
+                    case 15:
+                        {
+                            Utf8FormatHelper.FormatTo(ref sb, arg16, item.Alignment, item.StandardFormat, nameof(arg16));
+                            break;
+                        }
+                    default:
+                        break;
                 }
             }
         }
     }
-
 }

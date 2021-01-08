@@ -15,10 +15,16 @@ namespace Cysharp.Text
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
         public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
         {
+            if (format == null)
+            {
+                throw new ArgumentNullException(nameof(format));
+            }
+            
             var copyFrom = 0;
             for (int i = 0; i < format.Length; i++)
             {
-                if (format[i] == '{')
+                var c = format[i];
+                if (c == '{')
                 {
                     // escape.
                     if (i == format.Length - 1)
@@ -41,14 +47,14 @@ namespace Cysharp.Text
                     }
 
                     // try to find range
-                    var indexParse = FormatParser.Parse(format.AsSpan(i));
-                    copyFrom = i + indexParse.LastIndex + 1;
-                    i = i + indexParse.LastIndex;
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
                     switch (indexParse.Index)
                     {
 <# for(var j = 0; j < i; j++) { #>
                         case <#= j #>:
-                            AppendFormatInternal(arg<#= j + 1 #>, indexParse.FormatString, nameof(arg<#= j + 1 #>));
+                            AppendFormatInternal(arg<#= j + 1 #>, indexParse.Alignment, indexParse.FormatString, nameof(arg<#= j + 1 #>));
                             continue;
 <# } #>
                         default:
@@ -56,15 +62,19 @@ namespace Cysharp.Text
                             break;
                     }
                 }
-                else if (format[i] == '}')
+                else if (c == '}')
                 {
-                    if (i != format.Length && format[i + 1] == '}')
+                    if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
                         Append(format.AsSpan(copyFrom, size));
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
+                    }
+                    else
+                    {
+                        ThrowFormatException();
                     }
                 }
             }
@@ -78,7 +88,6 @@ namespace Cysharp.Text
                 }
             }
         }
-
 <# } #>
     }
 }

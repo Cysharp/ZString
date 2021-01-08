@@ -96,16 +96,28 @@ namespace BenchmarkVsReleasedVersion
                 _byte, _dt, _dto, _decimal, _double, _guid, _short, _float, _ts, _uint, _ulong, _null, _string, _bool, _enum, _char);
         }
 
-        [BenchmarkCategory("CreatePreparedFormat"), Benchmark(Baseline = true)]
-        public object CreatePreparedFormat_()
+        [BenchmarkCategory("CreateUtf16PreparedFormat"), Benchmark(Baseline = true)]
+        public object CreateUtf16PreparedFormat_()
         {
             return new PF16(_format);
         }
 
-        [BenchmarkCategory("CreatePreparedFormat"), Benchmark]
-        public object CreatePreparedFormatN()
+        [BenchmarkCategory("CreateUtf16PreparedFormat"), Benchmark]
+        public object CreateUtf16PreparedFormatN()
         {
             return new NPF16(_format);
+        }
+
+        [BenchmarkCategory("CreateUtf8PreparedFormat"), Benchmark(Baseline = true)]
+        public object CreateUtf8PreparedFormat_()
+        {
+            return new PF8(_format);
+        }
+
+        [BenchmarkCategory("CreateUtf8PreparedFormat"), Benchmark]
+        public object CreateUtf8PreparedFormatN()
+        {
+            return new NPF8(_format);
         }
 
         [BenchmarkCategory("Utf16PreparedFormat"), Benchmark(Baseline = true)]
