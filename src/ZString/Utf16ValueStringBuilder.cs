@@ -309,6 +309,14 @@ namespace Cysharp.Text
             int remainLnegth = this.index - index;
             buffer.AsSpan(index, remainLnegth).CopyTo(newBuffer.AsSpan(newBufferIndex));
 
+            if (buffer.Length != ThreadStaticBufferSize)
+            {
+                if (buffer != null)
+                {
+                    ArrayPool<char>.Shared.Return(buffer);
+                }
+            }
+
             buffer = newBuffer;
             this.index = newBufferIndex + remainLnegth;
         }
