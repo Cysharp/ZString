@@ -7,5 +7,12 @@
     "keywords": [ "String", "Performance" ],
     "license": "MIT",
     "category": "Scripting",
-    "dependencies": {}
+    "dependencies": {},
+	"samples": [
+		{
+			"displayName": "Required Managed DLLs",
+			"description": "Import Required Managed DLLs",
+			"path": "Samples~/RequiredManagedDLLs"
+		},
+	]
 }
