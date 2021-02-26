@@ -5,6 +5,16 @@ namespace Cysharp.Text
 {
     public static partial class TextMeshProExtensions
     {
+        public static void SetText<T>(this TMP_Text text, T arg0)
+        {
+            using ( var sb = new Cysharp.Text.Utf16ValueStringBuilder( true ) )
+            {
+                sb.Append(arg0);
+                var array = sb.AsArraySegment();
+                text.SetCharArray(array.Array, array.Offset, array.Count);
+            }
+        }
+        
         public static void SetTextFormat<T0>(this TMP_Text text, string format, T0 arg0)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
