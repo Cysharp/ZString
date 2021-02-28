@@ -13,7 +13,7 @@ namespace Cysharp.Text
 {
     public partial struct Utf8ValueStringBuilder
     {
-        static object CreateFormatter(Type type)
+        static object? CreateFormatter(Type type)
         {
 <# foreach(var t in utf8spanFormattables) { #>
             if (type == typeof(<#= t.FullName #>))

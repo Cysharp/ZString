@@ -6,7 +6,7 @@ namespace Cysharp.Text
 {
     public partial struct Utf8ValueStringBuilder
     {
-        static object CreateFormatter(Type type)
+        static object? CreateFormatter(Type type)
         {
             if (type == typeof(System.Byte))
             {

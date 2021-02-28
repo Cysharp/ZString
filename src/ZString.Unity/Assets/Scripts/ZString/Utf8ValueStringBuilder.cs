@@ -38,12 +38,12 @@ namespace Cysharp.Text
         }
 
         [ThreadStatic]
-        static byte[] scratchBuffer;
+        static byte[]? scratchBuffer;
 
         [ThreadStatic]
         internal static bool scratchBufferUsed; 
 
-        byte[] buffer;
+        byte[]? buffer;
         int index;
         bool disposeImmediately;
 
@@ -77,7 +77,7 @@ namespace Cysharp.Text
                 ThrowNestedException();
             }
 
-            byte[] buf;
+            byte[]? buf;
             if (disposeImmediately)
             {
                 buf = scratchBuffer;
@@ -226,14 +226,14 @@ namespace Cysharp.Text
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(string value)
+        public void Append(string? value)
         {
             Append(value.AsSpan());
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(string value)
+        public void AppendLine(string? value)
         {
             Append(value);
             AppendLine();
@@ -464,7 +464,7 @@ namespace Cysharp.Text
             public static TryFormat<T> TryFormatDelegate;
             static FormatterCache()
             {
-                var formatter = (TryFormat<T>)CreateFormatter(typeof(T));
+                var formatter = (TryFormat<T>?)CreateFormatter(typeof(T));
                 if (formatter == null)
                 {
                     if (typeof(T).IsEnum)

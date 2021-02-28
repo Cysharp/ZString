@@ -4,6 +4,8 @@
         <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
         <RootNamespace>Cysharp.Text</RootNamespace>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+        <Nullable>enable</Nullable>
+        <LangVersion>8.0</LangVersion>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <NoWarn>1701;1702;1591</NoWarn>
 

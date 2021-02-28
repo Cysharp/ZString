@@ -110,45 +110,45 @@ namespace Cysharp.Text
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
-        public static string Join<T>(string separator, params T[] values)
+        public static string Join<T>(string? separator, params T[] values)
         {
             return JoinInternal<T>(separator.AsSpan(), values.AsSpan());
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
-        public static string Join<T>(string separator, List<T> values)
+        public static string Join<T>(string? separator, List<T> values)
         {
             return JoinInternal(separator.AsSpan(), (IReadOnlyList<T>)values);
         }
         
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
-        public static string Join<T>(string separator, ReadOnlySpan<T> values)
+        public static string Join<T>(string? separator, ReadOnlySpan<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
         }
 
-        public static string Join<T>(string separator, ICollection<T> values)
+        public static string Join<T>(string? separator, ICollection<T> values)
         {
             return JoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
 
-        public static string Join<T>(string separator, IList<T> values)
+        public static string Join<T>(string? separator, IList<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
         }
 
-        public static string Join<T>(string separator, IReadOnlyList<T> values)
+        public static string Join<T>(string? separator, IReadOnlyList<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
         }
 
-        public static string Join<T>(string separator, IReadOnlyCollection<T> values)
+        public static string Join<T>(string? separator, IReadOnlyCollection<T> values)
         {
             return JoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
 
         /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
-        public static string Join<T>(string separator, IEnumerable<T> values)
+        public static string Join<T>(string? separator, IEnumerable<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
         }

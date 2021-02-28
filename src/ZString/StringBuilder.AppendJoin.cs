@@ -75,17 +75,17 @@ namespace Cysharp.Text
         /// <typeparam name="T"></typeparam>
         /// <param name="separator"></param>
         /// <param name="values"></param>
-        public void AppendJoin<T>(string separator, params T[] values)
+        public void AppendJoin<T>(string? separator, params T[] values)
         {
             AppendJoinInternal<T>(separator.AsSpan(), values.AsSpan());
         }
 
-        public void AppendJoin<T>(string separator, List<T> values)
+        public void AppendJoin<T>(string? separator, List<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), (IReadOnlyList<T>)values);
         }
 
-        public void AppendJoin<T>(string separator, ReadOnlySpan<T> values)
+        public void AppendJoin<T>(string? separator, ReadOnlySpan<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
@@ -96,27 +96,27 @@ namespace Cysharp.Text
         /// <typeparam name="T"></typeparam>
         /// <param name="separator"></param>
         /// <param name="values"></param>
-        public void AppendJoin<T>(string separator, IEnumerable<T> values)
+        public void AppendJoin<T>(string? separator, IEnumerable<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
 
-        public void AppendJoin<T>(string separator, ICollection<T> values)
+        public void AppendJoin<T>(string? separator, ICollection<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
 
-        public void AppendJoin<T>(string separator, IList<T> values)
+        public void AppendJoin<T>(string? separator, IList<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
 
-        public void AppendJoin<T>(string separator, IReadOnlyList<T> values)
+        public void AppendJoin<T>(string? separator, IReadOnlyList<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
 
-        public void AppendJoin<T>(string separator, IReadOnlyCollection<T> values)
+        public void AppendJoin<T>(string? separator, IReadOnlyCollection<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
@@ -277,17 +277,17 @@ namespace Cysharp.Text
         /// <typeparam name="T"></typeparam>
         /// <param name="separator"></param>
         /// <param name="values"></param>
-        public void AppendJoin<T>(string separator, params T[] values)
+        public void AppendJoin<T>(string? separator, params T[] values)
         {
             AppendJoinInternal<T>(separator.AsSpan(), values.AsSpan());
         }
 
-        public void AppendJoin<T>(string separator, List<T> values)
+        public void AppendJoin<T>(string? separator, List<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), (IReadOnlyList<T>)values);
         }
 
-        public void AppendJoin<T>(string separator, ReadOnlySpan<T> values)
+        public void AppendJoin<T>(string? separator, ReadOnlySpan<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
@@ -298,27 +298,27 @@ namespace Cysharp.Text
         /// <typeparam name="T"></typeparam>
         /// <param name="separator"></param>
         /// <param name="values"></param>
-        public void AppendJoin<T>(string separator, IEnumerable<T> values)
+        public void AppendJoin<T>(string? separator, IEnumerable<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
 
-        public void AppendJoin<T>(string separator, ICollection<T> values)
+        public void AppendJoin<T>(string? separator, ICollection<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
 
-        public void AppendJoin<T>(string separator, IList<T> values)
+        public void AppendJoin<T>(string? separator, IList<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
 
-        public void AppendJoin<T>(string separator, IReadOnlyList<T> values)
+        public void AppendJoin<T>(string? separator, IReadOnlyList<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values);
         }
 
-        public void AppendJoin<T>(string separator, IReadOnlyCollection<T> values)
+        public void AppendJoin<T>(string? separator, IReadOnlyCollection<T> values)
         {
             AppendJoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
