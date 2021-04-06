@@ -205,6 +205,16 @@ Workround:
 - Copy Collections from Library/PackageCache to %Project Folder%/Packages
 - Remove CompilerServices.Unsafe dll from said folder
 
+### Install via git URL
+
+You can add `https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString` to Package Manager.
+
+You can install managed DLL from package mangers's samples Import button.
+
+![image](https://user-images.githubusercontent.com/46207/113681776-56145f00-96fd-11eb-8227-560da9c1a092.png)
+
+If you want to set a target version, ZString uses the *.*.* release tag so you can specify a version like #2.4.0. For example https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString#2.4.0.
+
 Advanced Tips
 ---
 `ZString.CreateStringBuilder(notNested:true)` is a special optimized parameter that uses `ThreadStatic` buffer instead of rent from `ArrayPool`. It is slightly faster but can not use in nested.
