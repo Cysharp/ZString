@@ -3,10 +3,11 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp3.1</TargetFramework>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../../opensource.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="StringFormatter" Version="1.0.0.13" />
         <PackageReference Include="System.Text.Json" Version="4.7.1" />
         <ProjectReference Include="..\..\src\ZString\ZString.csproj" />
     </ItemGroup>

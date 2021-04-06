@@ -18,6 +18,8 @@
         <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <SignAssembly>true</SignAssembly>
+        <AssemblyOriginatorKeyFile>../../opensource.snk</AssemblyOriginatorKeyFile>
     </PropertyGroup>
 
     <ItemGroup>

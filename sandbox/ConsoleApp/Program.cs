@@ -4,7 +4,7 @@ using System.Buffers;
 using System.Collections.Concurrent;
 using System.Linq;
 using System.Text;
-using System.Text.Formatting;
+// using System.Text.Formatting;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -61,9 +61,9 @@ namespace ConsoleApp
             return ZString.Format(format, x, y);
         }
 
-        public string StringFormatterFormat()
-        {
-            return StringBuffer.Format(format, x, y);
-        }
+        //public string StringFormatterFormat()
+        //{
+        //    return StringBuffer.Format(format, x, y);
+        //}
     }
 }
