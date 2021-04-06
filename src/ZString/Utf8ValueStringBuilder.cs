@@ -103,18 +103,18 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            if (buffer.Length != ThreadStaticBufferSize)
+            if (buffer != null)
             {
-                if (buffer != null)
+                if (buffer.Length != ThreadStaticBufferSize)
                 {
                     ArrayPool<byte>.Shared.Return(buffer);
                 }
-            }
-            buffer = null;
-            index = 0;
-            if (disposeImmediately)
-            {
-                scratchBufferUsed = false;
+                buffer = null;
+                index = 0;
+                if (disposeImmediately)
+                {
+                    scratchBufferUsed = false;
+                }
             }
         }
 
