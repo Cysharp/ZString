@@ -40,6 +40,7 @@ Related project for loggin using with ZString, [Cysharp/ZLogger](https://github.
 - [Getting Started](#getting-started)
 - [Reference](#reference)
 - [Unity](#unity)
+  - [Install via git URL](#install-via-git-url)
 - [Advanced Tips](#advanced-tips)
 - [License](#license)
 
