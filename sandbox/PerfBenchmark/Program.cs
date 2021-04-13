@@ -21,7 +21,7 @@ namespace PerfBenchmark
             AddJob(Job.ShortRun.WithWarmupCount(1).WithIterationCount(1).WithRuntime(CoreRuntime.Core50));
 
             // Add Targetframeworks net47 to csproj(removed for CI)
-            // AddJob(Job.ShortRun.WithWarmupCount(1).WithIterationCount(1).WithRuntime(ClrRuntime.Net47));
+            //AddJob(Job.ShortRun.WithWarmupCount(1).WithIterationCount(1).WithRuntime(ClrRuntime.Net47));
         }
     }
 
