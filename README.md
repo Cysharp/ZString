@@ -95,7 +95,7 @@ async void Example(int x, int y, int z)
     // create Utf8 StringBuilder that build Utf8 directly to avoid encoding
     using var sb2 = ZString.CreateUtf8StringBuilder();
 
-    sb2.Concat("foo:", x, ", bar:", y);
+    sb2.AppendFormat("foo:{0} bar:{1}", x, y);
 
     // directly write to steam or dest to avoid allocation
     await sb2.WriteToAsync(stream);
