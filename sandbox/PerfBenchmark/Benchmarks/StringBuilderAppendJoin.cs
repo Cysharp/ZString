@@ -17,8 +17,10 @@ namespace PerfBenchmark.Benchmarks
             fValues = new[] { 0f, float.MaxValue, float.MinValue };
             mValues = new[] { 0m, decimal.MaxValue, decimal.MinValue };
 
+#if NETCOREAPP || NETSTANDARD2_1
             if (StringBuilder() != ZStringBuilder())
                 throw new Exception();
+#endif
         }
 
 

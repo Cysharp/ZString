@@ -41,7 +41,7 @@ namespace Cysharp.Text
         static byte[] scratchBuffer;
 
         [ThreadStatic]
-        internal static bool scratchBufferUsed; 
+        internal static bool scratchBufferUsed;
 
         byte[] buffer;
         int index;
@@ -199,7 +199,7 @@ namespace Cysharp.Text
                 Advance(repeatCount);
             }
             else
-            { 
+            {
                 var maxLen = UTF8NoBom.GetMaxByteCount(1);
                 Span<byte> utf8Bytes = stackalloc byte[maxLen];
                 ReadOnlySpan<char> chars = stackalloc char[1] { value };
@@ -228,7 +228,16 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
+#if UNITY_2018_3_OR_NEWER
+            var maxLen = UTF8NoBom.GetMaxByteCount(value.Length);
+            if (buffer.Length - index < maxLen)
+            {
+                Grow(maxLen);
+            }
+            index += UTF8NoBom.GetBytes(value, 0, value.Length, buffer, index);
+#else
             Append(value.AsSpan());
+#endif
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>

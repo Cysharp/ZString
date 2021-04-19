@@ -200,7 +200,16 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
+#if UNITY_2018_3_OR_NEWER
+            if (buffer.Length - index < value.Length)
+            {
+                Grow(value.Length);
+            }
+            value.CopyTo(0, buffer, index, value.Length);
+            index += value.Length;
+#else
             Append(value.AsSpan());
+#endif
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
@@ -219,7 +228,7 @@ namespace Cysharp.Text
             {
                 Grow(value.Length);
             }
-
+            
             value.CopyTo(buffer.AsSpan(index));
             index += value.Length;
         }
@@ -369,7 +378,7 @@ namespace Cysharp.Text
         /// are removed from this builder.
         /// </remarks>
         public void Replace(string oldValue, string newValue) => Replace(oldValue, newValue, 0, Length);
-        
+
         public void Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue) => Replace(oldValue, newValue, 0, Length);
 
         /// <summary>
