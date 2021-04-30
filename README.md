@@ -183,6 +183,11 @@ Reference
 | `Format` | string | Replaces one or more format items in a string with the string representation of some specified values. |
 | `FormatTo<TBufferWriter>(ref TBufferWriter, T1,..,T16)` | void | Replaces one or more format items in a string with the string representation of some specified values. |
 
+**class ZStringWriter : TextWriter**
+
+A `TextWriter` implementation that is backed with `Utf16ValueStringBuilder`  
+It's important to make sure the writer is always properly disposed.
+
 **static class TextMeshProExtensions**(Unity only)
 
 | method | returns | description |
