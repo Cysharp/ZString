@@ -20,7 +20,12 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <SignAssembly>true</SignAssembly>
         <AssemblyOriginatorKeyFile>../../opensource.snk</AssemblyOriginatorKeyFile>
+        <PackageIcon>Icon.png</PackageIcon>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="Icon.png" Pack="true" PackagePath="/" />
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="System.Memory" Version="4.5.3" />
