@@ -7,6 +7,19 @@ namespace ZStringTests
 {
     public class ReplaceTest
     {
+        
+        [Fact]
+        public void ReplaceAtCharTest()
+        {
+            var s = new string(' ', 10);
+            using (var zsb = ZString.CreateStringBuilder())
+            {
+                zsb.Append(s);
+                zsb.ReplaceAt('-',2);
+                zsb.ToString().Should().Be(new StringBuilder(s) { [2] = '-'}.ToString());
+            }
+        }
+        
         [Fact]
         public void ReplaceCharTest()
         {
