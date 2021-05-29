@@ -220,6 +220,44 @@ namespace Cysharp.Text
             AppendLine();
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(string value, int startIndex, int count)
+        {
+            if (value == null)
+            {
+                if (startIndex == 0 && count == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+            }
+
+#if UNITY_2018_3_OR_NEWER
+            if (buffer.Length - index < count)
+            {
+                Grow(count);
+            }
+            value.CopyTo(startIndex, buffer, index, count);
+            index += count;
+#else
+            Append(value.AsSpan(startIndex, count));
+#endif
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(char[] value, int startIndex, int charCount)
+        {
+            if (buffer.Length - index < charCount)
+            {
+                Grow(charCount);
+            }
+            Array.Copy(value, startIndex, buffer, index, charCount);
+            index += charCount;
+        }
+
         /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(ReadOnlySpan<char> value)
