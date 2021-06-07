@@ -228,7 +228,7 @@ namespace Cysharp.Text
             {
                 Grow(value.Length);
             }
-            
+
             value.CopyTo(buffer.AsSpan(index));
             index += value.Length;
         }
@@ -347,7 +347,7 @@ namespace Cysharp.Text
         public void Replace(char oldChar, char newChar, int startIndex, int count)
         {
             int currentLength = Length;
-            if ((uint)startIndex > (uint)currentLength)
+            if (startIndex > currentLength)
             {
                 ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
             }
