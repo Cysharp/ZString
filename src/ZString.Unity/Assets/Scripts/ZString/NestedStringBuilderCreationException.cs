@@ -5,10 +5,6 @@ namespace Cysharp.Text
     // Currently, this class is internals.
     internal class NestedStringBuilderCreationException : InvalidOperationException
     {
-        private NestedStringBuilderCreationException()
-        {
-        }
-
         internal protected NestedStringBuilderCreationException(string typeName, string extraMessage = "")
             : base($"A nested call with `notNested: true`, or Either You forgot to call {typeName}.Dispose() of  in the past.{extraMessage}")
         {

@@ -228,7 +228,7 @@ namespace Cysharp.Text
             {
                 Grow(value.Length);
             }
-            
+
             value.CopyTo(buffer.AsSpan(index));
             index += value.Length;
         }
@@ -578,10 +578,6 @@ namespace Cysharp.Text
         {
             throw new FormatException("Index (zero based) must be greater than or equal to zero and less than the size of the argument list.");
         }
-        private static void FormatError()
-        {
-            throw new FormatException("Input string was not in a correct format.");
-        }
 
         void AppendFormatInternal<T>(T arg, int width, ReadOnlySpan<char> format, string argName)
         {
@@ -646,19 +642,6 @@ namespace Cysharp.Text
         static void ThrowNestedException()
         {
             throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
-        }
-
-        void AppendFormatInternal<T>(T arg1, ReadOnlySpan<char> format, string argName)
-        {
-            if (!FormatterCache<T>.TryFormatDelegate(arg1, buffer.AsSpan(index), out var written, format))
-            {
-                Grow(written);
-                if (!FormatterCache<T>.TryFormatDelegate(arg1, buffer.AsSpan(index), out written, format))
-                {
-                    ThrowArgumentException(argName);
-                }
-            }
-            index += written;
         }
 
         /// <summary>
