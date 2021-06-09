@@ -56,7 +56,6 @@ namespace Cysharp.Text
                 if (num1 < 100) { if (buffer.Length < 2) { return false; } goto L2; }
                 if (num1 < 1000) { if (buffer.Length < 3) { return false; } goto L3; }
                 if (buffer.Length < 4) { return false; }
-                goto L4;
             }
             else
             {
@@ -68,7 +67,6 @@ namespace Cysharp.Text
                     if (num2 < 100) { if (buffer.Length < 6) { return false; } goto L6; }
                     if (num2 < 1000) { if (buffer.Length < 7) { return false; } goto L7; }
                     if (buffer.Length < 8) { return false; }
-                    goto L8;
                 }
                 else
                 {
@@ -80,7 +78,6 @@ namespace Cysharp.Text
                         if (num3 < 100) { if (buffer.Length < 10) { return false; } goto L10; }
                         if (num3 < 1000) { if (buffer.Length < 11) { return false; } goto L11; }
                         if (buffer.Length < 12) { return false; }
-                        goto L12;
                     }
                     else
                     {
@@ -92,7 +89,6 @@ namespace Cysharp.Text
                             if (num4 < 100) { if (buffer.Length < 14) { return false; } goto L14; }
                             if (num4 < 1000) { if (buffer.Length < 15) { return false; } goto L15; }
                             if (buffer.Length < 16) { return false; }
-                            goto L16;
                         }
                         else
                         {
@@ -104,9 +100,7 @@ namespace Cysharp.Text
                                 if (num5 < 100) { if (buffer.Length < 18) { return false; } goto L18; }
                                 if (num5 < 1000) { if (buffer.Length < 19) { return false; } goto L19; }
                                 if (buffer.Length < 20) { return false; }
-                                goto L20;
                             }
-                            L20:
                             buffer[offset++] = (char)('0' + (div = (num5 * 8389L) >> 23));
                             num5 -= div * 1000;
                             L19:
@@ -118,7 +112,6 @@ namespace Cysharp.Text
                             L17:
                             buffer[offset++] = (char)('0' + (num5));
                         }
-                        L16:
                         buffer[offset++] = (char)('0' + (div = (num4 * 8389L) >> 23));
                         num4 -= div * 1000;
                         L15:
@@ -130,7 +123,6 @@ namespace Cysharp.Text
                         L13:
                         buffer[offset++] = (char)('0' + (num4));
                     }
-                    L12:
                     buffer[offset++] = (char)('0' + (div = (num3 * 8389L) >> 23));
                     num3 -= div * 1000;
                     L11:
@@ -142,7 +134,6 @@ namespace Cysharp.Text
                     L9:
                     buffer[offset++] = (char)('0' + (num3));
                 }
-                L8:
                 buffer[offset++] = (char)('0' + (div = (num2 * 8389L) >> 23));
                 num2 -= div * 1000;
                 L7:
@@ -154,7 +145,6 @@ namespace Cysharp.Text
                 L5:
                 buffer[offset++] = (char)('0' + (num2));
             }
-            L4:
             buffer[offset++] = (char)('0' + (div = (num1 * 8389L) >> 23));
             num1 -= div * 1000;
             L3:
@@ -182,7 +172,6 @@ namespace Cysharp.Text
                 if (num1 < 100) { if (buffer.Length < 2) { return false; } goto L2; }
                 if (num1 < 1000) { if (buffer.Length < 3) { return false; } goto L3; }
                 if (buffer.Length < 4) { return false; }
-                goto L4;
             }
             else
             {
@@ -194,7 +183,6 @@ namespace Cysharp.Text
                     if (num2 < 100) { if (buffer.Length < 6) { return false; } goto L6; }
                     if (num2 < 1000) { if (buffer.Length < 7) { return false; } goto L7; }
                     if (buffer.Length < 8) { return false; }
-                    goto L8;
                 }
                 else
                 {
@@ -206,7 +194,6 @@ namespace Cysharp.Text
                         if (num3 < 100) { if (buffer.Length < 10) { return false; } goto L10; }
                         if (num3 < 1000) { if (buffer.Length < 11) { return false; } goto L11; }
                         if (buffer.Length < 12) { return false; }
-                        goto L12;
                     }
                     else
                     {
@@ -218,7 +205,6 @@ namespace Cysharp.Text
                             if (num4 < 100) { if (buffer.Length < 14) { return false; } goto L14; }
                             if (num4 < 1000) { if (buffer.Length < 15) { return false; } goto L15; }
                             if (buffer.Length < 16) { return false; }
-                            goto L16;
                         }
                         else
                         {
@@ -230,7 +216,6 @@ namespace Cysharp.Text
                                 if (num5 < 100) { if (buffer.Length < 18) { return false; } goto L18; }
                                 if (num5 < 1000) { if (buffer.Length < 19) { return false; } goto L19; }
                                 if (buffer.Length < 20) { return false; }
-                                goto L20;
                             }
                             L20:
                             buffer[offset++] = (char)('0' + (div = (num5 * 8389UL) >> 23));
@@ -244,7 +229,6 @@ namespace Cysharp.Text
                             L17:
                             buffer[offset++] = (char)('0' + (num5));
                         }
-                        L16:
                         buffer[offset++] = (char)('0' + (div = (num4 * 8389UL) >> 23));
                         num4 -= div * 1000;
                         L15:
@@ -256,7 +240,6 @@ namespace Cysharp.Text
                         L13:
                         buffer[offset++] = (char)('0' + (num4));
                     }
-                    L12:
                     buffer[offset++] = (char)('0' + (div = (num3 * 8389UL) >> 23));
                     num3 -= div * 1000;
                     L11:
@@ -268,7 +251,6 @@ namespace Cysharp.Text
                     L9:
                     buffer[offset++] = (char)('0' + (num3));
                 }
-                L8:
                 buffer[offset++] = (char)('0' + (div = (num2 * 8389UL) >> 23));
                 num2 -= div * 1000;
                 L7:
@@ -280,7 +262,6 @@ namespace Cysharp.Text
                 L5:
                 buffer[offset++] = (char)('0' + (num2));
             }
-            L4:
             buffer[offset++] = (char)('0' + (div = (num1 * 8389UL) >> 23));
             num1 -= div * 1000;
             L3:
