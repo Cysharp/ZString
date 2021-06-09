@@ -7,7 +7,7 @@ namespace Cysharp.Text
 {
     internal static partial class Utf16FormatHelper
     {
-        const char sp = (char)' ';
+        const char sp = ' ';
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void FormatTo<TBufferWriter, T>(ref TBufferWriter sb, T arg, int width, ReadOnlySpan<char> format, string argName)

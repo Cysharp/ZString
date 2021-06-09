@@ -73,35 +73,35 @@ namespace ZStringTests
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (IList<int>)new int[] { });
-            bcl.AppendJoin("_,_", (IList<int>)new int[] { });
+            bcl.AppendJoin("_,_", new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (IList<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin("_,_", (IList<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin("_,_", new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (IReadOnlyList<int>)new int[] { });
-            bcl.AppendJoin("_,_", (IReadOnlyList<int>)new int[] { });
+            bcl.AppendJoin("_,_", new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (IReadOnlyList<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin("_,_", (IReadOnlyList<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin("_,_", new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (ICollection<int>)new int[] { });
-            bcl.AppendJoin("_,_", (ICollection<int>)new int[] { });
+            bcl.AppendJoin("_,_", new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (ICollection<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin("_,_", (ICollection<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin("_,_", new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (IReadOnlyCollection<int>)new int[] { });
-            bcl.AppendJoin("_,_", (IReadOnlyCollection<int>)new int[] { });
+            bcl.AppendJoin("_,_", new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin("_,_", (IReadOnlyCollection<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin("_,_", (IReadOnlyCollection<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin("_,_", new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
         }
 
@@ -122,42 +122,42 @@ namespace ZStringTests
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (IList<int>)new int[] { });
-            bcl.AppendJoin(',', (IList<int>)new int[] { });
+            bcl.AppendJoin(',', new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (IList<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin(',', (IList<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin(',', new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (IReadOnlyList<int>)new int[] { });
-            bcl.AppendJoin(',', (IReadOnlyList<int>)new int[] { });
+            bcl.AppendJoin(',', new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (IReadOnlyList<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin(',', (IReadOnlyList<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin(',', new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (ICollection<int>)new int[] { });
-            bcl.AppendJoin(',', (ICollection<int>)new int[] { });
+            bcl.AppendJoin(',', new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (ICollection<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin(',', (ICollection<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin(',', new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (IReadOnlyCollection<int>)new int[] { });
-            bcl.AppendJoin(',', (IReadOnlyCollection<int>)new int[] { });
+            bcl.AppendJoin(',', new int[] { });
             zsb.ToString().Should().Be(bcl.ToString());
 
             zsb.AppendJoin(',', (IReadOnlyCollection<int>)new[] { 1, 2, 3 });
-            bcl.AppendJoin(',', (IReadOnlyCollection<int>)new[] { 1, 2, 3 });
+            bcl.AppendJoin(',', new[] { 1, 2, 3 });
             zsb.ToString().Should().Be(bcl.ToString());
         }
 
         [Fact]
         public void JoinStrings()
         {
-            var values = new string[] { "abc", null, "def" };
+            var values = new [] { "abc", null, "def" };
             {
                 const char sep = ',';
                 var zsb = ZString.CreateStringBuilder();

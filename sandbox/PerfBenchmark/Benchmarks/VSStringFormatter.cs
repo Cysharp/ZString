@@ -12,14 +12,14 @@ namespace PerfBenchmark.Benchmarks
         [Benchmark]
         public string ZStringConcatInt()
         {
-            return ZString.Concat((int)1);
+            return ZString.Concat(1);
         }
 
         [Benchmark]
         public string ZStringBuilderInt()
         {
             using var builder = Cysharp.Text.ZString.CreateStringBuilder();
-            builder.Append((int)1);
+            builder.Append(1);
             return builder.ToString();
         }
 
@@ -27,7 +27,7 @@ namespace PerfBenchmark.Benchmarks
         public string StringFormatterInt()
         {
             var builder = new System.Text.Formatting.StringBuffer();
-            builder.Append((int)1, System.Text.Formatting.StringView.Empty);
+            builder.Append(1, System.Text.Formatting.StringView.Empty);
             return builder.ToString();
         }
 
@@ -35,7 +35,7 @@ namespace PerfBenchmark.Benchmarks
         public string BclStringBuilderInt()
         {
             var builder = new StringBuilder();
-            builder.Append((int)1);
+            builder.Append(1);
             return builder.ToString();
         }
     }

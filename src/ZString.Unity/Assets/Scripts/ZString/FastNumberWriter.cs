@@ -19,32 +19,32 @@ namespace Cysharp.Text
                 if (value == long.MinValue) // -9223372036854775808
                 {
                     if (buffer.Length < 20) { return false; }
-                    buffer[offset++] = (char)'-';
-                    buffer[offset++] = (char)'9';
-                    buffer[offset++] = (char)'2';
-                    buffer[offset++] = (char)'2';
-                    buffer[offset++] = (char)'3';
-                    buffer[offset++] = (char)'3';
-                    buffer[offset++] = (char)'7';
-                    buffer[offset++] = (char)'2';
-                    buffer[offset++] = (char)'0';
-                    buffer[offset++] = (char)'3';
-                    buffer[offset++] = (char)'6';
-                    buffer[offset++] = (char)'8';
-                    buffer[offset++] = (char)'5';
-                    buffer[offset++] = (char)'4';
-                    buffer[offset++] = (char)'7';
-                    buffer[offset++] = (char)'7';
-                    buffer[offset++] = (char)'5';
-                    buffer[offset++] = (char)'8';
-                    buffer[offset++] = (char)'0';
-                    buffer[offset++] = (char)'8';
+                    buffer[offset++] = '-';
+                    buffer[offset++] = '9';
+                    buffer[offset++] = '2';
+                    buffer[offset++] = '2';
+                    buffer[offset++] = '3';
+                    buffer[offset++] = '3';
+                    buffer[offset++] = '7';
+                    buffer[offset++] = '2';
+                    buffer[offset++] = '0';
+                    buffer[offset++] = '3';
+                    buffer[offset++] = '6';
+                    buffer[offset++] = '8';
+                    buffer[offset++] = '5';
+                    buffer[offset++] = '4';
+                    buffer[offset++] = '7';
+                    buffer[offset++] = '7';
+                    buffer[offset++] = '5';
+                    buffer[offset++] = '8';
+                    buffer[offset++] = '0';
+                    buffer[offset++] = '8';
                     charsWritten = offset;
                     return true;
                 }
 
                 if (buffer.Length < 1) { return false; }
-                buffer[offset++] = (char)'-';
+                buffer[offset++] = '-';
                 num1 = unchecked(-value);
             }
 
