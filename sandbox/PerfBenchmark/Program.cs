@@ -1,15 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Configs;
+﻿using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Environments;
-using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
-using Cysharp.Text;
-using System;
-using System.Buffers;
 using System.Reflection;
-using System.Text;
 
 namespace PerfBenchmark
 {
@@ -20,7 +14,7 @@ namespace PerfBenchmark
             AddDiagnoser(MemoryDiagnoser.Default);
             AddJob(Job.ShortRun.WithWarmupCount(1).WithIterationCount(1).WithRuntime(CoreRuntime.Core50));
 
-            // Add Targetframeworks net47 to csproj(removed for CI)
+            // Add TargetFrameworks net47 to csproj(removed for CI)
             //AddJob(Job.ShortRun.WithWarmupCount(1).WithIterationCount(1).WithRuntime(ClrRuntime.Net47));
         }
     }

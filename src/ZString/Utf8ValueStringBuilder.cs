@@ -319,7 +319,7 @@ namespace Cysharp.Text
             return stream.WriteAsync(buffer, 0, index);
         }
 
-        /// <summary>Encode the innner utf8 buffer to a System.String.</summary>
+        /// <summary>Encode the inner utf8 buffer to a System.String.</summary>
         public override string ToString()
         {
             if (index == 0)

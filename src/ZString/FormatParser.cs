@@ -33,7 +33,7 @@ namespace Cysharp.Text
             var len = format.Length;
             char c = format[i];
 
-            i++; // points netxt char
+            i++; // points next char
             if (c == '}')
             {
                 // skip escaped '}'

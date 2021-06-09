@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -57,28 +56,28 @@ namespace Cysharp.Text
             return new Utf8ValueStringBuilder(notNested);
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, params T[] values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
             return JoinInternal<T>(s, values.AsSpan());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, List<T> values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
             return JoinInternal(s, (IReadOnlyList<T>)values);
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, ReadOnlySpan<T> values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
             return JoinInternal(s, values);
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, IEnumerable<T> values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
@@ -109,19 +108,19 @@ namespace Cysharp.Text
             return JoinInternal(s, values.AsEnumerable());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, params T[] values)
         {
             return JoinInternal<T>(separator.AsSpan(), values.AsSpan());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, List<T> values)
         {
             return JoinInternal(separator.AsSpan(), (IReadOnlyList<T>)values);
         }
-        
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, ReadOnlySpan<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
@@ -147,7 +146,7 @@ namespace Cysharp.Text
             return JoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, IEnumerable<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
