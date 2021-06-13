@@ -27,7 +27,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -35,7 +35,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -57,7 +57,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -74,7 +74,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -101,7 +101,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -109,7 +109,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -134,7 +134,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -151,7 +151,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -178,7 +178,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -186,7 +186,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -214,7 +214,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -231,7 +231,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -258,7 +258,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -266,7 +266,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -297,7 +297,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -314,7 +314,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -341,7 +341,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -349,7 +349,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -383,7 +383,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -400,7 +400,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -427,7 +427,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -435,7 +435,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -472,7 +472,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -489,7 +489,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -516,7 +516,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -524,7 +524,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -564,7 +564,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -581,7 +581,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -608,7 +608,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -616,7 +616,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -659,7 +659,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -676,7 +676,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -703,7 +703,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -711,7 +711,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -757,7 +757,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -774,7 +774,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -801,7 +801,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -809,7 +809,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -858,7 +858,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -875,7 +875,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -902,7 +902,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -910,7 +910,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -962,7 +962,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -979,7 +979,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -1006,7 +1006,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1014,7 +1014,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -1069,7 +1069,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -1086,7 +1086,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -1113,7 +1113,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1121,7 +1121,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -1179,7 +1179,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -1196,7 +1196,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -1223,7 +1223,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1231,7 +1231,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -1292,7 +1292,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -1309,7 +1309,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -1336,7 +1336,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1344,7 +1344,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -1408,7 +1408,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -1425,7 +1425,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }
@@ -1452,7 +1452,7 @@ namespace Cysharp.Text
                     if (i != format.Length && format[i + 1] == '{')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '{'
                         copyFrom = i;
                         continue;
@@ -1460,7 +1460,7 @@ namespace Cysharp.Text
                     else
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                     }
 
                     // try to find range
@@ -1527,7 +1527,7 @@ namespace Cysharp.Text
                     if (i + 1 < format.Length && format[i + 1] == '}')
                     {
                         var size = i - copyFrom;
-                        Append(format.AsSpan(copyFrom, size));
+                        Append(format, copyFrom, size);
                         i = i + 1; // skip escaped '}'
                         copyFrom = i;
                         continue;
@@ -1544,7 +1544,7 @@ namespace Cysharp.Text
                 var copyLength = format.Length - copyFrom;
                 if (copyLength > 0)
                 {
-                    Append(format.AsSpan(copyFrom, copyLength));
+                    Append(format, copyFrom, copyLength);
                 }
             }
         }

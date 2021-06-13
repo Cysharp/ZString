@@ -79,7 +79,7 @@ namespace Cysharp.Text
             }
             AssertNotDisposed();
 
-            sb.Append(buffer.AsSpan(index, count));
+            sb.Append(buffer, index, count);
         }
 
         public override void Write(string value)
