@@ -200,7 +200,7 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
-#if UNITY_2018_3_OR_NEWER
+#if UNITY_2018_3_OR_NEWER || NETSTANDARD2_0
             if (buffer.Length - index < value.Length)
             {
                 Grow(value.Length);
@@ -235,7 +235,7 @@ namespace Cysharp.Text
                 }
             }
 
-#if UNITY_2018_3_OR_NEWER
+#if UNITY_2018_3_OR_NEWER || NETSTANDARD2_0
             if (buffer.Length - index < count)
             {
                 Grow(count);
