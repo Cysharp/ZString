@@ -53,6 +53,19 @@ namespace Cysharp.Text
         /// <summary>Get the written buffer data.</summary>
         public ArraySegment<char> AsArraySegment() => new ArraySegment<char>(buffer, 0, index);
 
+        public ref char this[int i]
+        {
+            get
+            {
+                if (this.index <= i)
+                    throw new ArgumentOutOfRangeException(nameof(i));
+                else
+                    return ref buffer[i];
+            }
+        }
+
+        internal bool IsEmpty() => buffer == null;
+
         /// <summary>
         /// Initializes a new instance
         /// </summary>
@@ -89,6 +102,22 @@ namespace Cysharp.Text
             buffer = buf;
             index = 0;
             this.disposeImmediately = disposeImmediately;
+        }
+
+        public void CopyTo(int sourceIndex, char[] destination, int destinationIndex, int count)
+        {
+            Array.Copy(buffer, sourceIndex, destination, destinationIndex, count);
+        }
+
+        public void CopyTo(int sourceIndex, Span<char> destination, int count)
+        {
+            if (sourceIndex > this.index)
+                throw new ArgumentOutOfRangeException(nameof(sourceIndex));
+
+            if ((sourceIndex + count) > this.index)
+                throw new ArgumentOutOfRangeException(nameof(count));
+
+            buffer.AsSpan(sourceIndex, count).CopyTo(destination);
         }
 
         /// <summary>
@@ -164,6 +193,19 @@ namespace Cysharp.Text
             }
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public unsafe void Append(char* value, int valueCount)
+        {
+            if (buffer.Length - index < 1)
+            {
+                Grow(1);
+            }
+
+            fixed(char *p = buffer)
+                Buffer.MemoryCopy(value, p + index, sizeof(char) * (buffer.Length - index), sizeof(char) * valueCount);
+            index += valueCount;
+        }
+
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(char value)
@@ -228,7 +270,7 @@ namespace Cysharp.Text
             {
                 Grow(value.Length);
             }
-            
+
             value.CopyTo(buffer.AsSpan(index));
             index += value.Length;
         }

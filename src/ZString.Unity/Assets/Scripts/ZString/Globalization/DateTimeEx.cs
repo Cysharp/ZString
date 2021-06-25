@@ -2,16 +2,18 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using System.Globalization;
+
 namespace System
 {
     internal static class DateTimeEx
     {
         // Number of 100ns ticks per time unit
-        private const long TicksPerMillisecond = 10000;
-        private const long TicksPerSecond = TicksPerMillisecond * 1000;
-        private const long TicksPerMinute = TicksPerSecond * 60;
-        private const long TicksPerHour = TicksPerMinute * 60;
-        private const long TicksPerDay = TicksPerHour * 24;
+        internal const long TicksPerMillisecond = 10000;
+        internal const long TicksPerSecond = TicksPerMillisecond * 1000;
+        internal const long TicksPerMinute = TicksPerSecond * 60;
+        internal const long TicksPerHour = TicksPerMinute * 60;
+        internal const long TicksPerDay = TicksPerHour * 24;
 
         // Number of days in a non-leap year
         private const int DaysPerYear = 365;
@@ -73,6 +75,6 @@ namespace System
             month = m;
             day = n - days[m - 1] + 1;
         }
-
+        
     }
 }
