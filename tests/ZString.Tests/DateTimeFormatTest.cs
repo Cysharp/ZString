@@ -18,7 +18,7 @@ namespace ZStringTests
         {
             string[] formats = {
                 // Standard date and time format strings
-                "d", "D", "f", "F", "g", "G", "M", "m", "O", "o", "R", "r", "s", "t", "T", "u", "Y", "y",
+                "d", "D", "f", "F", "g", "G", "M", "m", "O", "o", "R", "r", "s", "t", "T", "u", "U", "Y", "y",
                 // Custom date and time format strings
                 "d dd ddd dddd f fffffff F FFFFFFF g gg h hh H HH K m mm M MM MMM MMMM s ss t tt y yy yyyy z zz zzz ",
             };
@@ -28,13 +28,13 @@ namespace ZStringTests
 
         [Theory]
         [MemberData(nameof(GetDateTimeFormatAndCultures))]
-        public void CultureTest(CultureInfo culture, string format)
+        public void CultureTest(CultureInfo culture, string formatArg)
         {
             var oldculture = System.Threading.Thread.CurrentThread.CurrentCulture;
             try
             {
                 System.Threading.Thread.CurrentThread.CurrentCulture = culture;
-                format = "{0:" + format + "}";
+                var format = "{0:" + formatArg + "}";
 
                 {
                     var utc = new DateTime(2021, 12, 31, 12, 34, 59, DateTimeKind.Utc);
@@ -44,7 +44,7 @@ namespace ZStringTests
                 }
 
                 // The "U" format specifier is not supported by the DateTimeOffset type and throws a FormatException if it is used to format a DateTimeOffset value.
-                if (format != "U")
+                if (formatArg != "U")
                 {
                     var utc = new DateTimeOffset(2021, 12, 31, 12, 34, 59, TimeSpan.Zero);
                     ZString.Format(format, utc).Should().Be(string.Format(format, utc));
