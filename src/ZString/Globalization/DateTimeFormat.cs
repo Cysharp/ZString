@@ -888,7 +888,7 @@ namespace System
                     // Change the Calendar to be Gregorian Calendar.
                     //
                     dtfi = (DateTimeFormatInfo)dtfi.Clone();
-                    if (dtfi.Calendar.GetType() != typeof(GregorianCalendar))
+                    if (!(dtfi.Calendar is GregorianCalendar))
                     {
                         dtfi.Calendar = GregorianCalendar_GetDefaultInstance();
                     }
