@@ -62,6 +62,11 @@ namespace Cysharp.Text
 
         public static bool TryFormat(this System.TimeSpan value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default)
         {
+            if (TimeSpanFormat.TryFormat(value, destination, out charsWritten, format, null))
+            {
+                return true;
+            }
+
             var f = GetFormat(format);
             var span = ((f == null) ? value.ToString() : value.ToString(f)).AsSpan();
             if (span.TryCopyTo(destination))
@@ -78,6 +83,11 @@ namespace Cysharp.Text
 
         public static bool TryFormat(this System.DateTime value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default)
         {
+            if (DateTimeFormat.TryFormat(value, destination, out charsWritten, format, null))
+            {
+                return true;
+            }
+
             var f = GetFormat(format);
             var span = ((f == null) ? value.ToString() : value.ToString(f)).AsSpan();
             if (span.TryCopyTo(destination))
@@ -94,6 +104,11 @@ namespace Cysharp.Text
 
         public static bool TryFormat(this System.DateTimeOffset value, Span<char> destination, out int charsWritten, ReadOnlySpan<char> format = default)
         {
+            if (DateTimeFormat.TryFormat(value.DateTime, destination, out charsWritten, format, null, value.Offset))
+            {
+                return true;
+            }
+
             var f = GetFormat(format);
             var span = ((f == null) ? value.ToString() : value.ToString(f)).AsSpan();
             if (span.TryCopyTo(destination))
