@@ -228,7 +228,7 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
-#if UNITY_2018_3_OR_NEWER
+#if UNITY_2018_3_OR_NEWER || NETSTANDARD2_0
             var maxLen = UTF8NoBom.GetMaxByteCount(value.Length);
             if (buffer.Length - index < maxLen)
             {
