@@ -469,6 +469,22 @@ namespace Cysharp.Text
             buffer = newBuffer;
             index = newBufferIndex;
         }
+        
+        /// <summary>
+        /// Replaces the contents of a single position within the builder.
+        /// </summary>
+        /// <param name="newChar">The character to use at the position.</param>
+        /// <param name="replaceIndex">The index to replace.</param>
+        public void ReplaceAt(char newChar, int replaceIndex)
+        {
+            int currentLength = Length;
+            if ((uint)replaceIndex > (uint)currentLength)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(replaceIndex));
+            }
+            
+            buffer[replaceIndex] = newChar;
+        }
 
         /// <summary>
         /// Removes a range of characters from this builder.
