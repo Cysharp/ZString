@@ -29,11 +29,11 @@ namespace PerfBenchmark.Benchmarks
         public int StringBuilder()
         {
             var sb = new StringBuilder();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "double", dValues[0], dValues[1], dValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "double", dValues[0], dValues[1], dValues[2], 1);
             sb.AppendLine();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "float", fValues[0], fValues[1], fValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "float", fValues[0], fValues[1], fValues[2], 2);
             sb.AppendLine();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "decimal", mValues[0], mValues[1], mValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "decimal", mValues[0], mValues[1], mValues[2], 3);
             sb.AppendLine();
             return sb.Length;
         }
@@ -43,11 +43,11 @@ namespace PerfBenchmark.Benchmarks
         public int ZStringBuilder()
         {
             using var sb = ZString.CreateStringBuilder();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "double", dValues[0], dValues[1], dValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "double", dValues[0], dValues[1], dValues[2], 1);
             sb.AppendLine();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "float", fValues[0], fValues[1], fValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "float", fValues[0], fValues[1], fValues[2], 2);
             sb.AppendLine();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "decimal", mValues[0], mValues[1], mValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "decimal", mValues[0], mValues[1], mValues[2], 3);
             sb.AppendLine();
             return sb.Length;
         }
@@ -56,11 +56,11 @@ namespace PerfBenchmark.Benchmarks
         public int ZStringBuilderUtf8()
         {
             using var sb = ZString.CreateUtf8StringBuilder();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "double", dValues[0], dValues[1], dValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "double", dValues[0], dValues[1], dValues[2], 1);
             sb.AppendLine();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "float", fValues[0], fValues[1], fValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "float", fValues[0], fValues[1], fValues[2], 2);
             sb.AppendLine();
-            sb.AppendFormat("{0}: {1}, {2}, {3}", "decimal", mValues[0], mValues[1], mValues[2]);
+            sb.AppendFormat("{{ {0}: {1}, {2}, {3} }} - {4}", "decimal", mValues[0], mValues[1], mValues[2], 3);
             sb.AppendLine();
             return sb.Length;
         }
