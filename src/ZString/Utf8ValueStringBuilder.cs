@@ -319,6 +319,12 @@ namespace Cysharp.Text
             return stream.WriteAsync(buffer, 0, index);
         }
 
+        /// <summary>Write inner buffer to stream.</summary>
+        public Task WriteToAsync(Stream stream, CancellationToken cancellationToken)
+        {
+            return stream.WriteAsync(buffer, 0, index, cancellationToken);
+        }
+
         /// <summary>Encode the innner utf8 buffer to a System.String.</summary>
         public override string ToString()
         {
