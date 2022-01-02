@@ -268,6 +268,17 @@ namespace Cysharp.Text
             AppendLine();
         }
 
+        public void AppendLiteral(ReadOnlySpan<byte> value)
+        {
+            if ((buffer.Length - index) < value.Length)
+            {
+                Grow(value.Length);
+            }
+
+            value.CopyTo(buffer.AsSpan(index));
+            index += value.Length;
+        }
+
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         public void Append<T>(T value)
         {
