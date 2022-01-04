@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -223,6 +223,33 @@ namespace Cysharp.Text
         {
             Append(value);
             AppendLine();
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(string value, int startIndex, int count)
+        {
+            if (value == null)
+            {
+                if (startIndex == 0 && count == 0)
+                {
+                    return;
+                }
+                else
+                {
+                    throw new ArgumentNullException(nameof(value));
+                }
+            }
+
+#if UNITY_2018_3_OR_NEWER || NETSTANDARD2_0
+            var maxLen = UTF8NoBom.GetMaxByteCount(count);
+            if (buffer.Length - index < maxLen)
+            {
+                Grow(count);
+            }
+            index += UTF8NoBom.GetBytes(value, startIndex, count, buffer, index);
+#else
+            Append(value.AsSpan(startIndex, count));
+#endif
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>

@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ template debug="false" hostspecific="false" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.Text" #>
@@ -85,6 +85,77 @@ namespace Cysharp.Text
                 if (copyLength > 0)
                 {
                     Append(format, copyFrom, copyLength);
+                }
+            }
+        }
+        /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
+        public void AppendFormat<<#= CreateTypeArgument(i) #>>(ReadOnlySpan<char> format, <#= CreateParameters(i) #>)
+        {            
+            var copyFrom = 0;
+            for (int i = 0; i < format.Length; i++)
+            {
+                var c = format[i];
+                if (c == '{')
+                {
+                    // escape.
+                    if (i == format.Length - 1)
+                    {
+                        throw new FormatException("invalid format");
+                    }
+
+                    if (i != format.Length && format[i + 1] == '{')
+                    {
+                        var size = i - copyFrom;
+                        Append(format.Slice(copyFrom, size));
+                        i = i + 1; // skip escaped '{'
+                        copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                        var size = i - copyFrom;
+                        Append(format.Slice(copyFrom, size));
+                    }
+
+                    // try to find range
+                    var indexParse = FormatParser.Parse(format, i);
+                    copyFrom = indexParse.LastIndex;
+                    i = indexParse.LastIndex - 1;
+                    switch (indexParse.Index)
+                    {
+<# for(var j = 0; j < i; j++) { #>
+                        case <#= j #>:
+                            AppendFormatInternal(arg<#= j + 1 #>, indexParse.Alignment, indexParse.FormatString, nameof(arg<#= j + 1 #>));
+                            continue;
+<# } #>
+                        default:
+                            ThrowFormatException();
+                            break;
+                    }
+                }
+                else if (c == '}')
+                {
+                    if (i + 1 < format.Length && format[i + 1] == '}')
+                    {
+                        var size = i - copyFrom;
+                        Append(format.Slice(copyFrom, size));
+                        i = i + 1; // skip escaped '}'
+                        copyFrom = i;
+                        continue;
+                    }
+                    else
+                    {
+                        ThrowFormatException();
+                    }
+                }
+            }
+
+            {
+                // copy final string
+                var copyLength = format.Length - copyFrom;
+                if (copyLength > 0)
+                {
+                    Append(format.Slice(copyFrom, copyLength));
                 }
             }
         }
