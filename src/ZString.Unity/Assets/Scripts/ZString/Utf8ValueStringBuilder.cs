@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -256,7 +256,7 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Append(string value)
         {
-#if !UNITY_2020_2_OR_NEWER && (UNITY_2018_3_OR_NEWER || NETSTANDARD2_0)
+#if UNITY_2018_3_OR_NEWER || NETSTANDARD2_0
             var maxLen = UTF8NoBom.GetMaxByteCount(value.Length);
             if (buffer.Length - index < maxLen)
             {
