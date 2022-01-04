@@ -3,6 +3,7 @@ using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Cysharp.Text
@@ -317,6 +318,12 @@ namespace Cysharp.Text
         public Task WriteToAsync(Stream stream)
         {
             return stream.WriteAsync(buffer, 0, index);
+        }
+
+        /// <summary>Write inner buffer to stream.</summary>
+        public Task WriteToAsync(Stream stream, CancellationToken cancellationToken)
+        {
+            return stream.WriteAsync(buffer, 0, index, cancellationToken);
         }
 
         /// <summary>Encode the innner utf8 buffer to a System.String.</summary>
