@@ -21,6 +21,11 @@
 			"displayName": "Required Managed DLLs",
 			"description": "Import Required Managed DLLs",
 			"path": "Samples~/RequiredManagedDLLs"
+		},
+		{
+			"displayName": "TextMeshPro extensions",
+			"description": "Useful extensions if you have TMP in the project",
+			"path": "Samples~/TMPExtensions"
 		}
 	]
 }
