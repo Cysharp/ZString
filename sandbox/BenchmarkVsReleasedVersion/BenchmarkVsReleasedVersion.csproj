@@ -5,6 +5,7 @@
       <TargetFramework>netcoreapp3.1</TargetFramework>
       <!-- <TargetFrameworks>netcoreapp3.1;netcoreapp2.1;net472</TargetFrameworks> -->
       <LangVersion>8.0</LangVersion>
+      <IsPackable>false</IsPackable>
     </PropertyGroup>
 
     <ItemGroup>
