@@ -229,7 +229,7 @@ namespace Cysharp.Text
             }
         }
 
-        static string GetFormat(ReadOnlySpan<char> format)
+        static string? GetFormat(ReadOnlySpan<char> format)
         {
             if (format.Length == 0)
             {
