@@ -30,10 +30,9 @@ namespace Cysharp.Text
 <# foreach(var t in new [] {typeof(IntPtr), typeof(UIntPtr)} ) { var u = t == typeof(UIntPtr);  #>
             if (type == typeof(<#= t.FullName #>))
             {
-                // ignore format
-                return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<byte> dest, out int written, StandardFormat _) => <#= t #>.Size == 4
-                    ? Utf8Formatter.TryFormat(x.To<#= u ? "U" : "" #>Int32(),  dest, out written, default)
-                    : Utf8Formatter.TryFormat(x.To<#= u ? "U" : "" #>Int64(),  dest, out written, default));
+                return new TryFormat<<#= t.FullName #>>((<#= t.FullName #> x, Span<byte> dest, out int written, StandardFormat format) => <#= t #>.Size == 4
+                    ? Utf8Formatter.TryFormat(x.To<#= u ? "U" : "" #>Int32(),  dest, out written, format)
+                    : Utf8Formatter.TryFormat(x.To<#= u ? "U" : "" #>Int64(),  dest, out written, format));
             }
 <# } #>
 

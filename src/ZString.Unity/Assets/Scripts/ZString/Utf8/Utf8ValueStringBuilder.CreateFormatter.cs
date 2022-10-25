@@ -138,17 +138,15 @@ namespace Cysharp.Text
             }
             if (type == typeof(System.IntPtr))
             {
-                // ignore format
-                return new TryFormat<System.IntPtr>((System.IntPtr x, Span<byte> dest, out int written, StandardFormat _) => System.IntPtr.Size == 4
-                    ? Utf8Formatter.TryFormat(x.ToInt32(),  dest, out written, default)
-                    : Utf8Formatter.TryFormat(x.ToInt64(),  dest, out written, default));
+                return new TryFormat<System.IntPtr>((System.IntPtr x, Span<byte> dest, out int written, StandardFormat format) => System.IntPtr.Size == 4
+                    ? Utf8Formatter.TryFormat(x.ToInt32(),  dest, out written, format)
+                    : Utf8Formatter.TryFormat(x.ToInt64(),  dest, out written, format));
             }
             if (type == typeof(System.UIntPtr))
             {
-                // ignore format
-                return new TryFormat<System.UIntPtr>((System.UIntPtr x, Span<byte> dest, out int written, StandardFormat _) => System.UIntPtr.Size == 4
-                    ? Utf8Formatter.TryFormat(x.ToUInt32(),  dest, out written, default)
-                    : Utf8Formatter.TryFormat(x.ToUInt64(),  dest, out written, default));
+                return new TryFormat<System.UIntPtr>((System.UIntPtr x, Span<byte> dest, out int written, StandardFormat format) => System.UIntPtr.Size == 4
+                    ? Utf8Formatter.TryFormat(x.ToUInt32(),  dest, out written, format)
+                    : Utf8Formatter.TryFormat(x.ToUInt64(),  dest, out written, format));
             }
 
             return null;

@@ -132,17 +132,15 @@ namespace Cysharp.Text
             }
             if (type == typeof(System.IntPtr))
             {
-                // ignore format
-                return new TryFormat<System.IntPtr>((System.IntPtr x, Span<char> dest, out int written, ReadOnlySpan<char> _) => System.IntPtr.Size == 4
-                    ? x.ToInt32().TryFormat(dest, out written, default)
-                    : x.ToInt64().TryFormat(dest, out written, default));
+                return new TryFormat<System.IntPtr>((System.IntPtr x, Span<char> dest, out int written, ReadOnlySpan<char> format) => System.IntPtr.Size == 4
+                    ? x.ToInt32().TryFormat(dest, out written, format)
+                    : x.ToInt64().TryFormat(dest, out written, format));
             }
             if (type == typeof(System.UIntPtr))
             {
-                // ignore format
-                return new TryFormat<System.UIntPtr>((System.UIntPtr x, Span<char> dest, out int written, ReadOnlySpan<char> _) => System.UIntPtr.Size == 4
-                    ? x.ToUInt32().TryFormat(dest, out written, default)
-                    : x.ToUInt64().TryFormat(dest, out written, default));
+                return new TryFormat<System.UIntPtr>((System.UIntPtr x, Span<char> dest, out int written, ReadOnlySpan<char> format) => System.UIntPtr.Size == 4
+                    ? x.ToUInt32().TryFormat(dest, out written, format)
+                    : x.ToUInt64().TryFormat(dest, out written, format));
             }
             return null;
         }
