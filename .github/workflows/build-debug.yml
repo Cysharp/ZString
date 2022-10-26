@@ -17,9 +17,7 @@ jobs:
       - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
         with:
           dotnet-version: |
-            2.1.x
-            3.1.x
-            5.0.x
+            6.0.x
       - run: dotnet build -c Debug
       - run: dotnet test tests/ZString.Tests -c Debug
 
@@ -27,14 +25,10 @@ jobs:
     if: "((github.event_name == 'push' && github.repository_owner == 'Cysharp') || startsWith(github.event.pull_request.head.label, 'Cysharp:'))"
     strategy:
       matrix:
-        unity: ["2019.3.9f1", "2019.4.13f1", "2020.1.12f1"]
+        unity: ["2021.3.11f1"]
         include:
-          - unity: 2019.3.9f1
-            license: UNITY_LICENSE_2019
-          - unity: 2019.4.13f1
-            license: UNITY_LICENSE_2019
-          - unity: 2020.1.12f1
-            license: UNITY_LICENSE_2020
+          - unity: 2021.3.11f1
+            license: UNITY_LICENSE_2021
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:

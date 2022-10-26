@@ -156,3 +156,5 @@ src/ZString.Unity/UnityEngine.Monetization.csproj
 src/ZString.Unity/UnityEngine.TestRunner.csproj
 
 src/ZString.Unity/UnityEngine.UI.csproj
+
+src/ZString.Unity/*.csproj

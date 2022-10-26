@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29613.14
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{175A1317-7622-4CC3-9553-1E9E908FF085}"
 	ProjectSection(SolutionItems) = preProject
@@ -23,8 +23,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConsoleApp", "sandbox\Conso
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZString.Tests", "tests\ZString.Tests\ZString.Tests.csproj", "{62090C00-9727-4375-BE40-ABE2F4D41571}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ZString.NetCore2Tests", "tests\ZString.NetCore2Tests\ZString.NetCore2Tests.csproj", "{62C44156-F55C-4006-B9A2-108DAB340FAC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PerfBenchmark", "sandbox\PerfBenchmark\PerfBenchmark.csproj", "{D766AEB3-3609-4F1D-8D81-5549F748F372}"
 EndProject
 Global
@@ -45,10 +43,6 @@ Global
 		{62090C00-9727-4375-BE40-ABE2F4D41571}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62090C00-9727-4375-BE40-ABE2F4D41571}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62090C00-9727-4375-BE40-ABE2F4D41571}.Release|Any CPU.Build.0 = Release|Any CPU
-		{62C44156-F55C-4006-B9A2-108DAB340FAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{62C44156-F55C-4006-B9A2-108DAB340FAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{62C44156-F55C-4006-B9A2-108DAB340FAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{62C44156-F55C-4006-B9A2-108DAB340FAC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D766AEB3-3609-4F1D-8D81-5549F748F372}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -61,7 +55,6 @@ Global
 		{7B09D422-D19A-457E-ADA0-4CDC2DC581BB} = {B385367D-2EB5-49B3-A3EF-922151EC1904}
 		{9ADF67E1-1872-43D3-882E-607071726FE7} = {A7D7AA7D-9A79-48A8-978D-0C98EBD81ED0}
 		{62090C00-9727-4375-BE40-ABE2F4D41571} = {0803618F-C4E8-4D37-831E-5D26C5574F49}
-		{62C44156-F55C-4006-B9A2-108DAB340FAC} = {0803618F-C4E8-4D37-831E-5D26C5574F49}
 		{D766AEB3-3609-4F1D-8D81-5549F748F372} = {A7D7AA7D-9A79-48A8-978D-0C98EBD81ED0}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

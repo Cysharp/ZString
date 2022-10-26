@@ -48,13 +48,11 @@ namespace ZStringTests
             // Direct
             if (testUtf8)
             {
-#if NETCOREAPP3_1
                 var writer = new ArrayBufferWriter<byte>();
                 ZString.Utf8Format(writer, format, t0, t1);
                 var actual = Encoding.UTF8.GetString(writer.WrittenSpan);
                 var expected = string.Format(format, t0, t1);
                 actual.Should().Be(expected);
-#endif
             }
         }
 
@@ -88,13 +86,11 @@ namespace ZStringTests
 
             // Direct
             {
-#if NETCOREAPP3_1
                 var writer = new ArrayBufferWriter<byte>();
                 ZString.Utf8Format(writer, format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
                 var actual = Encoding.UTF8.GetString(writer.WrittenSpan);
                 var expected = string.Format(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12, arg13, arg14, arg15, arg16);
                 actual.Should().Be(expected);
-#endif
             }
         }
 
@@ -175,12 +171,13 @@ namespace ZStringTests
         public void FormatIntPtr()
         {
             // IntPtr/UIntPtr ignores format
-            Test("abc{0}def{1:X}", new IntPtr(int.MinValue), new IntPtr(int.MaxValue));
-            Test("abc{0}def{1:X}", new UIntPtr(uint.MinValue), new UIntPtr(uint.MaxValue));
+            // after .NET 5, not ignore format https://learn.microsoft.com/en-us/dotnet/core/compatibility/core-libraries/5.0/intptr-uintptr-implement-iformattable
+            Test("abc{0:X}def{1:X}", new IntPtr(int.MinValue), new IntPtr(int.MaxValue));
+            Test("abc{0:X}def{1:X}", new UIntPtr(uint.MinValue), new UIntPtr(uint.MaxValue));
             if (IntPtr.Size == 8)
             {
-                Test("abc{0}def{1:X}", new IntPtr(long.MinValue), new IntPtr(long.MaxValue));
-                Test("abc{0}def{1:X}", new UIntPtr(ulong.MinValue), new UIntPtr(ulong.MaxValue));
+                Test("abc{0:X}def{1:X}", new IntPtr(long.MinValue), new IntPtr(long.MaxValue));
+                Test("abc{0:X}def{1:X}", new UIntPtr(ulong.MinValue), new UIntPtr(ulong.MaxValue));
             }
         }
 

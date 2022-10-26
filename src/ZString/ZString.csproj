@@ -1,213 +1,219 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
-        <RootNamespace>Cysharp.Text</RootNamespace>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <GenerateDocumentationFile>true</GenerateDocumentationFile>
-        <NoWarn>1701;1702;1591</NoWarn>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+		<RootNamespace>Cysharp.Text</RootNamespace>
+		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<LangVersion>9.0</LangVersion>
+		<Nullable>enable</Nullable>
+		<NoWarn>1701;1702;1591</NoWarn>
 
-        <!-- NuGet Packaging -->
-        <PackageVersion>$(Version)</PackageVersion>
-        <Company>Cysharp</Company>
-        <Authors>Cysharp</Authors>
-        <Copyright>© Cysharp, Inc.</Copyright>
-        <PackageTags>string;</PackageTags>
-        <Description>Zero allocation StringBuilder for .NET Core and Unity.</Description>
-        <PackageProjectUrl>https://github.com/Cysharp/ZString</PackageProjectUrl>
-        <RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
-        <RepositoryType>git</RepositoryType>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <SignAssembly>true</SignAssembly>
-        <AssemblyOriginatorKeyFile>../../opensource.snk</AssemblyOriginatorKeyFile>
-        <PackageIcon>Icon.png</PackageIcon>
-    </PropertyGroup>
+		<!-- NuGet Packaging -->
+		<PackageVersion>$(Version)</PackageVersion>
+		<Company>Cysharp</Company>
+		<Authors>Cysharp</Authors>
+		<Copyright>© Cysharp, Inc.</Copyright>
+		<PackageTags>string;</PackageTags>
+		<Description>Zero allocation StringBuilder for .NET Core and Unity.</Description>
+		<PackageProjectUrl>https://github.com/Cysharp/ZString</PackageProjectUrl>
+		<RepositoryUrl>$(PackageProjectUrl)</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<SignAssembly>true</SignAssembly>
+		<AssemblyOriginatorKeyFile>../../opensource.snk</AssemblyOriginatorKeyFile>
+		<PackageIcon>Icon.png</PackageIcon>
+	</PropertyGroup>
 
-    <ItemGroup>
-        <None Include="Icon.png" Pack="true" PackagePath="/" />
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="Icon.png" Pack="true" PackagePath="/" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="System.Memory" Version="4.5.3" />
-    </ItemGroup>
+	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.1'">
+		<PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <Compile Remove="Number\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
-        <Compile Remove="Unity\**\**" />
-        <None Remove="Unity\**\**" />
-    </ItemGroup>
+	<ItemGroup Condition="$(TargetFramework) == 'netstandard2.0'">
+		<PackageReference Include="System.Memory" Version="4.5.3" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <None Update="FormatHelper.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>FormatHelper.cs</LastGenOutput>
-        </None>
-        <None Update="PreparedFormat.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>PreparedFormat.cs</LastGenOutput>
-        </None>
-        <None Update="StringBuilder.AppendJoin.tt">
-          <Generator>TextTemplatingFileGenerator</Generator>
-          <LastGenOutput>StringBuilder.AppendJoin.cs</LastGenOutput>
-        </None>
-        <None Update="Unity\TextMeshProExtensions.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>TextMeshProExtensions.cs</LastGenOutput>
-        </None>
-        <None Update="Utf16\Utf16ValueStringBuilder.AppendMany.tt">
-            <LastGenOutput>Utf16ValueStringBuilder.AppendMany.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.tt">
-            <LastGenOutput>Utf16ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf16\Utf16ValueStringBuilder.SpanFormattableAppend.tt">
-            <LastGenOutput>Utf16ValueStringBuilder.SpanFormattableAppend.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf8\Utf8ValueStringBuilder.AppendFormat.tt">
-            <LastGenOutput>Utf8ValueStringBuilder.AppendFormat.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf8\Utf8ValueStringBuilder.AppendMany.tt">
-            <LastGenOutput>Utf8ValueStringBuilder.AppendMany.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.tt">
-            <LastGenOutput>Utf8ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf8\Utf8ValueStringBuilder.SpanFormattableAppend.tt">
-            <LastGenOutput>Utf8ValueStringBuilder.SpanFormattableAppend.cs</LastGenOutput>
-            <Generator>TextTemplatingFileGenerator</Generator>
-        </None>
-        <None Update="Utf16\Utf16ValueStringBuilder.AppendFormat.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>Utf16ValueStringBuilder.AppendFormat.cs</LastGenOutput>
-        </None>
-        <None Update="ZString.Concat.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ZString.Concat.cs</LastGenOutput>
-        </None>
-        <None Update="ZString.Format.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ZString.Format.cs</LastGenOutput>
-        </None>
-        <None Update="ZString.Prepare.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ZString.Prepare.cs</LastGenOutput>
-        </None>
-        <None Update="ZString.Utf8Format.tt">
-            <Generator>TextTemplatingFileGenerator</Generator>
-            <LastGenOutput>ZString.Utf8Format.cs</LastGenOutput>
-        </None>
-    </ItemGroup>
+	<ItemGroup>
+		<Compile Remove="Number\**\*.cs" Condition="$(TargetFramework) == 'netstandard2.1'" />
+		<Compile Remove="Unity\**\**" />
+		<None Remove="Unity\**\**" />
+	</ItemGroup>
 
-    <ItemGroup>
-        <Compile Update="FormatHelper.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>FormatHelper.tt</DependentUpon>
-        </Compile>
-        <Compile Update="PreparedFormat.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>PreparedFormat.tt</DependentUpon>
-        </Compile>
-        <Compile Update="StringBuilder.AppendJoin.cs">
-          <DesignTime>True</DesignTime>
-          <AutoGen>True</AutoGen>
-          <DependentUpon>StringBuilder.AppendJoin.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Utf16\Utf16ValueStringBuilder.AppendFormat.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf16ValueStringBuilder.AppendFormat.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Utf16\Utf16ValueStringBuilder.AppendMany.cs">
-            <DependentUpon>Utf16ValueStringBuilder.AppendMany.tt</DependentUpon>
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-        </Compile>
-        <Compile Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.cs">
-            <DependentUpon>Utf16ValueStringBuilder.CreateFormatter.tt</DependentUpon>
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-        </Compile>
-        <Compile Update="Utf16\Utf16ValueStringBuilder.SpanFormattableAppend.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf16ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Utf8\Utf8ValueStringBuilder.AppendFormat.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf8ValueStringBuilder.AppendFormat.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Utf8\Utf8ValueStringBuilder.AppendMany.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf8ValueStringBuilder.AppendMany.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf8ValueStringBuilder.CreateFormatter.tt</DependentUpon>
-        </Compile>
-        <Compile Update="Utf8\Utf8ValueStringBuilder.SpanFormattableAppend.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>Utf8ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ZString.Concat.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ZString.Concat.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ZString.Format.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ZString.Format.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ZString.Prepare.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ZString.Prepare.tt</DependentUpon>
-        </Compile>
-        <Compile Update="ZString.Utf8Format.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ZString.Utf8Format.tt</DependentUpon>
-        </Compile>
+	<ItemGroup>
+		<None Update="FormatHelper.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>FormatHelper.cs</LastGenOutput>
+		</None>
+		<None Update="PreparedFormat.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>PreparedFormat.cs</LastGenOutput>
+		</None>
+		<None Update="StringBuilder.AppendJoin.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>StringBuilder.AppendJoin.cs</LastGenOutput>
+		</None>
+		<None Update="Unity\TextMeshProExtensions.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>TextMeshProExtensions.cs</LastGenOutput>
+		</None>
+		<None Update="Utf16\Utf16ValueStringBuilder.AppendMany.tt">
+			<LastGenOutput>Utf16ValueStringBuilder.AppendMany.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.tt">
+			<LastGenOutput>Utf16ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Utf16\Utf16ValueStringBuilder.SpanFormattableAppend.tt">
+			<LastGenOutput>Utf16ValueStringBuilder.SpanFormattableAppend.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Utf8\Utf8ValueStringBuilder.AppendFormat.tt">
+			<LastGenOutput>Utf8ValueStringBuilder.AppendFormat.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Utf8\Utf8ValueStringBuilder.AppendMany.tt">
+			<LastGenOutput>Utf8ValueStringBuilder.AppendMany.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.tt">
+			<LastGenOutput>Utf8ValueStringBuilder.CreateFormatter.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Utf8\Utf8ValueStringBuilder.SpanFormattableAppend.tt">
+			<LastGenOutput>Utf8ValueStringBuilder.SpanFormattableAppend.cs</LastGenOutput>
+			<Generator>TextTemplatingFileGenerator</Generator>
+		</None>
+		<None Update="Utf16\Utf16ValueStringBuilder.AppendFormat.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>Utf16ValueStringBuilder.AppendFormat.cs</LastGenOutput>
+		</None>
+		<None Update="ZString.Concat.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>ZString.Concat.cs</LastGenOutput>
+		</None>
+		<None Update="ZString.Format.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>ZString.Format.cs</LastGenOutput>
+		</None>
+		<None Update="ZString.Prepare.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>ZString.Prepare.cs</LastGenOutput>
+		</None>
+		<None Update="ZString.Utf8Format.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>ZString.Utf8Format.cs</LastGenOutput>
+		</None>
+	</ItemGroup>
 
-    </ItemGroup>
+	<ItemGroup>
+		<Compile Update="FormatHelper.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>FormatHelper.tt</DependentUpon>
+		</Compile>
+		<Compile Update="PreparedFormat.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>PreparedFormat.tt</DependentUpon>
+		</Compile>
+		<Compile Update="StringBuilder.AppendJoin.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>StringBuilder.AppendJoin.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Utf16\Utf16ValueStringBuilder.AppendFormat.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Utf16ValueStringBuilder.AppendFormat.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Utf16\Utf16ValueStringBuilder.AppendMany.cs">
+			<DependentUpon>Utf16ValueStringBuilder.AppendMany.tt</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Utf16\Utf16ValueStringBuilder.CreateFormatter.cs">
+			<DependentUpon>Utf16ValueStringBuilder.CreateFormatter.tt</DependentUpon>
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+		</Compile>
+		<Compile Update="Utf16\Utf16ValueStringBuilder.SpanFormattableAppend.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Utf16ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Utf8\Utf8ValueStringBuilder.AppendFormat.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Utf8ValueStringBuilder.AppendFormat.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Utf8\Utf8ValueStringBuilder.AppendMany.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Utf8ValueStringBuilder.AppendMany.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Utf8\Utf8ValueStringBuilder.CreateFormatter.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Utf8ValueStringBuilder.CreateFormatter.tt</DependentUpon>
+		</Compile>
+		<Compile Update="Utf8\Utf8ValueStringBuilder.SpanFormattableAppend.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>Utf8ValueStringBuilder.SpanFormattableAppend.tt</DependentUpon>
+		</Compile>
+		<Compile Update="ZString.Concat.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ZString.Concat.tt</DependentUpon>
+		</Compile>
+		<Compile Update="ZString.Format.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ZString.Format.tt</DependentUpon>
+		</Compile>
+		<Compile Update="ZString.Prepare.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ZString.Prepare.tt</DependentUpon>
+		</Compile>
+		<Compile Update="ZString.Utf8Format.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ZString.Utf8Format.tt</DependentUpon>
+		</Compile>
 
-    <ItemGroup>
-        <None Include="PreparedFormat.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>PreparedFormat.tt</DependentUpon>
-        </None>
-        <None Include="ZString.Utf8Format.cs">
-            <DesignTime>True</DesignTime>
-            <AutoGen>True</AutoGen>
-            <DependentUpon>ZString.Utf8Format.tt</DependentUpon>
-        </None>
-    </ItemGroup>
+	</ItemGroup>
 
-    <ItemGroup>
-        <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-    </ItemGroup>
+	<ItemGroup>
+		<None Include="PreparedFormat.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>PreparedFormat.tt</DependentUpon>
+		</None>
+		<None Include="ZString.Utf8Format.cs">
+			<DesignTime>True</DesignTime>
+			<AutoGen>True</AutoGen>
+			<DependentUpon>ZString.Utf8Format.tt</DependentUpon>
+		</None>
+	</ItemGroup>
 
-    <!-- Copy files for Unity -->
-    <PropertyGroup>
-        <DestinationRoot>$(MSBuildProjectDirectory)\..\ZString.Unity\Assets\Scripts\ZString\</DestinationRoot>
-    </PropertyGroup>
-    <ItemGroup>
-        <TargetFiles1 Include="$(MSBuildProjectDirectory)\**\*.cs" Exclude="**\bin\**\*.*;**\obj\**\*.*;_InternalVisibleTo.cs" />
-    </ItemGroup>
-    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Copy SourceFiles="@(TargetFiles1)" DestinationFiles="$(DestinationRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
-    </Target>
+	<ItemGroup>
+		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<!-- Copy files for Unity -->
+	<PropertyGroup>
+		<DestinationRoot>$(MSBuildProjectDirectory)\..\ZString.Unity\Assets\Scripts\ZString\</DestinationRoot>
+	</PropertyGroup>
+	<ItemGroup>
+		<TargetFiles1 Include="$(MSBuildProjectDirectory)\**\*.cs" Exclude="**\bin\**\*.*;**\obj\**\*.*;_InternalVisibleTo.cs" />
+	</ItemGroup>
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent" Condition="$(TargetFramework) == 'netstandard2.1'">
+		<Copy SourceFiles="@(TargetFiles1)" DestinationFiles="$(DestinationRoot)\%(RecursiveDir)%(Filename)%(Extension)" SkipUnchangedFiles="true" />
+	</Target>
 </Project>
