@@ -197,29 +197,13 @@ It's important to make sure the writer is always properly disposed.
 
 Unity
 ---
-In Unity, if you encount the following error 
+Install via UPM git URL package or asset package(ZString...*.unitypackage) available in [ZString/releases](https://github.com/Cysharp/ZString/releases) page.
 
-```
-The type 'Unsafe' exists in both 'System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a' and 'System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a'
-```
+* `https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString`
 
-This is caused from dll conflict, for example `Unity Collections` package includes `System.Runtime.CompilerServices.Unsafe.dll` but ZString provides `System.Runtime.CompilerServices.Unsafe.dll` to `Plugins`.
+If you want to set a target version, ZString uses the *.*.* release tag so you can specify a version like #2.4.0. For example `https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString#2.4.0`.
 
-Detail of issue in Unity Forum - [[Bug 1214643][2019.3.0f5] System.Runtime.CompilerServices.Unsafe clashes with imported dll](https://forum.unity.com/threads/bug-1214643-2019-3-0f5-system-runtime-compilerservices-unsafe-clashes-with-imported-dll.816426/)
-
-Workround:
-- Copy Collections from Library/PackageCache to %Project Folder%/Packages
-- Remove CompilerServices.Unsafe dll from said folder
-
-### Install via git URL
-
-You can add `https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString` to Package Manager.
-
-You can install managed DLL from package mangers's samples Import button.
-
-![image](https://user-images.githubusercontent.com/46207/113681776-56145f00-96fd-11eb-8227-560da9c1a092.png)
-
-If you want to set a target version, ZString uses the *.*.* release tag so you can specify a version like #2.4.0. For example https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString#2.4.0.
+Supporting minimum Unity version is 2021.3. The dependency managed DLL `System.Runtime.CompilerServices.Unsafe/6.0.0` is included with unitypackage. For git references, you will need to add them in another way as they are not included to avoid unnecessary dependencies; either extract the dll from unitypackage or download it from the [NuGet page](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/6.0.0).
 
 Advanced Tips
 ---
