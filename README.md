@@ -200,7 +200,7 @@ Install via UPM git URL package or asset package(ZString...*.unitypackage) avail
 
 * `https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString`
 
-If you want to set a target version, ZString uses the *.*.* release tag so you can specify a version like #2.4.0. For example `https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString#2.4.0`.
+If you want to set a target version, ZString uses the `*.*.*` release tag so you can specify a version like #2.4.0. For example `https://github.com/Cysharp/ZString.git?path=src/ZString.Unity/Assets/Scripts/ZString#2.4.0`.
 
 Supporting minimum Unity version is 2021.3. The dependency managed DLL `System.Runtime.CompilerServices.Unsafe/6.0.0` is included with unitypackage. For git references, you will need to add them in another way as they are not included to avoid unnecessary dependencies; either extract the dll from unitypackage or download it from the [NuGet page](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/6.0.0).
 
