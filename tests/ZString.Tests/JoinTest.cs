@@ -61,6 +61,9 @@ namespace ZStringTests
             ZString.Join("_,_", (IReadOnlyCollection<int>)new[] { 1 }).Should().Be(string.Join("_,_", new[] { 1 }));
             ZString.Join("_,_", (IReadOnlyCollection<int>)new[] { 1, 2 }).Should().Be(string.Join("_,_", new[] { 1, 2 }));
             ZString.Join("_,_", (IReadOnlyCollection<int>)new[] { 1, 2, 3 }).Should().Be(string.Join("_,_", new[] { 1, 2, 3 }));
+
+            ZString.Join("_,_", new HashSet<int>()).Should().Be(string.Join("_,_", Array.Empty<string>()));
+            ZString.Join("_,_", new HashSet<int>{ 1 }).Should().Be(string.Join("_,_", new[] { 1 }));
         }
 
         [Fact]
