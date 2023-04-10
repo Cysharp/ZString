@@ -16,7 +16,12 @@ namespace Cysharp.Text
         static EnumUtil()
         {
             var enumNames = Enum.GetNames(typeof(T));
-            var values = Enum.GetValues(typeof(T));
+            var values =
+#if NET7_0_OR_GREATER
+                Enum.GetValuesAsUnderlyingType(typeof(T));
+#else
+                Enum.GetValues(typeof(T));
+#endif
             names = new Dictionary<T, string>(enumNames.Length);
             utf8names = new Dictionary<T, byte[]>(enumNames.Length);
             for (int i = 0; i < enumNames.Length; i++)
