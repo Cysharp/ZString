@@ -204,6 +204,8 @@ If you want to set a target version, ZString uses the `*.*.*` release tag so you
 
 Supporting minimum Unity version is 2021.3. The dependency managed DLL `System.Runtime.CompilerServices.Unsafe/6.0.0` is included with unitypackage. For git references, you will need to add them in another way as they are not included to avoid unnecessary dependencies; either extract the dll from unitypackage or download it from the [NuGet page](https://www.nuget.org/packages/System.Runtime.CompilerServices.Unsafe/6.0.0).
 
+TextMeshPro support is automatically enabled when importing the `com.unity.textmeshpro` package from package manager. (If you do not use the package manager, define the scripting define symbol `ZSTRING_TEXTMESHPRO_SUPPORT` to enable it.)
+
 Advanced Tips
 ---
 `ZString.CreateStringBuilder(notNested:true)` is a special optimized parameter that uses `ThreadStatic` buffer instead of rent from `ArrayPool`. It is slightly faster but can not use in nested.
