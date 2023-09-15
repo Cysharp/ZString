@@ -21,6 +21,7 @@
         return string.Join(", ", Enumerable.Range(0, i).Select(x => "arg" + x));
     }
 #>
+#if ZSTRING_TEXTMESHPRO_SUPPORT
 using System;
 using TMPro;
 
@@ -52,3 +53,4 @@ namespace Cysharp.Text
 <# } #>
     }
 }
+#endif
