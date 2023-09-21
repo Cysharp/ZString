@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Cysharp.Text
@@ -57,28 +57,28 @@ namespace Cysharp.Text
             return new Utf8ValueStringBuilder(notNested);
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, params T[] values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
             return JoinInternal<T>(s, values.AsSpan());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, List<T> values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
             return JoinInternal(s, (IReadOnlyList<T>)values);
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, ReadOnlySpan<T> values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
             return JoinInternal(s, values);
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(char separator, IEnumerable<T> values)
         {
             ReadOnlySpan<char> s = stackalloc char[1] { separator };
@@ -109,19 +109,19 @@ namespace Cysharp.Text
             return JoinInternal(s, values.AsEnumerable());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, params T[] values)
         {
             return JoinInternal<T>(separator.AsSpan(), values.AsSpan());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, List<T> values)
         {
             return JoinInternal(separator.AsSpan(), (IReadOnlyList<T>)values);
         }
         
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, ReadOnlySpan<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
@@ -147,12 +147,34 @@ namespace Cysharp.Text
             return JoinInternal(separator.AsSpan(), values.AsEnumerable());
         }
 
-        /// <summary>Concatenates the elements of an array, using the specified seperator between each element.</summary>
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
         public static string Join<T>(string separator, IEnumerable<T> values)
         {
             return JoinInternal(separator.AsSpan(), values);
         }
-
+        
+#if NETSTANDARD2_1_OR_GREATER || NET_STANDARD_2_1
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
+        public static string Join(char separator, ReadOnlySpan<string> values)
+        {
+            ReadOnlySpan<char> s = stackalloc char[1] { separator };
+            return JoinInternal(s, values);
+        }
+        
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
+        public static string Join(char separator, params string[] values)
+        {
+            ReadOnlySpan<char> s = stackalloc char[1] { separator };
+            return JoinInternal(s, (ReadOnlySpan<string>)values.AsSpan());
+        }
+        
+        /// <summary>Concatenates the elements of an array, using the specified separator between each element.</summary>
+        public static string Join(string separator, params string[] values)
+        {
+            return JoinInternal(separator.AsSpan(), (ReadOnlySpan<string>)values.AsSpan());
+        }
+#endif
+        
         /// <summary>Concatenates the string representation of some specified objects.</summary>
         public static string Concat<T>(params T[] values)
         {
@@ -211,16 +233,23 @@ namespace Cysharp.Text
 
         static string JoinInternal<T>(ReadOnlySpan<char> separator, IReadOnlyList<T> values)
         {
-            var count = values.Count;
-            if (count == 0)
+            if (values.Count == 0)
             {
                 return string.Empty;
             }
-            else if (typeof(T) == typeof(string) && count == 1)
+#if NETSTANDARD2_1_OR_GREATER || NET_STANDARD_2_1            
+            if (values is string[] valueArray)
             {
-                return Unsafe.As<string>(values[0]);
+                return JoinInternal(separator, valueArray.AsSpan());
             }
-
+#if NET5_0_OR_GREATER
+            if (values is List<string> valueList)
+            {
+                return JoinInternal(separator, CollectionsMarshal.AsSpan(valueList));
+            }
+#endif
+#endif
+            
             var sb = new Utf16ValueStringBuilder(true);
             try
             {
@@ -269,5 +298,61 @@ namespace Cysharp.Text
                 sb.Dispose();
             }
         }
+
+#if NETSTANDARD2_1_OR_GREATER || NET_STANDARD_2_1
+        static string JoinInternal(ReadOnlySpan<char> separator, ReadOnlySpan<string> values)
+        {
+            if (values.Length == 0)
+            {
+                return string.Empty;
+            }
+            if (values.Length == 1)
+            {
+                return values[0];
+            }
+
+            var totalSeparatorsLength = (values.Length - 1) * separator.Length;
+            var totalLength = totalSeparatorsLength;
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (values[i] is { } value)
+                {
+                    totalLength += value.Length;
+                }
+            }
+            
+            if (totalLength == 0)
+            {
+                return string.Empty;
+            }
+
+            var resultString = string.Create(totalLength, 0, (_, _) => { });
+            var writeBuffer = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetReference(resultString.AsSpan()), resultString.Length);
+            var copiedLength = 0;
+            for (var i = 0; i < values.Length; i++)
+            {
+                if (values[i] is { } value)
+                {
+                    value.AsSpan().CopyTo(writeBuffer.Slice(copiedLength));
+                    copiedLength += value.Length;
+                }
+
+                // Fill in the separator
+                if (i < values.Length - 1)
+                {
+                    if (separator.Length == 1)
+                    {
+                        writeBuffer[copiedLength++] = separator[0];
+                    }
+                    else
+                    {
+                        separator.CopyTo(writeBuffer.Slice(copiedLength));
+                        copiedLength += separator.Length;
+                    }
+                }
+            }
+            return resultString;
+        }
+#endif
     }
 }
