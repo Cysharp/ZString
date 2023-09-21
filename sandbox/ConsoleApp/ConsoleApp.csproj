@@ -2,15 +2,18 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<SignAssembly>true</SignAssembly>
 		<AssemblyOriginatorKeyFile>../../opensource.snk</AssemblyOriginatorKeyFile>
 		<IsPackable>false</IsPackable>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="BenchmarkDotNet" Version="0.12.1" />
 		<PackageReference Include="System.Text.Json" Version="4.7.1" />
-		<ProjectReference Include="..\..\src\ZString\ZString.csproj" />
+		<ProjectReference Include="..\..\src\ZString\ZString.csproj">
+			<SetTargetFramework>TargetFramework=netstandard2.1</SetTargetFramework>
+		</ProjectReference>
 	</ItemGroup>
 
 </Project>

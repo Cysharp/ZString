@@ -1,13 +1,8 @@
 ﻿using Cysharp.Text;
 using System;
-using System.Buffers;
-using System.Collections.Concurrent;
-using System.Linq;
 using System.Text;
-// using System.Text.Formatting;
-using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
+using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Running;
 
 namespace ConsoleApp
 {
@@ -20,19 +15,34 @@ namespace ConsoleApp
     {
         static void Main(string[] args)
         {
+            // BenchmarkRunner.Run<JoinBenchmark>();
             Run();
         }
 
         static void Run()
         {
+            ZString.Join(",", "a", "b");
             TimeSpan span = new TimeSpan(12, 34, 56);
             Console.WriteLine($"string.Format: {string.Format(@"{0:h\,h\:mm\:ss}", span)}");
-
-
             Console.WriteLine($"ZString.Format: {ZString.Format(@"{0:h\,h\:mm\:ss}", span)}");
+        }
+    }
+    
+    public class JoinBenchmark
+    {
+        public string[] Source = new []{ "111", "222", "333"};
+        public const string Sp = ",";
 
+        [Benchmark]
+        public string StringJoin()
+        {
+            return string.Join(Sp, Source);
+        }
 
-
+        [Benchmark]
+        public string ZStringJoin() 
+        {
+            return ZString.Join(Sp, Source);
         }
     }
 

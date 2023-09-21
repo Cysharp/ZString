@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <RootNamespace>ZStringTests</RootNamespace>
         <SignAssembly>true</SignAssembly>
@@ -23,7 +23,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\src\ZString\ZString.csproj" />
+        <ProjectReference Include="..\..\src\ZString\ZString.csproj">
+            <SetTargetFramework>TargetFramework=netstandard2.1</SetTargetFramework>
+        </ProjectReference>
     </ItemGroup>
 
 </Project>
