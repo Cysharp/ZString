@@ -402,7 +402,7 @@ namespace Cysharp.Text
 
         static void ThrowNestedException()
         {
-            throw new NestedStringBuilderCreationException(nameof(Utf16ValueStringBuilder));
+            throw new NestedStringBuilderCreationException(nameof(Utf8ValueStringBuilder));
         }
 
         private void AppendFormatInternal<T>(T arg, int width, StandardFormat format, string argName)
