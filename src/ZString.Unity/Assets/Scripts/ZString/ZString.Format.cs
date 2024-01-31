@@ -501,5 +501,159 @@ namespace Cysharp.Text
                 sb.Dispose();
             }
         }
+
+        /// <summary>Replaces one or more format items in a string with the string representation of some specified objects.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string Format<T>(string format, T[] args)
+        {
+            var sb = new Utf16ValueStringBuilder(true);
+            try
+            {
+                switch (args.Length)
+                {
+                    case 1:
+                        sb.AppendFormat(format, args[0]);
+                        break;
+                    case 2:
+                        sb.AppendFormat(format, args[0], args[1]);
+                        break;
+                    case 3:
+                        sb.AppendFormat(format, args[0], args[1], args[2]);
+                        break;
+                    case 4:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3]);
+                        break;
+                    case 5:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4]);
+                        break;
+                    case 6:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5]);
+                        break;
+                    case 7:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+                        break;
+                    case 8:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+                        break;
+                    case 9:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8]);
+                        break;
+                    case 10:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9]);
+                        break;
+                    case 11:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10]);
+                        break;
+                    case 12:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11]);
+                        break;
+                    case 13:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12]);
+                        break;
+                    case 14:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12], args[13]);
+                        break;
+                    case 15:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12], args[13], args[14]);
+                        break;
+                    case 16:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]);
+                        break;
+                    default:
+                        ExceptionUtil.ThrowArgumentException(nameof(args));
+                        break;
+                }
+                return sb.ToString();
+            }
+            finally
+            {
+                sb.Dispose();
+            }
+        }
+
+        /// <summary>Replaces one or more format items in a string with the string representation of some specified objects.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string Format<T>(ReadOnlySpan<char> format, T[] args)
+        {
+            var sb = new Utf16ValueStringBuilder(true);
+            try
+            {
+                switch (args.Length)
+                {
+                    case 1:
+                        sb.AppendFormat(format, args[0]);
+                        break;
+                    case 2:
+                        sb.AppendFormat(format, args[0], args[1]);
+                        break;
+                    case 3:
+                        sb.AppendFormat(format, args[0], args[1], args[2]);
+                        break;
+                    case 4:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3]);
+                        break;
+                    case 5:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4]);
+                        break;
+                    case 6:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5]);
+                        break;
+                    case 7:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+                        break;
+                    case 8:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+                        break;
+                    case 9:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8]);
+                        break;
+                    case 10:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9]);
+                        break;
+                    case 11:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10]);
+                        break;
+                    case 12:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11]);
+                        break;
+                    case 13:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12]);
+                        break;
+                    case 14:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12], args[13]);
+                        break;
+                    case 15:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12], args[13], args[14]);
+                        break;
+                    case 16:
+                        sb.AppendFormat(format, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7],
+                            args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]);
+                        break;
+                    default:
+                        ExceptionUtil.ThrowArgumentException(nameof(args));
+                        break;
+                }
+                return sb.ToString();
+            }
+            finally
+            {
+                sb.Dispose();
+            }
+        }
     }
 }
