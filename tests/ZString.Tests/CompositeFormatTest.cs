@@ -103,7 +103,7 @@ namespace ZStringTests
             decimal[] hours = { 40, 6.667m, 40.39m, 82, 40.333m, 80, 16.75m };
 
             for (int ctr = 0; ctr < names.Length; ctr++)
-                Test("{0,-20} {1,5:F}", names[ctr], hours[ctr]);
+                Test("{0,-20} {1,5:F3}", names[ctr], hours[ctr]);
         }
 
 
@@ -120,7 +120,7 @@ namespace ZStringTests
         [Fact]
         public void CompsiteFormats()
         {
-            Test("{{Name = {0}, {1:f}({1:E})}}", "Fred", 500_0000_0000_0000m);
+            Test("{{Name = {0}, {1:f3}({1:E})}}", "Fred", 500_0000_0000_0000m);
         }
 
     }
