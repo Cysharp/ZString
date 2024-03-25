@@ -26,16 +26,17 @@ namespace Cysharp.Text
             utf8names = new Dictionary<T, byte[]>(enumNames.Length);
             for (int i = 0; i < enumNames.Length; i++)
             {
-                if (names.ContainsKey((T)values.GetValue(i)))
+                var value = (T)values.GetValue(i)!;
+                if (names.ContainsKey(value))
                 {
                     // already registered = invalid.
-                    names[(T)values.GetValue(i)] = InvalidName;
-                    utf8names[(T)values.GetValue(i)] = Array.Empty<byte>(); // byte[0] == Invalid.
+                    names[value] = InvalidName;
+                    utf8names[value] = Array.Empty<byte>(); // byte[0] == Invalid.
                 }
                 else
                 {
-                    names.Add((T)values.GetValue(i), enumNames[i]);
-                    utf8names.Add((T)values.GetValue(i), Encoding.UTF8.GetBytes(enumNames[i]));
+                    names.Add(value, enumNames[i]);
+                    utf8names.Add(value, Encoding.UTF8.GetBytes(enumNames[i]));
                 }
             }
         }

@@ -1,4 +1,4 @@
-﻿#if !NETSTANDARD2_1
+﻿#if NETSTANDARD
 
 using System;
 using System.Globalization;
