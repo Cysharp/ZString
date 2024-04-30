@@ -61,3 +61,4 @@ jobs:
         with:
           name: ZString.Unity.${{ matrix.unity }}.unitypackage.zip
           path: ./src/ZString.Unity/*.unitypackage
+          retention-days: 1
