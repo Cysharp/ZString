@@ -73,5 +73,30 @@ namespace ZStringTests
             var result = sut.ToString();
             result.Should().Be($"{species}{alternative}{mainPart}");
         }
+        
+        [Theory]
+        [InlineData("cat")]
+        [InlineData("dog")]
+        public void IndexerAlike_WhenCalled_IsCorrect(string body)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(body);
+            
+            var letter = sut.AsSpan()[1];
+            letter.Should().Be(body[1]);
+        }
+        
+        [Theory]
+        [InlineData("cat")]
+        [InlineData("dog")]
+        public void IndexerAlike_WhenCalledOnLast_IsCorrect(string body)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(body);
+
+            var index = body.Length - 1;
+            var letter = sut.AsSpan()[index];
+            letter.Should().Be(body[index]);
+        }
     }
 }
