@@ -98,5 +98,30 @@ namespace ZStringTests
             var letter = sut.AsSpan()[index];
             letter.Should().Be(body[index]);
         }
+        
+        [Theory]
+        [InlineData("cat")]
+        [InlineData("dog")]
+        public void Indexer_WhenCalled_IsCorrect(string body)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(body);
+            
+            var letter = sut[1];
+            letter.Should().Be(body[1]);
+        }
+        
+        [Theory]
+        [InlineData("cat")]
+        [InlineData("dog")]
+        public void Indexer_WhenCalledOnLast_IsCorrect(string body)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(body);
+
+            var index = body.Length - 1;
+            var letter = sut[index];
+            letter.Should().Be(body[index]);
+        }        
     }
 }
