@@ -1,6 +1,6 @@
+using System;
 using Cysharp.Text;
 using FluentAssertions;
-using System.Text;
 using Xunit;
 
 namespace ZStringTests
@@ -21,6 +21,57 @@ namespace ZStringTests
             var sb = ZString.CreateUtf8StringBuilder();
             sb.Dispose();
             sb.Dispose(); // call more than once
+        }
+
+        [Theory]
+        [InlineData("cucu", "mber")]
+        [InlineData("Choco", "pie")]
+        public void Append_WhenCalled_IsCorrect(string a, string b)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(a);
+            sut.Append(b);
+            
+            var result = sut.ToString();
+            result.Should().Be($"{a}{b}");
+        }
+        
+        [Theory]
+        [InlineData("cucu", "mber")]
+        [InlineData("Choco", "pie")]
+        public void Append_WhenChars_IsCorrect(string species, string b)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(species);
+            var chars = new ReadOnlySpan<char>(b.ToCharArray());
+            sut.Append(chars);
+            
+            var result = sut.ToString();
+            result.Should().Be($"{species}{b}");
+        }
+        
+        [Theory, InlineData("choco", "apple", "pie")]
+        public void Replace_WhenCalled_IsCorrect(string species, string alternative, string mainPart)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(species);
+            sut.Append(mainPart);
+            sut.Replace(species, alternative);
+            
+            var result = sut.ToString();
+            result.Should().Be($"{alternative}{mainPart}");
+        }
+        
+        [Theory, InlineData("choco", "apple", "pie")]
+        public void Insert_WhenCalled_IsCorrect(string species, string alternative, string mainPart)
+        {
+            using var sut = ZString.CreateStringBuilder();
+            sut.Append(species);
+            sut.Append(mainPart);
+            sut.Insert(species.Length, alternative);
+            
+            var result = sut.ToString();
+            result.Should().Be($"{species}{alternative}{mainPart}");
         }
     }
 }
