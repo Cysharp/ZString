@@ -46,6 +46,12 @@ namespace Cysharp.Text
 
         /// <summary>Length of written buffer.</summary>
         public int Length => index;
+
+        /// <summary>Gets a <see cref="char"/> stored under <paramref name="index"/> </summary>
+        [IndexerName("Chars")]
+        // ReSharper disable once ParameterHidesMember - follow naming from StringBuilder to ease migration.
+        public char this[int index] => buffer![index];
+        
         /// <summary>Get the written buffer data.</summary>
         public ReadOnlySpan<char> AsSpan() => buffer.AsSpan(0, index);
         /// <summary>Get the written buffer data.</summary>
