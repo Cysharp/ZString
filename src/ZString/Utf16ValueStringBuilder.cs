@@ -571,6 +571,21 @@ namespace Cysharp.Text
             return new string(buffer, 0, index);
         }
 
+        public Split<char> Split(in char separator)
+        {
+            return new Split<char>(AsSpan(), separator);
+        }
+
+        public Split<char> Split(ReadOnlySpan<char> separator)
+        {
+            return new Split<char>(AsSpan(), separator);
+        }
+
+        public SplitAny<char> SplitAny(ReadOnlySpan<char> separator)
+        {
+            return new SplitAny<char>(AsSpan(), separator);
+        }
+
         // IBufferWriter
 
         /// <summary>IBufferWriter.GetMemory.</summary>
