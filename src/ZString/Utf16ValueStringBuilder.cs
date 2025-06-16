@@ -147,7 +147,7 @@ namespace Cysharp.Text
 
         /// <summary>Appends the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine()
+        public Utf16ValueStringBuilder AppendLine()
         {
             if (crlf)
             {
@@ -162,6 +162,7 @@ namespace Cysharp.Text
                 buffer[index] = newLine1;
                 index += 1;
             }
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
