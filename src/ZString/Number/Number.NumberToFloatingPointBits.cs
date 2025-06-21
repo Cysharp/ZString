@@ -5,6 +5,8 @@
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
+#pragma warning disable CS9080
+
 namespace System
 {
     internal unsafe partial class Number

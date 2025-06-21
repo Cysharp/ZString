@@ -40,7 +40,7 @@ namespace Cysharp.Text
         [ThreadStatic]
         internal static bool scratchBufferUsed;
 
-        char[]? buffer;
+        char[] buffer;
         int index;
         bool disposeImmediately;
 
@@ -103,7 +103,7 @@ namespace Cysharp.Text
                 {
                     ArrayPool<char>.Shared.Return(buffer);
                 }
-                buffer = null;
+                buffer = null!;
                 index = 0;
                 if (disposeImmediately)
                 {
@@ -642,7 +642,7 @@ namespace Cysharp.Text
             {
                 if (typeof(T) == typeof(string))
                 {
-                    var s = Unsafe.As<string>(arg);
+                    var s = Unsafe.As<string>(arg) ?? "";
                     int padding = width - s.Length;
                     if (padding > 0)
                     {
@@ -719,7 +719,9 @@ namespace Cysharp.Text
                 {
                     if (typeof(T).IsEnum)
                     {
+#pragma warning disable CS8714
                         formatter = new TryFormat<T>(EnumUtil<T>.TryFormatUtf16);
+#pragma warning restore CS8714
                     }
                     else if (typeof(T) == typeof(string))
                     {
@@ -759,7 +761,7 @@ namespace Cysharp.Text
 
                 var s = (value is IFormattable formattable && format.Length != 0) ?
                     formattable.ToString(format.ToString(), null) :
-                    value.ToString();
+                    value.ToString()!;
 
                 // also use this length when result is false.
                 written = s.Length;

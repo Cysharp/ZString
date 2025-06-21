@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -82,7 +82,7 @@ namespace Cysharp.Text
             sb.Append(buffer, index, count);
         }
 
-        public override void Write(string value)
+        public override void Write(string? value)
         {
             AssertNotDisposed();
 
@@ -98,7 +98,7 @@ namespace Cysharp.Text
             return Task.CompletedTask;
         }
 
-        public override Task WriteAsync(string value)
+        public override Task WriteAsync(string? value)
         {
             Write(value);
             return Task.CompletedTask;
@@ -116,7 +116,7 @@ namespace Cysharp.Text
             return Task.CompletedTask;
         }
 
-        public override Task WriteLineAsync(string value)
+        public override Task WriteLineAsync(string? value)
         {
             WriteLine(value);
             return Task.CompletedTask;
