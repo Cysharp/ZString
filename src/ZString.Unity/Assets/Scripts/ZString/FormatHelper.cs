@@ -47,7 +47,7 @@ namespace Cysharp.Text
         {
             if (typeof(T) == typeof(string))
             {
-                var s = Unsafe.As<string>(arg);
+                var s = Unsafe.As<string>(arg) ?? "";
                 int padding = width - s.Length;
                 if (padding > 0)
                 {
@@ -130,7 +130,7 @@ namespace Cysharp.Text
         {
             if (typeof(T) == typeof(string))
             {
-                var s = Unsafe.As<string>(arg);
+                var s = Unsafe.As<string>(arg) ?? "";
                 int padding = width - s.Length;
                 if (padding > 0)
                 {

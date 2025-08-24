@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Buffers;
 using System.IO;
 using System.Runtime.CompilerServices;
@@ -44,7 +44,7 @@ namespace Cysharp.Text
         [ThreadStatic]
         internal static bool scratchBufferUsed;
 
-        byte[]? buffer;
+        byte[] buffer;
         int index;
         bool disposeImmediately;
 
@@ -110,7 +110,7 @@ namespace Cysharp.Text
                 {
                     ArrayPool<byte>.Shared.Return(buffer);
                 }
-                buffer = null;
+                buffer = null!;
                 index = 0;
                 if (disposeImmediately)
                 {
@@ -432,7 +432,7 @@ namespace Cysharp.Text
             {
                 if (typeof(T) == typeof(string))
                 {
-                    var s = Unsafe.As<string>(arg);
+                    var s = Unsafe.As<string>(arg) ?? "";
                     int padding = width - s.Length;
                     if (padding > 0)
                     {
@@ -505,7 +505,9 @@ namespace Cysharp.Text
                 {
                     if (typeof(T).IsEnum)
                     {
+#pragma warning disable CS8714
                         formatter = new TryFormat<T>(EnumUtil<T>.TryFormatUtf8);
+#pragma warning restore CS8714
                     }
                     else
                     {
@@ -526,7 +528,7 @@ namespace Cysharp.Text
 
                 var s = typeof(T) == typeof(string) ? Unsafe.As<string>(value) :
                     (value is IFormattable formattable && format != default) ? formattable.ToString(format.ToString(), null) :
-                    value.ToString();
+                    value.ToString()!;
 
                 // also use this length when result is false.
                 written = UTF8NoBom.GetMaxByteCount(s.Length);

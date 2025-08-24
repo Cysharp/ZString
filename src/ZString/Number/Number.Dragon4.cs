@@ -6,6 +6,9 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 
+#pragma warning disable CS9080
+#pragma warning disable CS9091
+
 namespace System
 {
     // This is a port of the `Dragon4` implementation here: http://www.ryanjuckett.com/programming/printing-floating-point-numbers/part-2/

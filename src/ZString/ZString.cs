@@ -270,7 +270,7 @@ namespace Cysharp.Text
             }
             else if (typeof(T) == typeof(string) && values.Length == 1)
             {
-                return Unsafe.As<string>(values[0]);
+                return Unsafe.As<string>(values[0])!;
             }
 
             var sb = new Utf16ValueStringBuilder(true);

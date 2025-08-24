@@ -7,6 +7,8 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
+#pragma warning disable CS9080,CS9082,CS9084,CS9091,CS9094
+
 namespace System
 {
     internal static partial class Number
