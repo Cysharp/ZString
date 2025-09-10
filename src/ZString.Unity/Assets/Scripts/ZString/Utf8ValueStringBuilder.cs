@@ -153,7 +153,7 @@ namespace Cysharp.Text
 
         /// <summary>Appends the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine()
+        public Utf8ValueStringBuilder AppendLine()
         {
             if (crlf)
             {
@@ -168,11 +168,12 @@ namespace Cysharp.Text
                 buffer[index] = newLine1;
                 index += 1;
             }
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public unsafe void Append(char value)
+        public unsafe Utf8ValueStringBuilder Append(char value)
         {
             var maxLen = UTF8NoBom.GetMaxByteCount(1);
             if (buffer!.Length - index < maxLen)
@@ -184,10 +185,11 @@ namespace Cysharp.Text
             {
                 index += UTF8NoBom.GetBytes(&value, 1, bp, maxLen);
             }
+            return this;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(char value, int repeatCount)
+        public Utf8ValueStringBuilder Append(char value, int repeatCount)
         {
             if (repeatCount < 0)
             {
@@ -215,52 +217,54 @@ namespace Cysharp.Text
                     Advance(len);
                 }
             }
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(char value)
+        public Utf8ValueStringBuilder AppendLine(char value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(string value, int startIndex, int count)
+        public Utf8ValueStringBuilder Append(string value, int startIndex, int count)
         {
             if (value == null)
             {
                 if (startIndex == 0 && count == 0)
                 {
-                    return;
+                    return this;
                 }
-                else
-                {
-                    throw new ArgumentNullException(nameof(value));
-                }
+                throw new ArgumentNullException(nameof(value));
             }
 
             Append(value.AsSpan(startIndex, count));
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(string value)
+        public Utf8ValueStringBuilder Append(string value)
         {
             Append(value.AsSpan());
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(string value)
+        public Utf8ValueStringBuilder AppendLine(string value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(ReadOnlySpan<char> value)
+        public Utf8ValueStringBuilder Append(ReadOnlySpan<char> value)
         {
             var maxLen = UTF8NoBom.GetMaxByteCount(value.Length);
             if (buffer!.Length - index < maxLen)
@@ -269,16 +273,18 @@ namespace Cysharp.Text
             }
 
             index += UTF8NoBom.GetBytes(value, buffer.AsSpan(index));
+            return this;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(ReadOnlySpan<char> value)
+        public Utf8ValueStringBuilder AppendLine(ReadOnlySpan<char> value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
-        public void AppendLiteral(ReadOnlySpan<byte> value)
+        public Utf8ValueStringBuilder AppendLiteral(ReadOnlySpan<byte> value)
         {
             if ((buffer!.Length - index) < value.Length)
             {
@@ -287,10 +293,11 @@ namespace Cysharp.Text
 
             value.CopyTo(buffer.AsSpan(index));
             index += value.Length;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
-        public void Append<T>(T value)
+        public Utf8ValueStringBuilder Append<T>(T value)
         {
             if (!FormatterCache<T>.TryFormatDelegate(value, buffer.AsSpan(index), out var written, default))
             {
@@ -301,13 +308,15 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
-        public void AppendLine<T>(T value)
+        public Utf8ValueStringBuilder AppendLine<T>(T value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         // Output
