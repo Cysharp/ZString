@@ -278,6 +278,30 @@ namespace Cysharp.Text
             AppendLine();
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(ZStringInterpolatedStringHandler value)
+        {
+            AppendCore(value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendLine(ZStringInterpolatedStringHandler value)
+        {
+            AppendCore(value);
+            AppendLine();
+        }
+
+        /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AppendCore(ZStringInterpolatedStringHandler value)
+        {
+            value.GetString(ref this);
+            value.Dispose();
+        }
+#endif
+
         public void AppendLiteral(ReadOnlySpan<byte> value)
         {
             if ((buffer!.Length - index) < value.Length)

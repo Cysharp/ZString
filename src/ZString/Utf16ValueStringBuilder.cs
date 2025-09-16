@@ -260,6 +260,30 @@ namespace Cysharp.Text
             AppendLine();
         }
 
+#if NET6_0_OR_GREATER
+        /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(ZStringInterpolatedStringHandler value)
+        {
+            AppendCore(value);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void AppendLine(ZStringInterpolatedStringHandler value)
+        {
+            AppendCore(value);
+            AppendLine();
+        }
+
+        /// <summary>Appends a contiguous region of arbitrary memory to this instance.</summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AppendCore(ZStringInterpolatedStringHandler value)
+        {
+            value.GetString(ref this);
+            value.Dispose();
+        }
+#endif
+
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         public void Append<T>(T value)
         {
@@ -350,6 +374,53 @@ namespace Cysharp.Text
             this.index = newBufferIndex + remainLnegth;
         }
 
+#if NET6_0_OR_GREATER
+        public void Insert(int index, ZStringInterpolatedStringHandler value, int count)
+        {
+            if (count < 0)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
+            }
+
+            int currentLength = Length;
+            if ((uint)index > (uint)currentLength)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (value.Length == 0 || count == 0)
+            {
+                return;
+            }
+
+            var newSize   = index + value.Length * count;
+            var newBuffer = ArrayPool<char>.Shared.Rent(Math.Max(DefaultBufferSize, newSize));
+
+            buffer.AsSpan(0, index).CopyTo(newBuffer);
+            int newBufferIndex = index;
+
+            for (int i = 0; i < count; i++)
+            {
+                value.CopyTo(newBuffer.AsSpan(newBufferIndex));
+                newBufferIndex += value.Length;
+            }
+
+            int remainLnegth = this.index - index;
+            buffer.AsSpan(index, remainLnegth).CopyTo(newBuffer.AsSpan(newBufferIndex));
+
+            if (buffer!.Length != ThreadStaticBufferSize)
+            {
+                if (buffer != null)
+                {
+                    ArrayPool<char>.Shared.Return(buffer);
+                }
+            }
+
+            buffer     = newBuffer;
+            this.index = newBufferIndex + remainLnegth;
+        }
+#endif
+
         /// <summary>
         /// Replaces all instances of one character with another in this builder.
         /// </summary>
@@ -401,6 +472,12 @@ namespace Cysharp.Text
 
         public void Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue) => Replace(oldValue, newValue, 0, Length);
 
+#if NET6_0_OR_GREATER
+        public void Replace(string oldValue, ZStringInterpolatedStringHandler newValue) => Replace(oldValue, newValue, 0, Length);
+
+        public void Replace(ReadOnlySpan<char> oldValue, ZStringInterpolatedStringHandler newValue) => Replace(oldValue, newValue, 0, Length);
+#endif
+
         /// <summary>
         /// Replaces all instances of one string with another in part of this builder.
         /// </summary>
@@ -421,6 +498,18 @@ namespace Cysharp.Text
 
             Replace(oldValue.AsSpan(), newValue.AsSpan(), startIndex, count);
         }
+
+#if NET6_0_OR_GREATER
+        public void Replace(string oldValue, ZStringInterpolatedStringHandler newValue, int startIndex, int count)
+        {
+            if (oldValue == null)
+            {
+                throw new ArgumentNullException(nameof(oldValue));
+            }
+
+            Replace(oldValue.AsSpan(), newValue, startIndex, count);
+        }
+#endif
 
         public void Replace(ReadOnlySpan<char> oldValue, ReadOnlySpan<char> newValue, int startIndex, int count)
         {
@@ -489,7 +578,77 @@ namespace Cysharp.Text
             buffer = newBuffer;
             index = newBufferIndex;
         }
-        
+
+#if NET6_0_OR_GREATER
+         public void Replace(ReadOnlySpan<char> oldValue, ZStringInterpolatedStringHandler newValue, int startIndex, int count)
+        {
+            int currentLength = Length;
+
+            if ((uint)startIndex > (uint)currentLength)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(startIndex));
+            }
+
+            if (count < 0 || startIndex > currentLength - count)
+            {
+                ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(count));
+            }
+
+            if (oldValue.Length == 0)
+            {
+                throw new ArgumentException("oldValue.Length is 0", nameof(oldValue));
+            }
+
+            var readOnlySpan = AsSpan();
+            int endIndex = startIndex + count;
+            int matchCount = 0;
+
+            for (int i = startIndex; i < endIndex; i += oldValue.Length)
+            {
+                var span = readOnlySpan.Slice(i, endIndex - i);
+                var pos = span.IndexOf(oldValue, StringComparison.Ordinal);
+                if (pos == -1)
+                {
+                    break;
+                }
+                i += pos;
+                matchCount++;
+            }
+
+            if (matchCount == 0)
+                return;
+
+            var newBuffer = ArrayPool<char>.Shared.Rent(Math.Max(DefaultBufferSize, Length + (newValue.Length - oldValue.Length) * matchCount));
+
+            buffer.AsSpan(0, startIndex).CopyTo(newBuffer);
+            int newBufferIndex = startIndex;
+
+            for (int i = startIndex; i < endIndex; i += oldValue.Length)
+            {
+                var span = readOnlySpan.Slice(i, endIndex - i);
+                var pos = span.IndexOf(oldValue, StringComparison.Ordinal);
+                if (pos == -1)
+                {
+                    var remain = readOnlySpan.Slice(i);
+                    remain.CopyTo(newBuffer.AsSpan(newBufferIndex));
+                    newBufferIndex += remain.Length;
+                    break;
+                }
+                readOnlySpan.Slice(i, pos).CopyTo(newBuffer.AsSpan(newBufferIndex));
+                newValue.CopyTo(newBuffer.AsSpan(newBufferIndex + pos));
+                newBufferIndex += pos + newValue.Length;
+                i += pos;
+            }
+
+            if (buffer!.Length != ThreadStaticBufferSize)
+            {
+                ArrayPool<char>.Shared.Return(buffer);
+            }
+            buffer = newBuffer;
+            index = newBufferIndex;
+        }
+#endif
+
         /// <summary>
         /// Replaces the contents of a single position within the builder.
         /// </summary>
@@ -502,7 +661,7 @@ namespace Cysharp.Text
             {
                 ExceptionUtil.ThrowArgumentOutOfRangeException(nameof(replaceIndex));
             }
-            
+
             buffer![replaceIndex] = newChar;
         }
 
