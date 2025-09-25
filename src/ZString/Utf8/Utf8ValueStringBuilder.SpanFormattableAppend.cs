@@ -9,7 +9,7 @@ namespace Cysharp.Text
     {
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Byte value)
+        public Utf8ValueStringBuilder Append(System.Byte value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -20,11 +20,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Byte value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Byte value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -35,27 +36,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Byte value)
+        public Utf8ValueStringBuilder AppendLine(System.Byte value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Byte value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Byte value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.DateTime value)
+        public Utf8ValueStringBuilder Append(System.DateTime value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -66,11 +70,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.DateTime value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.DateTime value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -81,27 +86,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.DateTime value)
+        public Utf8ValueStringBuilder AppendLine(System.DateTime value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.DateTime value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.DateTime value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.DateTimeOffset value)
+        public Utf8ValueStringBuilder Append(System.DateTimeOffset value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -112,11 +120,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.DateTimeOffset value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.DateTimeOffset value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -127,27 +136,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.DateTimeOffset value)
+        public Utf8ValueStringBuilder AppendLine(System.DateTimeOffset value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.DateTimeOffset value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.DateTimeOffset value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Decimal value)
+        public Utf8ValueStringBuilder Append(System.Decimal value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -158,11 +170,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Decimal value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Decimal value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -173,27 +186,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Decimal value)
+        public Utf8ValueStringBuilder AppendLine(System.Decimal value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Decimal value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Decimal value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Double value)
+        public Utf8ValueStringBuilder Append(System.Double value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -204,11 +220,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Double value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Double value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -219,27 +236,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Double value)
+        public Utf8ValueStringBuilder AppendLine(System.Double value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Double value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Double value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int16 value)
+        public Utf8ValueStringBuilder Append(System.Int16 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -250,11 +270,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int16 value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Int16 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -265,27 +286,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Int16 value)
+        public Utf8ValueStringBuilder AppendLine(System.Int16 value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Int16 value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Int16 value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int32 value)
+        public Utf8ValueStringBuilder Append(System.Int32 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -296,11 +320,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int32 value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Int32 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -311,27 +336,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Int32 value)
+        public Utf8ValueStringBuilder AppendLine(System.Int32 value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Int32 value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Int32 value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int64 value)
+        public Utf8ValueStringBuilder Append(System.Int64 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -342,11 +370,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Int64 value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Int64 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -357,27 +386,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Int64 value)
+        public Utf8ValueStringBuilder AppendLine(System.Int64 value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Int64 value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Int64 value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.SByte value)
+        public Utf8ValueStringBuilder Append(System.SByte value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -388,11 +420,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.SByte value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.SByte value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -403,27 +436,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.SByte value)
+        public Utf8ValueStringBuilder AppendLine(System.SByte value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.SByte value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.SByte value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Single value)
+        public Utf8ValueStringBuilder Append(System.Single value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -434,11 +470,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Single value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Single value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -449,27 +486,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Single value)
+        public Utf8ValueStringBuilder AppendLine(System.Single value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Single value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Single value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.TimeSpan value)
+        public Utf8ValueStringBuilder Append(System.TimeSpan value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -480,11 +520,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.TimeSpan value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.TimeSpan value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -495,27 +536,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.TimeSpan value)
+        public Utf8ValueStringBuilder AppendLine(System.TimeSpan value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.TimeSpan value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.TimeSpan value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt16 value)
+        public Utf8ValueStringBuilder Append(System.UInt16 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -526,11 +570,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt16 value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.UInt16 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -541,27 +586,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.UInt16 value)
+        public Utf8ValueStringBuilder AppendLine(System.UInt16 value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.UInt16 value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.UInt16 value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt32 value)
+        public Utf8ValueStringBuilder Append(System.UInt32 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -572,11 +620,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt32 value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.UInt32 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -587,27 +636,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this; 
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.UInt32 value)
+        public Utf8ValueStringBuilder AppendLine(System.UInt32 value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.UInt32 value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.UInt32 value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt64 value)
+        public Utf8ValueStringBuilder Append(System.UInt64 value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -618,11 +670,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.UInt64 value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.UInt64 value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -633,27 +686,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.UInt64 value)
+        public Utf8ValueStringBuilder AppendLine(System.UInt64 value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.UInt64 value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.UInt64 value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Guid value)
+        public Utf8ValueStringBuilder Append(System.Guid value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -664,11 +720,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Guid value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Guid value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -679,27 +736,30 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Guid value)
+        public Utf8ValueStringBuilder AppendLine(System.Guid value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Guid value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Guid value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Boolean value)
+        public Utf8ValueStringBuilder Append(System.Boolean value)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written))
             {
@@ -710,11 +770,12 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value to this instance with numeric format strings.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void Append(System.Boolean value, StandardFormat format)
+        public Utf8ValueStringBuilder Append(System.Boolean value, StandardFormat format)
         {
             if(!Utf8Formatter.TryFormat(value, buffer.AsSpan(index), out var written, format))
             {
@@ -725,22 +786,25 @@ namespace Cysharp.Text
                 }
             }
             index += written;
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Boolean value)
+        public Utf8ValueStringBuilder AppendLine(System.Boolean value)
         {
             Append(value);
             AppendLine();
+            return this;
         }
 
         /// <summary>Appends the string representation of a specified value with numeric format strings followed by the default line terminator to the end of this instance.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public void AppendLine(System.Boolean value, StandardFormat format)
+        public Utf8ValueStringBuilder AppendLine(System.Boolean value, StandardFormat format)
         {
             Append(value, format);
             AppendLine();
+            return this;
         }
 
     }
