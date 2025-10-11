@@ -1,7 +1,8 @@
 {
     "name": "ZString",
     "references": [
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "Unity.Collections"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -20,6 +21,11 @@
             "name": "com.unity.ugui",
             "expression": "2.0.0",
             "define": "ZSTRING_TEXTMESHPRO_SUPPORT"
+        },
+        {
+            "name": "com.unity.collections",
+            "expression": "2.0.0",
+            "define": "ZSTRING_COLLECTIONS_SUPPORT"
         }
     ]
 }
