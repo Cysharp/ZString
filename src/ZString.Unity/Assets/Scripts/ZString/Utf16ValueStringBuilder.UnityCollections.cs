@@ -9,6 +9,8 @@ namespace Cysharp.Text
 {
     partial struct Utf16ValueStringBuilder
     {
+        private static readonly Encoding UTF8NoBom = new UTF8Encoding(false);
+
         /// <summary>
         ///     Get the written buffer data as a <see cref="FixedString32Bytes" />.
         /// </summary>
@@ -144,7 +146,7 @@ namespace Cysharp.Text
         {
             byte[]? destinationArray = ArrayPool<byte>.Shared.Rent(byteCount);
             Span<byte> destination = destinationArray.AsSpan(0, byteCount);
-            int writtenBytes = Encoding.UTF8.GetBytes(buffer, destination);
+            int writtenBytes = UTF8NoBom.GetBytes(buffer, destination);
 
             NativeText text = new NativeText(writtenBytes, Allocator.Temp);
             for (int i = 0; i < writtenBytes; i++)
@@ -160,7 +162,77 @@ namespace Cysharp.Text
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int GetUtf8ByteCount(in char[] buffer, in int length)
         {
-            return Encoding.UTF8.GetByteCount(buffer, 0, length);
+            return UTF8NoBom.GetByteCount(buffer, 0, length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString32Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString32Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString64Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString64Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString128Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString128Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString512Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString512Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString4096Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString4096Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Helper method to append a fixed string to the builder.
+        /// </summary>
+        /// <param name="value">The fixed string.</param>
+        /// <param name="length">The length of the string byte buffer.</param>
+        /// <typeparam name="T">The type of FixedString.</typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AppendFixedString<T>(T value, int length) where T : unmanaged, IUTF8Bytes
+        {
+            unsafe
+            {
+                byte* bytes = value.GetUnsafePtr();
+                ReadOnlySpan<byte> span = new ReadOnlySpan<byte>(bytes, length);
+
+                int charCount = UTF8NoBom.GetCharCount(span);
+
+                char[]? charBuffer = ArrayPool<char>.Shared.Rent(charCount);
+                int written = UTF8NoBom.GetChars(span, charBuffer);
+
+                Append(charBuffer.AsSpan(0, written));
+
+                ArrayPool<char>.Shared.Return(charBuffer);
+            }
         }
     }
 }

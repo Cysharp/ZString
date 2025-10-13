@@ -1,5 +1,6 @@
 ﻿#if ZSTRING_COLLECTIONS_SUPPORT
 using System;
+using System.Runtime.CompilerServices;
 using Unity.Collections;
 
 namespace Cysharp.Text
@@ -122,7 +123,7 @@ namespace Cysharp.Text
         }
 
         /// <summary>
-        ///     Helper method to copy a <see cref="byte"/> array buffer to <see cref="NativeText" />
+        ///     Helper method to copy a <see cref="byte" /> array buffer to <see cref="NativeText" />
         /// </summary>
         /// <param name="buffer">The current buffer.</param>
         /// <param name="length">The length of written elements in the buffer.</param>
@@ -136,6 +137,67 @@ namespace Cysharp.Text
             }
 
             return text;
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString32Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString32Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString64Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString64Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString128Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString128Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString512Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString512Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Append a <see cref="FixedString4096Bytes" /> to the builder.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public void Append(FixedString4096Bytes value)
+        {
+            AppendFixedString(value, value.Length);
+        }
+
+        /// <summary>
+        ///     Helper method to append a fixed string to the builder.
+        /// </summary>
+        /// <param name="value">The fixed string.</param>
+        /// <param name="length">The length of the string byte buffer.</param>
+        /// <typeparam name="T">The type of FixedString.</typeparam>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void AppendFixedString<T>(T value, int length) where T : unmanaged, IUTF8Bytes
+        {
+            unsafe
+            {
+                byte* bytes = value.GetUnsafePtr();
+                AppendLiteral(new ReadOnlySpan<byte>(bytes, length));
+            }
         }
     }
 }
