@@ -411,16 +411,17 @@ namespace Cysharp.Text
             {
                 width *= -1;
 
-                if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out var charsWritten, format))
+                if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out var bytesWritten, format))
                 {
-                    Grow(charsWritten);
-                    if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out charsWritten, format))
+                    Grow(bytesWritten);
+                    if (!FormatterCache<T>.TryFormatDelegate(arg, buffer.AsSpan(index), out bytesWritten, format))
                     {
                         ThrowArgumentException(argName);
                     }
                 }
 
-                index += charsWritten;
+                var charsWritten = Encoding.UTF8.GetCharCount(buffer.AsSpan(index, bytesWritten));
+                index += bytesWritten;
 
                 int padding = width - charsWritten;
                 if (width > 0 && padding > 0)
@@ -445,23 +446,24 @@ namespace Cysharp.Text
                 {
                     Span<byte> s = stackalloc byte[typeof(T).IsValueType ? Unsafe.SizeOf<T>() * 8 : 1024];
 
-                    if (!FormatterCache<T>.TryFormatDelegate(arg, s, out var charsWritten, format))
+                    if (!FormatterCache<T>.TryFormatDelegate(arg, s, out var bytesWritten, format))
                     {
                         s = stackalloc byte[s.Length * 2];
-                        if (!FormatterCache<T>.TryFormatDelegate(arg, s, out charsWritten, format))
+                        if (!FormatterCache<T>.TryFormatDelegate(arg, s, out bytesWritten, format))
                         {
                             ThrowArgumentException(argName);
                         }
                     }
 
+                    var charsWritten = Encoding.UTF8.GetCharCount(s.Slice(0, bytesWritten));
                     int padding = width - charsWritten;
                     if (padding > 0)
                     {
                         Append(' ', padding);  // TODO Fill Method is too slow.
                     }
 
-                    s.CopyTo(GetSpan(charsWritten));
-                    Advance(charsWritten);
+                    s.CopyTo(GetSpan(bytesWritten));
+                    Advance(bytesWritten);
                 }
             }
         }
