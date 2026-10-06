@@ -12,19 +12,31 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
+  validate-release:
+    permissions:
+      contents: read
+    uses: Cysharp/Actions/.github/workflows/validate-release.yaml@main
+    with:
+      tag: ${{ inputs.tag }}
+
   update-packagejson:
+    needs: [validate-release]
     permissions:
       actions: read
       contents: write
     uses: Cysharp/Actions/.github/workflows/update-packagejson.yaml@main
     with:
       file-path: ./src/ZString.Unity/Assets/Scripts/ZString/package.json
-      tag: ${{ inputs.tag }}
+      tag: ${{ needs.validate-release.outputs.tag }}
       dry-run: ${{ inputs.dry-run }}
 
   build-dotnet:
-    needs: [update-packagejson]
+    needs: [validate-release, update-packagejson]
     permissions:
       contents: read
     runs-on: ubuntu-24.04
@@ -36,9 +48,9 @@ jobs:
           ref: ${{ needs.update-packagejson.outputs.sha }}
       - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
       # pack nuget
-      - run: dotnet build -c Release -p:Version=${{ inputs.tag }}
+      - run: dotnet build -c Release -p:Version=${{ needs.validate-release.outputs.tag }}
       - run: dotnet test tests/ZString.Tests -c Release --no-build
-      - run: dotnet pack -c Release --no-build -p:Version=${{ inputs.tag }} -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg -o ./publish
+      - run: dotnet pack -c Release --no-build -p:Version=${{ needs.validate-release.outputs.tag }} -p:IncludeSymbols=true -p:SymbolPackageFormat=snupkg -o ./publish
       # Store artifacts.
       - uses: Cysharp/Actions/.github/actions/upload-artifact@main
         with:
@@ -47,7 +59,7 @@ jobs:
           retention-days: 1
 
   build-unity:
-    needs: [update-packagejson]
+    needs: [validate-release, update-packagejson]
     strategy:
       matrix:
         unity: ["2021.3.41f1"]
@@ -78,7 +90,7 @@ jobs:
           UNITY_EMAIL: ${{ steps.op-load-secret.outputs.UNITY_EMAIL }}
           UNITY_PASSWORD: ${{ steps.op-load-secret.outputs.UNITY_PASSWORD }}
           UNITY_SERIAL: ${{ steps.op-load-secret.outputs.UNITY_SERIAL }}
-          UNITY_PACKAGE_VERSION: ${{ inputs.tag }}
+          UNITY_PACKAGE_VERSION: ${{ needs.validate-release.outputs.tag }}
         with:
           projectPath: src/ZString.Unity
           unityVersion: ${{ matrix.unity }}
@@ -92,55 +104,41 @@ jobs:
       # Store artifacts.
       - uses: Cysharp/Actions/.github/actions/upload-artifact@main
         with:
-          name: ZString.Unity.${{ inputs.tag }}.unitypackage
-          path: ./src/ZString.Unity/ZString.Unity.${{ inputs.tag }}.unitypackage
+          name: ZString.Unity.${{ needs.validate-release.outputs.tag }}.unitypackage
+          path: ./src/ZString.Unity/ZString.Unity.${{ needs.validate-release.outputs.tag }}.unitypackage
           retention-days: 1
 
-  # publish
-  publish:
-    name: "Publish NuGet packages"
-    needs: [build-dotnet, build-unity]
-    permissions:
-      contents: read
-      id-token: write # required for NuGet Trusted Publish
-    runs-on: ubuntu-24.04
-    timeout-minutes: 10
-    steps:
-      - uses: Cysharp/Actions/.github/actions/setup-dotnet@main
-      - uses: Cysharp/Actions/.github/actions/download-artifact@main
-      # push nuget
-      - name: NuGet login (OIDC)
-        uses: NuGet/login@8d196754b4036150537f80ac539e15c2f1028841 # v1.2.0
-        id: login
-        with:
-          user: ${{ secrets.NUGET_USER }}
-      - run: dotnet nuget push "./nuget/*.nupkg" --skip-duplicate -s https://api.nuget.org/v3/index.json -k "${NUGET_KEY}"
-        if: ${{ !inputs.dry-run }}
-        env:
-          NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
-      - run: dotnet nuget push "./nuget/*.snupkg" --skip-duplicate -s https://api.nuget.org/v3/index.json -k "${NUGET_KEY}"
-        if: ${{ !inputs.dry-run }}
-        env:
-          NUGET_KEY: ${{ steps.login.outputs.NUGET_API_KEY }}
-
   create-release:
-    needs: [update-packagejson, publish]
+    needs: [validate-release, update-packagejson, build-unity]
     permissions:
       contents: write
-      id-token: write # required for NuGet Trusted Publish
     uses: Cysharp/Actions/.github/workflows/create-release.yaml@main
     with:
       commit-id: ${{ needs.update-packagejson.outputs.sha }}
-      tag: ${{ inputs.tag }}
+      tag: ${{ needs.validate-release.outputs.tag }}
       dry-run: ${{ inputs.dry-run }}
-      nuget-push: false
       release-upload: true
-      release-asset-path: ./ZString.Unity.${{ inputs.tag }}.unitypackage/ZString.Unity.${{ inputs.tag }}.unitypackage
+      release-asset-path: ./ZString.Unity.${{ needs.validate-release.outputs.tag }}.unitypackage/ZString.Unity.${{ needs.validate-release.outputs.tag }}.unitypackage
     secrets: inherit
 
+  publish-package:
+    needs: [validate-release, create-release]
+    if: ${{ !inputs.dry-run }}
+    permissions:
+      contents: read
+      id-token: write # required for NuGet Trusted Publish in the calling repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: Cysharp/Actions/.github/actions/publish-nuget@main
+        with:
+          artifact-name: nuget
+          user: ${{ secrets.NUGET_USER }}
+          version: ${{ needs.validate-release.outputs.version }}
+
   cleanup:
-    if: ${{ needs.update-packagejson.outputs.is-branch-created == 'true' }}
-    needs: [update-packagejson, create-release]
+    if: ${{ always() && needs.update-packagejson.outputs.is-branch-created == 'true' }}
+    needs: [update-packagejson, create-release, publish-package]
     permissions:
       contents: write
     uses: Cysharp/Actions/.github/workflows/clean-packagejson-branch.yaml@main
