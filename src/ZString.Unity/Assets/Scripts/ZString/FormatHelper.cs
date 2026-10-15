@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Text;
 using System.Buffers;
 using System.Runtime.CompilerServices;
@@ -82,7 +82,7 @@ namespace Cysharp.Text
                 }
 
                 var span = sb.GetSpan(charsWritten);
-                s.CopyTo(span);
+                s.Slice(0, charsWritten).CopyTo(span);
                 sb.Advance(charsWritten);
             }
         }
@@ -163,7 +163,7 @@ namespace Cysharp.Text
                 }
 
                 var span = sb.GetSpan(charsWritten);
-                s.CopyTo(span);
+                s.Slice(0, charsWritten).CopyTo(span);
                 sb.Advance(charsWritten);
             }
         }

@@ -460,7 +460,7 @@ namespace Cysharp.Text
                         Append(' ', padding);  // TODO Fill Method is too slow.
                     }
 
-                    s.CopyTo(GetSpan(charsWritten));
+                    s.Slice(0, charsWritten).CopyTo(GetSpan(charsWritten));
                     Advance(charsWritten);
                 }
             }
