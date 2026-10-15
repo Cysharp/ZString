@@ -465,22 +465,24 @@ namespace Cysharp.Text
             buffer.AsSpan(0, startIndex).CopyTo(newBuffer);
             int newBufferIndex = startIndex;
 
-            for (int i = startIndex; i < endIndex; i += oldValue.Length)
+            int readIndex = startIndex;
+            for (; readIndex < endIndex; readIndex += oldValue.Length)
             {
-                var span = readOnlySpan.Slice(i, endIndex - i);
+                var span = readOnlySpan.Slice(readIndex, endIndex - readIndex);
                 var pos = span.IndexOf(oldValue, StringComparison.Ordinal);
                 if (pos == -1)
                 {
-                    var remain = readOnlySpan.Slice(i);
-                    remain.CopyTo(newBuffer.AsSpan(newBufferIndex));
-                    newBufferIndex += remain.Length;
                     break;
                 }
-                readOnlySpan.Slice(i, pos).CopyTo(newBuffer.AsSpan(newBufferIndex));
+                readOnlySpan.Slice(readIndex, pos).CopyTo(newBuffer.AsSpan(newBufferIndex));
                 newValue.CopyTo(newBuffer.AsSpan(newBufferIndex + pos));
                 newBufferIndex += pos + newValue.Length;
-                i += pos;
+                readIndex += pos;
             }
+
+            var remain = readOnlySpan.Slice(readIndex);
+            remain.CopyTo(newBuffer.AsSpan(newBufferIndex));
+            newBufferIndex += remain.Length;
 
             if (buffer!.Length != ThreadStaticBufferSize)
             {

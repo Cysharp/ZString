@@ -87,6 +87,23 @@ namespace ZStringTests
             }
         }
         
+        [Theory]
+        [InlineData("abcTAIL", "bc", "X", 1, 2)]
+        [InlineData("abcTAIL", "bc", "", 1, 2)]
+        [InlineData("abcTAIL", "bc", "longer", 1, 2)]
+        [InlineData("abcbcTAIL", "bc", "X", 1, 4)]
+        [InlineData("abczTAIL", "bc", "X", 1, 3)]
+        [InlineData("abc", "bc", "X", 1, 2)]
+        public void ReplacePreservesSuffix(string text, string oldValue, string newValue, int startIndex, int count)
+        {
+            using (var zsb = ZString.CreateStringBuilder())
+            {
+                zsb.Append(text);
+                zsb.Replace(oldValue, newValue, startIndex, count);
+                zsb.ToString().Should().Be(new StringBuilder(text).Replace(oldValue, newValue, startIndex, count).ToString());
+            }
+        }
+
         [Fact]
         public void NotMatchTest()
         {
