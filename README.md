@@ -148,9 +148,9 @@ Reference
 | method | returns | description |
 | -- | -- | -- |
 | Length | int | Length of written buffer. |
-| AsSpan() | `ReadOnlySpan<char>` | Get the written buffer data. |
-| AsMemory() | `ReadOnlyMemory<char>` | Get the written buffer data. |
-| AsArraySegment() | `ArraySegment<char>` | Get the written buffer data. |
+| AsSpan() | `ReadOnlySpan<byte>` | Get the written buffer data. |
+| AsMemory() | `ReadOnlyMemory<byte>` | Get the written buffer data. |
+| AsArraySegment() | `ArraySegment<byte>` | Get the written buffer data. |
 | Dispose() | void | Return the inner buffer to pool. |
 | `Append<T>(T value)` | void | Appends the string representation of a specified value to this instance. |
 | `Append<T>(T value, StandardFormat format)` | void | Appends the string representation of a specified value to this instance with numeric format strings. |
@@ -163,8 +163,8 @@ Reference
 | `TryCopyTo(Span<byte>, out int)` | bool | Copy inner buffer to the destination span. |
 | WriteToAsync(Stream stream) | Task | Write inner buffer to stream. |
 | ToString() | string | Encode the innner utf8 buffer to a System.String. |
-| GetMemory(int sizeHint) | `Memory<char>` | IBufferWriter.GetMemory. |
-| GetSpan(int sizeHint) | `Span<char>` | IBufferWriter.GetSpan. |
+| GetMemory(int sizeHint) | `Memory<byte>` | IBufferWriter.GetMemory. |
+| GetSpan(int sizeHint) | `Span<byte>` | IBufferWriter.GetSpan. |
 | Advance(int count) | void | IBufferWriter.Advance. |
 | static `RegisterTryFormat<T>(TryFormat<T>)` | void | Register custom formatter. |
 
