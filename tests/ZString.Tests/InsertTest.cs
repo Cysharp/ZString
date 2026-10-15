@@ -56,6 +56,22 @@ namespace ZStringTests
             }
         }
 
+        [Theory]
+        [InlineData(false, 0)]
+        [InlineData(false, 100)]
+        [InlineData(true, 0)]
+        [InlineData(true, 100)]
+        public void InsertPreservesLargeSuffix(bool notNested, int index)
+        {
+            var text = new string('a', 33000);
+            using (var zsb = ZString.CreateStringBuilder(notNested))
+            {
+                zsb.Append(text);
+                zsb.Insert(index, "bc", 2);
+                zsb.ToString().Should().Be(new StringBuilder(text).Insert(index, "bc", 2).ToString());
+            }
+        }
+
         [Fact]
         public void NotInserted()
         {

@@ -323,7 +323,7 @@ namespace Cysharp.Text
                 return;
             }
 
-            var newSize = index + value.Length * count;
+            var newSize = currentLength + value.Length * count;
             var newBuffer = ArrayPool<char>.Shared.Rent(Math.Max(DefaultBufferSize, newSize));
 
             buffer.AsSpan(0, index).CopyTo(newBuffer);
