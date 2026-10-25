@@ -6,6 +6,7 @@
 <#@ output extension=".cs" #>
 <#@ include file="../T4Common.t4" once="true" #>
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Cysharp.Text
 {
@@ -13,7 +14,7 @@ namespace Cysharp.Text
     {
 <# for(var i = 1; i <= TypeParamMax; i++) { #>
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
+        public void AppendFormat<<#= CreateTypeArgument(i) #>>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, <#= CreateParameters(i) #>)
         {
             if (format == null)
             {

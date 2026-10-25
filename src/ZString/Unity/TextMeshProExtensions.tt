@@ -23,6 +23,7 @@
 #>
 #if ZSTRING_TEXTMESHPRO_SUPPORT
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TMPro;
 
 namespace Cysharp.Text
@@ -40,7 +41,7 @@ namespace Cysharp.Text
         }
         
 <# for(var i = 1; i <= 16; i++) { #>
-        public static void SetTextFormat<<#= CreateTypeArgument(i) #>>(this TMP_Text text, string format, <#= CreateParameters(i) #>)
+        public static void SetTextFormat<<#= CreateTypeArgument(i) #>>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, <#= CreateParameters(i) #>)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {

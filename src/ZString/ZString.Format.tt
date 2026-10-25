@@ -6,6 +6,7 @@
 <#@ output extension=".cs" #>
 <#@ include file="T4Common.t4" once="true" #>
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 using System;
 
 namespace Cysharp.Text
@@ -15,7 +16,7 @@ namespace Cysharp.Text
 <# for(var i = 1; i <= TypeParamMax; i++) { #>
         /// <summary>Replaces one or more format items in a string with the string representation of some specified objects.</summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string Format<<#= CreateTypeArgument(i) #>>(string format, <#= CreateParameters(i) #>)
+        public static string Format<<#= CreateTypeArgument(i) #>>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, <#= CreateParameters(i) #>)
         {
             var sb = new Utf16ValueStringBuilder(true);
             try

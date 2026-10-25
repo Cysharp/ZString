@@ -6,6 +6,7 @@
 <#@ output extension=".cs" #>
 <#@ include file="T4Common.t4" once="true" #>
 using System.Runtime.CompilerServices;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Cysharp.Text
 {
@@ -13,13 +14,13 @@ namespace Cysharp.Text
     {
 <# for(var i = 1; i <= TypeParamMax; i++) { #>
         /// <summary>Prepare string format to avoid parse template in each operation.</summary>
-        public static Utf16PreparedFormat<<#= CreateTypeArgument(i) #>> PrepareUtf16<<#= CreateTypeArgument(i) #>>(string format)
+        public static Utf16PreparedFormat<<#= CreateTypeArgument(i) #>> PrepareUtf16<<#= CreateTypeArgument(i) #>>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             return new Utf16PreparedFormat<<#= CreateTypeArgument(i) #>>(format);
         }
 
         /// <summary>Prepare string format to avoid parse template in each operation.</summary>
-        public static Utf8PreparedFormat<<#= CreateTypeArgument(i) #>> PrepareUtf8<<#= CreateTypeArgument(i) #>>(string format)
+        public static Utf8PreparedFormat<<#= CreateTypeArgument(i) #>> PrepareUtf8<<#= CreateTypeArgument(i) #>>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             return new Utf8PreparedFormat<<#= CreateTypeArgument(i) #>>(format);
         }

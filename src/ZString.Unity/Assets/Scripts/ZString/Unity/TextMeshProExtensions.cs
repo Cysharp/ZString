@@ -1,5 +1,6 @@
 ﻿#if ZSTRING_TEXTMESHPRO_SUPPORT
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TMPro;
 
 namespace Cysharp.Text
@@ -16,7 +17,7 @@ namespace Cysharp.Text
             }
         }
         
-        public static void SetTextFormat<T0>(this TMP_Text text, string format, T0 arg0)
+        public static void SetTextFormat<T0>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -27,7 +28,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1>(this TMP_Text text, string format, T0 arg0, T1 arg1)
+        public static void SetTextFormat<T0, T1>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -38,7 +39,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2)
+        public static void SetTextFormat<T0, T1, T2>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -49,7 +50,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
+        public static void SetTextFormat<T0, T1, T2, T3>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -60,7 +61,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        public static void SetTextFormat<T0, T1, T2, T3, T4>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -71,7 +72,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -82,7 +83,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -93,7 +94,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -104,7 +105,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -115,7 +116,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -126,7 +127,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -137,7 +138,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -148,7 +149,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -159,7 +160,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -170,7 +171,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
@@ -181,7 +182,7 @@ namespace Cysharp.Text
             }
         }
 
-        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(this TMP_Text text, string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
+        public static void SetTextFormat<T0, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(this TMP_Text text, [StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T0 arg0, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
         {
             using (var sb = new Cysharp.Text.Utf16ValueStringBuilder(true))
             {
