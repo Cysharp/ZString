@@ -1,11 +1,12 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Cysharp.Text
 {
     public partial struct Utf16ValueStringBuilder
     {
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1>(string format, T1 arg1)
+        public void AppendFormat<T1>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1)
         {
             if (format == null)
             {
@@ -148,7 +149,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2>(string format, T1 arg1, T2 arg2)
+        public void AppendFormat<T1, T2>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2)
         {
             if (format == null)
             {
@@ -297,7 +298,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3>(string format, T1 arg1, T2 arg2, T3 arg3)
+        public void AppendFormat<T1, T2, T3>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3)
         {
             if (format == null)
             {
@@ -452,7 +453,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
+        public void AppendFormat<T1, T2, T3, T4>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             if (format == null)
             {
@@ -613,7 +614,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
+        public void AppendFormat<T1, T2, T3, T4, T5>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5)
         {
             if (format == null)
             {
@@ -780,7 +781,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6)
         {
             if (format == null)
             {
@@ -953,7 +954,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7)
         {
             if (format == null)
             {
@@ -1132,7 +1133,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8)
         {
             if (format == null)
             {
@@ -1317,7 +1318,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9)
         {
             if (format == null)
             {
@@ -1508,7 +1509,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10)
         {
             if (format == null)
             {
@@ -1705,7 +1706,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11)
         {
             if (format == null)
             {
@@ -1908,7 +1909,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12)
         {
             if (format == null)
             {
@@ -2117,7 +2118,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13)
         {
             if (format == null)
             {
@@ -2332,7 +2333,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14)
         {
             if (format == null)
             {
@@ -2553,7 +2554,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15)
         {
             if (format == null)
             {
@@ -2780,7 +2781,7 @@ namespace Cysharp.Text
             }
         }
         /// <summary>Appends the string returned by processing a composite format string, each format item is replaced by the string representation of arguments.</summary>
-        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
+        public void AppendFormat<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format, T1 arg1, T2 arg2, T3 arg3, T4 arg4, T5 arg5, T6 arg6, T7 arg7, T8 arg8, T9 arg9, T10 arg10, T11 arg11, T12 arg12, T13 arg13, T14 arg14, T15 arg15, T16 arg16)
         {
             if (format == null)
             {

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Text;
 using System.Buffers;
 
@@ -11,7 +12,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -76,7 +77,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -146,7 +147,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -221,7 +222,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -301,7 +302,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -386,7 +387,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -476,7 +477,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -571,7 +572,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -671,7 +672,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -776,7 +777,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -886,7 +887,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -1001,7 +1002,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -1121,7 +1122,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -1246,7 +1247,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -1376,7 +1377,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -1511,7 +1512,7 @@ namespace Cysharp.Text
 
         readonly Utf16FormatSegment[] segments;
 
-        public Utf16PreparedFormat(string format)
+        public Utf16PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf16Parse(format);
@@ -1652,7 +1653,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -1718,7 +1719,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -1789,7 +1790,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -1865,7 +1866,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -1946,7 +1947,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2032,7 +2033,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2123,7 +2124,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2219,7 +2220,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2320,7 +2321,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2426,7 +2427,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2537,7 +2538,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2653,7 +2654,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2774,7 +2775,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -2900,7 +2901,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -3031,7 +3032,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
@@ -3167,7 +3168,7 @@ namespace Cysharp.Text
         readonly Utf8FormatSegment[] segments;
         readonly byte[] utf8PreEncodedbuffer;
 
-        public Utf8PreparedFormat(string format)
+        public Utf8PreparedFormat([StringSyntax(StringSyntaxAttribute.CompositeFormat)] string format)
         {
             this.FormatString = format;
             this.segments = PreparedFormatHelper.Utf8Parse(format, out utf8PreEncodedbuffer);
